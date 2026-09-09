@@ -20,7 +20,7 @@ export default function RootLayout({ children }) {
   const router = useRouter();
   return (
     <RememberProvider>
-      <main className="min-h-screen w-full flex overflow-hidden bg-white">
+      <main className="min-h-dvh w-full flex overflow-hidden bg-white">
         <div className="hidden md:block w-1/2 lg:w-3/5 relative z-10 [clip-path:polygon(0_0,100%_0,85%_100%,0_100%)]">
           {/* Fotografía de fondo */}
           <Image
