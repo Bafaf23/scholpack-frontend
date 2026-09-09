@@ -4,6 +4,8 @@ const RememberContext = createContext();
 
 export const RememberProvider = ({ children }) => {
   const [rememberUser, setRememberUser] = useState(() => {
+    if (typeof window === "undefined") return null;
+
     const stored = localStorage.getItem("rememberedUser");
     if (!stored) return null;
     try {

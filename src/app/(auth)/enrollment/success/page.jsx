@@ -1,5 +1,6 @@
 "use client";
 
+import { useEffect, useState } from "react";
 import Success from "@/components/organism/Success";
 import Loading from "@/app/loading";
 
@@ -14,6 +15,7 @@ function parseSigCode(sig) {
 }
 
 function parseInstitutionName(data) {
+  if (!data) return "";
   if (data.nameInstitution) return data.nameInstitution;
   if (data.institutionName) return data.institutionName;
   const sig = data.sig;
@@ -23,7 +25,16 @@ function parseInstitutionName(data) {
 }
 
 export default function EnrollmentSuccessPage({ data }) {
-  if (!data) return <Loading />;
+  const [isMounted, setIsMounted] = useState(false);
+
+  // Asegura que la renderización dependiente de fechas/APIs del navegador solo ocurra en el cliente
+  useEffect(() => {
+    // eslint-disable-next-line react-hooks/set-state-in-effect
+    setIsMounted(true);
+  }, []);
+
+  // Si no hay datos o aún no se ha montado en el cliente, mostramos el estado de carga
+  if (!isMounted || !data) return <Loading />;
 
   const dataSuccess = {
     id: data.user_id || data.document,
@@ -70,7 +81,7 @@ export default function EnrollmentSuccessPage({ data }) {
       name: parseInstitutionName(data) || "Liceo seleccionado",
       sig: parseSigCode(data.sig),
     },
-    createdAt: data.createdAt || new Date().toLocaleDateString("es-VE"),
+    createdAt: data.createdAt || new Date().toISOString().split("T")[0],
     updatedAt: data.updatedAt,
   };
 

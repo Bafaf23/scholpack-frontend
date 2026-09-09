@@ -10,12 +10,18 @@ import Link from "next/link";
 import { useState, useEffect } from "react";
 
 export default function Success({ data }) {
-  const [isClient, setIsCliente] = useState(false);
+  const [isClient, setIsClient] = useState(false);
 
   useEffect(() => {
     // eslint-disable-next-line react-hooks/set-state-in-effect
-    setIsCliente(true);
+    setIsClient(true);
   }, []);
+
+  const handleNewRegistration = () => {
+    if (typeof window !== "undefined") {
+      sessionStorage.removeItem("enrolelmentResult");
+    }
+  };
 
   return (
     <div className="p-4">
@@ -40,7 +46,7 @@ export default function Success({ data }) {
           <div className="mb-2 flex justify-between text-sm">
             <span className="text-slate-400">Estudiante:</span>
             <span className="font-bold text-indigo-600 uppercase">
-              {data?.user.name} {data?.user.lastName}
+              {data?.user?.name} {data?.user?.lastName}
             </span>
           </div>
           <div className="mb-2 flex justify-between text-sm">
@@ -60,7 +66,14 @@ export default function Success({ data }) {
         {/* Acciones */}
         <div className="space-y-3">
           {isClient ? (
-            {}
+            /* Botón de PDF o acción cliente (coloca aquí tu componente cuando esté listo) */
+            <button
+              type="button"
+              className="w-full flex items-center justify-center gap-2 rounded-xl bg-indigo-600 py-3 font-semibold text-white transition-all hover:bg-indigo-700"
+            >
+              <Icon icon={faFilePdf} />
+              Descargar Planilla PDF
+            </button>
           ) : (
             <div className="w-full animate-pulse border border-dashed border-slate-400 rounded-xl py-4 bg-slate-100" />
           )}
@@ -74,8 +87,8 @@ export default function Success({ data }) {
               Inicia sesión
             </Link>
             <Link
-              href="/enrolelment"
-              onClick={() => sessionStorage.removeItem("enrolelmentResult")}
+              href="/enrollment"
+              onClick={handleNewRegistration}
               className="flex items-center justify-center gap-2 rounded-xl border border-slate-200 py-3 font-semibold text-slate-600 transition-all hover:bg-slate-50"
             >
               Nuevo Registro
