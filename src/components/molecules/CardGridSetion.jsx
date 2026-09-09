@@ -22,17 +22,19 @@ export default function CardGridSetion({
 }) {
   if (!dataSet || dataSet.length === 0)
     return (
-      <div className="flex flex-col items-center justify-center rounded-2xl border-2 border-dashed border-slate-200 bg-slate-50 p-12 text-center dark:border-slate-500 dark:bg-slate-700">
-        <Icon
-          icon={faBook}
-          className="mb-4 text-4xl text-slate-300 dark:text-slate-400"
-        />
-        <p className="text-lg font-medium text-slate-500 dark:text-slate-400">
-          No hay secciones creadas
-        </p>
-        <p className="text-sm text-slate-400 dark:text-slate-500">
-          Comienza agregando una materia en el formulario lateral.
-        </p>
+      <div className="p-3">
+        <div className="flex flex-col items-center justify-center rounded-2xl border-2 border-dashed border-slate-200 bg-slate-50 p-12 text-center dark:border-slate-500 dark:bg-slate-700">
+          <Icon
+            icon={faBook}
+            className="mb-4 text-4xl text-slate-300 dark:text-slate-400"
+          />
+          <p className="text-lg font-medium text-slate-500 dark:text-slate-400">
+            No hay secciones creadas
+          </p>
+          <p className="text-sm text-slate-400 dark:text-slate-500">
+            Comienza agregando una materia en el formulario lateral.
+          </p>
+        </div>
       </div>
     );
 

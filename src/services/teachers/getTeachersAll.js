@@ -7,7 +7,7 @@ import axios from "axios";
 export async function getTeachersAll() {
   try {
     const result = await axios.get(
-      `${process.env.NEXT_PUBLIC_API_URL}/teachers/get`,
+      `${process.env.NEXT_PUBLIC_API_URL}/teachers`,
       {
         withCredentials: true,
         headers: {

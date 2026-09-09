@@ -9,7 +9,7 @@ import axios from "axios";
 export const getStudentSection = async (id_section) => {
   try {
     const response = await axios.get(
-      `${process.env.NEXT_PUBLIC_API_URL}/students/getStudentsBySection/${id_section}`,
+      `${process.env.NEXT_PUBLIC_API_URL}/sections/${id_section}/students`,
       {
         withCredentials: true,
         headers: {

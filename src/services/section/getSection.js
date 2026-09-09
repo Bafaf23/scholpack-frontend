@@ -8,7 +8,7 @@ import axios from "axios";
 export async function getSection(id_period) {
   try {
     const result = await axios.get(
-      `${process.env.NEXT_PUBLIC_API_URL}/sections/get/${id_period}`,
+      `${process.env.NEXT_PUBLIC_API_URL}/sections`,
       {
         withCredentials: true,
         headers: {

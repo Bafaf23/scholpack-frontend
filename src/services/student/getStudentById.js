@@ -8,7 +8,7 @@ import axios from "axios";
 export async function getStudentByI(id_student) {
   try {
     const response = await axios.get(
-      `${process.env.NEXT_PUBLIC_API_URL}/students/getStudentByID/${id_student}`,
+      `${process.env.NEXT_PUBLIC_API_URL}/students/${id_student}`,
       {
         withCredentials: true,
         headers: {

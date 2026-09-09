@@ -12,7 +12,6 @@ import { toast } from "react-hot-toast";
 
 export default function FromForcePasswordChange() {
   const router = useRouter();
-  // 1. Iniciamos cargando en verdadero para evitar destellos del formulario
   const [loading, setLoading] = useState(true);
   const [isAuthenticated, setIsAuthenticated] = useState(false);
   const [user, setUser] = useState(null);
@@ -99,10 +98,10 @@ export default function FromForcePasswordChange() {
   }
 
   return (
-    <div className="w-full max-w-md px-5 md:py-0">
-      <div className="rounded-3xl border border-gray-200 bg-white p-8 shadow-2xl shadow-indigo-200/50 dark:border-slate-800 dark:bg-slate-900 dark:shadow-indigo-600/20">
-        <div className="mb-10 text-center">
-          <h2 className="text-xl font-black text-indigo-900 dark:text-indigo-600 mb-2">
+    <div className="w-full px-10 md:py-0">
+      <div>
+        <div className="mb-10">
+          <h2 className="text-3xl font-extrabold text-orange-500 mb-2">
             Actualización Obligatoria
           </h2>
           <p className="text-sm text-slate-500 dark:text-slate-400 mb-6">
@@ -163,7 +162,7 @@ export default function FromForcePasswordChange() {
           <Button
             icon={faCheck}
             type="submit"
-            classNameBtn="w-full bg-indigo-600 hover:bg-indigo-700 text-white py-4 rounded-2xl font-bold shadow-lg shadow-indigo-200 dark:shadow-indigo-500/30 transition-all flex justify-center items-center gap-2"
+            classNameBtn="w-full bg-orange-600 hover:bg-orange-700 text-white py-4 rounded-2xl font-bold shadow-lg shadow-orange-200 dark:shadow-orange-500/30 transition-all flex justify-center items-center gap-2"
           >
             Cambiar Contraseña
           </Button>

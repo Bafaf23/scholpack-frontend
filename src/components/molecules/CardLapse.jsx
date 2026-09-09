@@ -20,7 +20,7 @@ export default function CardLapse({
   const [isConfirmClose, setIsConfirmClose] = useState(false);
   const [isConfirmOpen, setIsConfirmOpen] = useState(false);
 
-  const isCurrent = lapse.is_active === 1;
+  const isCurrent = lapse.is_active === true;
   const isPast = !isCurrent && new Date(lapse.end_date) < new Date();
   const isFuture = !isCurrent && new Date(lapse.start_date) > new Date();
 
@@ -48,7 +48,7 @@ export default function CardLapse({
         {isCurrent && (
           <span className="inline-flex items-center gap-1.5 px-3 py-1 text-xs font-bold text-green-700 bg-green-50 rounded-full dark:bg-green-950/40 dark:text-green-400">
             <span className="w-1.5 h-1.5 rounded-full bg-green-500" />
-            En Curso Actualmente
+            En Curso
           </span>
         )}
         {isPast && (

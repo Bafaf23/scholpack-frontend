@@ -8,7 +8,7 @@ import axios from "axios";
 export const getPeriod = async () => {
   try {
     const response = await axios.get(
-      `${process.env.NEXT_PUBLIC_API_URL}/periods/getAcademicPeriods`,
+      `${process.env.NEXT_PUBLIC_API_URL}/periods`,
       {
         withCredentials: true,
         headers: {

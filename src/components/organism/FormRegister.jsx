@@ -26,7 +26,7 @@ export default function FormRegister({ user, mode, onSuccess, role }) {
     email: user?.email || "",
     phone: user?.phone || "",
     SIG: user?.SIG || "",
-    role_id: Number(3),
+    role_id: Number(5),
   });
 
   const handleChange = (e) => {

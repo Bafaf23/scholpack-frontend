@@ -70,7 +70,7 @@ export default function InstitucionesPage() {
     });
   };
 
-  const filteredInstitutions = institutions.filter((institution) => {
+  const filteredInstitutions = institutions?.filter((institution) => {
     const SIG = String(institution?.SIG || "");
     const nameStr = String(institution?.name || "");
     const completeTerm = `${SIG} ${nameStr}`.toLowerCase();
@@ -89,6 +89,7 @@ export default function InstitucionesPage() {
     setAppliedFilter(search);
   };
   const BASE_DOMAIN = process.env.NEXT_PUBLIC_BASE_DOMAIN;
+
   return (
     <div>
       <div className="flex flex-col md:flex-row md:justify-between md:p-3 lg:justify-between">
@@ -159,170 +160,175 @@ export default function InstitucionesPage() {
           { name: "Subdominio", icon: faNetworkWired },
           { name: "Acciones", icon: faEllipsis },
         ]}
-        renderTableRows={(institution) => (
-          <tr
-            key={institution.SIG}
-            className="transition-colors hover:bg-slate-50/50 group"
-          >
-            {/* SIG Y DIRECTOR */}
-            <td className="px-4 py-4 whitespace-nowrap">
-              <div className="flex flex-col group-hover:text-cyan-600 transition-colors">
-                <span className="font-medium">{institution.SIG}</span>
-              </div>
-              <div>
+        renderTableRows={(institution) => {
+          const schoolDirector = institution.user_schools?.find(
+            (item) => item.user?.role?.name === "director",
+          );
+          return (
+            <tr
+              key={institution.SIG}
+              className="transition-colors hover:bg-slate-50/50 group"
+            >
+              {/* SIG Y DIRECTOR */}
+              <td className="px-4 py-4 whitespace-nowrap">
+                <div className="flex flex-col group-hover:text-cyan-600 transition-colors">
+                  <span className="font-medium">{institution.SIG}</span>
+                </div>
+                <div>
+                  <span
+                    className={`inline-flex items-center max-w-40 px-2 py-0.5 rounded-full text-xs font-semibold ${institution.is_active ? "bg-green-50 text-green-700 border border-green-200 dark:bg-green-950/40 dark:text-green-300 dark:border-green-800/60" : "bg-red-50 text-red-700 border border-red-200 dark:bg-red-950/40 dark:text-red-300 dark:border-red-800/60"} `}
+                    title={
+                      institution.is_active
+                        ? `${institution.is_active}`
+                        : "Sin asignar"
+                    }
+                  >
+                    <span className="truncate">
+                      {institution.is_active ? `Activa` : "Inactiva"}
+                    </span>
+                  </span>
+                </div>
+              </td>
+
+              {/* NOMBRE DE LA INSTITUCIÓN */}
+              <td className="px-4 py-4 max-w-50">
                 <span
-                  className={`inline-flex items-center max-w-40 px-2 py-0.5 rounded-full text-xs font-semibold ${institution.is_active ? "bg-green-50 text-green-700 border border-green-200 dark:bg-green-950/40 dark:text-green-300 dark:border-green-800/60" : "bg-red-50 text-red-700 border border-red-200 dark:bg-red-950/40 dark:text-red-300 dark:border-red-800/60"} `}
+                  className="font-medium text-slate-800 line-clamp-2"
+                  title={institution.school_name}
+                >
+                  {institution.school_name}
+                </span>
+                <span
+                  className="inline-flex  max-w-40 px-2 py-0.5 rounded-full text-xs font-semibold bg-cyan-50 text-cyan-700 border border-cyan-200 dark:bg-cyan-950/40 dark:text-cyan-300 dark:border-cyan-800/60"
                   title={
-                    institution.is_active
-                      ? `${institution.is_active}`
+                    schoolDirector
+                      ? `${schoolDirector.user.name} ${schoolDirector.user.last_name}`
                       : "Sin asignar"
                   }
                 >
                   <span className="truncate">
-                    {institution.is_active ? `Activa` : "Inactiva"}
+                    {schoolDirector
+                      ? `${schoolDirector.user.name} ${schoolDirector.user.last_name}`
+                      : "Sin asignar"}
                   </span>
                 </span>
-              </div>
-            </td>
+              </td>
 
-            {/* NOMBRE DE LA INSTITUCIÓN */}
-            <td className="px-4 py-4 max-w-50">
-              <span
-                className="font-medium text-slate-800 line-clamp-2"
-                title={institution.school_name}
-              >
-                {institution.school_name}
-              </span>
-              <span
-                className="inline-flex  max-w-40 px-2 py-0.5 rounded-full text-xs font-semibold bg-cyan-50 text-cyan-700 border border-cyan-200 dark:bg-cyan-950/40 dark:text-cyan-300 dark:border-cyan-800/60"
-                title={
-                  institution.director
-                    ? `${institution.director.name} ${institution.director.last_name}`
-                    : "Sin asignar"
-                }
-              >
-                <span className="truncate">
-                  {institution.director
-                    ? `${institution.director.name} ${institution.director.last_name}`
-                    : "Sin asignar"}
-                </span>
-              </span>
-            </td>
-
-            {/* RAZÓN SOCIAL */}
-            <td className="px-4 py-4 max-w-45">
-              <span
-                className={`font-medium uppercase line-clamp-1 ${
-                  institution.type === "Pública" ||
-                  institution.type === "Publica"
-                    ? "text-green-500"
-                    : "text-orange-500"
-                }`}
-                title={institution.company_name}
-              >
-                {institution.type === "Pública" ||
-                institution.type === "Publica"
-                  ? "MPPE"
-                  : institution.company_name}
-              </span>
-            </td>
-
-            {/* DIRECCIÓN */}
-            <td className="px-4 py-4 max-w-55">
-              <span
-                className="font-medium text-slate-800 text-sm line-clamp-2"
-                title={institution.address}
-              >
-                {institution.address}
-              </span>
-            </td>
-
-            {/* CONTACTO */}
-            <td className="px-4 py-4 max-w-45">
-              <div className="flex flex-col">
-                <span className="font-medium text-slate-800 whitespace-nowrap">
-                  {institution.phone}
-                </span>
-                <span className="font-medium text-slate-500 text-xs break-all">
-                  {institution.email}
-                </span>
-              </div>
-            </td>
-
-            {/* TIPO */}
-            <td className="px-4 py-4 whitespace-nowrap">
-              <span
-                className={`font-medium uppercase ${
-                  institution.type === "Pública" ||
-                  institution.type === "Publica"
-                    ? "text-green-500"
-                    : "text-orange-500"
-                }`}
-              >
-                {institution.type}
-              </span>
-            </td>
-
-            {/* RIF / DEA */}
-            <td className="px-4 py-4 whitespace-nowrap">
-              <div className="flex flex-col">
-                <span className="font-medium text-slate-800 text-sm font-mono">
+              {/* RAZÓN SOCIAL */}
+              <td className="px-4 py-4 max-w-45">
+                <span
+                  className={`font-medium uppercase line-clamp-1 ${
+                    institution.type === "Pública" ||
+                    institution.type === "Publica"
+                      ? "text-green-500"
+                      : "text-orange-500"
+                  }`}
+                  title={institution.company_name}
+                >
                   {institution.type === "Pública" ||
                   institution.type === "Publica"
-                    ? "G-200000090"
-                    : institution.RIF}
+                    ? "MPPE"
+                    : institution.company_name}
                 </span>
-                <span className="font-medium text-slate-500 text-xs font-mono">
-                  {institution.DEA_CODE}
+              </td>
+
+              {/* DIRECCIÓN */}
+              <td className="px-4 py-4 max-w-55">
+                <span
+                  className="font-medium text-slate-800 text-sm line-clamp-2"
+                  title={institution.address}
+                >
+                  {institution.address}
                 </span>
-              </div>
-            </td>
+              </td>
 
-            {/* CDCEE */}
-            <td className="px-4 py-4 max-w-30 whitespace-nowrap truncate">
-              <span className="font-medium text-slate-800">
-                {institution.cdcee?.name || "N/A"}
-              </span>
-            </td>
-            {/* SuBdominio */}
-            <td className="px-4 py-4 max-w-30 whitespace-nowrap truncate">
-              <Link
-                href={`https://${institution.subdomain}.${BASE_DOMAIN}`}
-                target="_blank"
-                className="font-mono text-slate-800 hover:underline"
-              >
-                {`${institution.subdomain}.${BASE_DOMAIN}`}
-              </Link>
-            </td>
+              {/* CONTACTO */}
+              <td className="px-4 py-4 max-w-45">
+                <div className="flex flex-col">
+                  <span className="font-medium text-slate-800 whitespace-nowrap">
+                    {institution.phone}
+                  </span>
+                  <span className="font-medium text-slate-500 text-xs break-all">
+                    {institution.email}
+                  </span>
+                </div>
+              </td>
 
-            {/* ACCIONES */}
-            <td className="px-4 py-4 whitespace-nowrap">
-              <div className="flex items-center gap-2">
-                <Button
-                  icon={faEdit}
-                  classNameBtn="flex h-8 w-8 items-center justify-center rounded-lg text-slate-400 transition-all hover:bg-indigo-50 hover:text-indigo-600"
-                  onClick={() => {
-                    setEditingInstitution(institution);
-                    setIsOpenEdit(true);
-                  }}
-                />
-                <Button
-                  icon={faTrash}
-                  classNameBtn="flex h-8 w-8 items-center justify-center rounded-lg text-slate-400 transition-all hover:bg-red-50 hover:text-red-600"
-                  onClick={() => {
-                    deleteSchool(institution.SIG).then((data) => {
-                      if (data?.ok) {
-                        setInstitutions((prev) =>
-                          prev.filter((item) => item.SIG !== institution.SIG),
-                        );
-                      }
-                    });
-                  }}
-                />
-              </div>
-            </td>
-          </tr>
-        )}
+              {/* TIPO */}
+              <td className="px-4 py-4 whitespace-nowrap">
+                <span
+                  className={`font-medium uppercase ${
+                    institution.type === "Pública" ||
+                    institution.type === "Publica"
+                      ? "text-green-500"
+                      : "text-orange-500"
+                  }`}
+                >
+                  {institution.type}
+                </span>
+              </td>
+
+              {/* RIF / DEA */}
+              <td className="px-4 py-4 whitespace-nowrap">
+                <div className="flex flex-col">
+                  <span className="font-medium text-slate-800 text-sm font-mono">
+                    {institution.type === "Pública" ||
+                    institution.type === "Publica"
+                      ? "G-200000090"
+                      : institution.RIF}
+                  </span>
+                  <span className="font-medium text-slate-500 text-xs font-mono">
+                    {institution.DEA_CODE}
+                  </span>
+                </div>
+              </td>
+
+              {/* CDCEE */}
+              <td className="px-4 py-4 max-w-30 whitespace-nowrap truncate">
+                <span className="font-medium text-slate-800">
+                  {institution.cdcee?.name || "N/A"}
+                </span>
+              </td>
+              {/* SuBdominio */}
+              <td className="px-4 py-4 max-w-30 whitespace-nowrap truncate">
+                <Link
+                  href={`https://${institution.subdomain}.${BASE_DOMAIN}`}
+                  target="_blank"
+                  className="font-mono text-slate-800 hover:underline"
+                >
+                  {`${institution.subdomain}`}
+                </Link>
+              </td>
+
+              {/* ACCIONES */}
+              <td className="px-4 py-4 whitespace-nowrap">
+                <div className="flex items-center gap-2">
+                  <Button
+                    icon={faEdit}
+                    classNameBtn="flex h-8 w-8 items-center justify-center rounded-lg text-slate-400 transition-all hover:bg-indigo-50 hover:text-indigo-600"
+                    onClick={() => {
+                      setEditingInstitution(institution);
+                      setIsOpenEdit(true);
+                    }}
+                  />
+                  <Button
+                    icon={faTrash}
+                    classNameBtn="flex h-8 w-8 items-center justify-center rounded-lg text-slate-400 transition-all hover:bg-red-50 hover:text-red-600"
+                    onClick={() => {
+                      deleteSchool(institution.SIG).then((data) => {
+                        if (data?.ok) {
+                          setInstitutions((prev) =>
+                            prev.filter((item) => item.SIG !== institution.SIG),
+                          );
+                        }
+                      });
+                    }}
+                  />
+                </div>
+              </td>
+            </tr>
+          );
+        }}
         renderMovilCard={(institution) => (
           <div
             key={`card-${institution.SIG}`}

@@ -22,7 +22,6 @@ import {
 export default function AdminPage() {
   const { user, loading: authLoading } = useAuth();
 
-  // Estados numéricos inicializados en cero para evitar saltos bruscos en el layout (CLS)
   const [studentCount, setStudentCount] = useState(0);
   const [teachersCount, setTeachersCount] = useState(0);
   const [subjectsCount, setSubjectsCount] = useState(0);
@@ -83,7 +82,12 @@ export default function AdminPage() {
 
   if (authLoading || dataLoading) return <Loading />;
 
-  if (!user || user.user.role !== "Administrador") return <AccessDenied />;
+  if (
+    !user ||
+    user.user.role == "estudiantes" ||
+    user.user.role == "profesores"
+  )
+    return <AccessDenied />;
 
   return (
     <div className="animate-in fade-in zoom-in-95 duration-500 ease-out">
@@ -95,7 +99,7 @@ export default function AdminPage() {
             label="Total de estudiantes"
             value={studentCount}
             icon={faUser}
-            colorClass="bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 border border-emerald-500/20 backdrop-blur-md"
+            colorClass="bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 backdrop-blur-md"
             description="Alumnos inscritos en el período"
           />
 
@@ -103,7 +107,7 @@ export default function AdminPage() {
             label="Total de secciones"
             value={sectionCount}
             icon={faBook}
-            colorClass="bg-blue-500/10 text-blue-600 dark:text-blue-400 border border-blue-500/20 backdrop-blur-md"
+            colorClass="bg-blue-500/10 text-blue-600 dark:text-blue-400 backdrop-blur-md"
             description="Divisiones de aula activas"
           />
 
@@ -111,7 +115,7 @@ export default function AdminPage() {
             label="Total de docentes"
             value={teachersCount}
             icon={faUserTie}
-            colorClass="bg-purple-500/10 text-purple-600 dark:text-purple-400 border border-purple-500/20 backdrop-blur-md"
+            colorClass="bg-purple-500/10 text-purple-600 dark:text-purple-400 backdrop-blur-md"
             description="Personal docente registrado"
           />
 
@@ -119,7 +123,7 @@ export default function AdminPage() {
             label="Pensum académico"
             value={subjectsCount}
             icon={faFilePen}
-            colorClass="bg-amber-500/10 text-amber-600 dark:text-amber-400 border border-amber-500/20 backdrop-blur-md"
+            colorClass="bg-amber-500/10 text-amber-600 dark:text-amber-400 backdrop-blur-md"
             description="Asignaturas base cargadas"
           />
 

@@ -10,7 +10,7 @@ import axios from "axios";
 export const getPreinscription = async ({ id_period }) => {
   try {
     const response = await axios.get(
-      `${process.env.NEXT_PUBLIC_API_URL}/students/getPreinscription/${id_period}`,
+      `${process.env.NEXT_PUBLIC_API_URL}/students/${id_period}/pre-inscription`,
       {
         withCredentials: true,
         headers: {

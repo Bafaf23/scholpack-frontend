@@ -25,7 +25,7 @@ import {
 import { usePathname } from "next/navigation";
 
 export const menuLink = {
-  Profesor: [
+  profesor: [
     {
       icon: faHome,
       label: "Inicio",
@@ -48,7 +48,7 @@ export const menuLink = {
       href: `/dashboard/Profesor/asistencia`,
     }, */
   ],
-  Estudiante: [
+  estudiante: [
     {
       icon: faHome,
       label: "Mi Inicio",
@@ -65,26 +65,26 @@ export const menuLink = {
       href: "/dashboard/Estudiante/record",
     },
   ],
-  Administrador: [
+  administrador: [
     {
       icon: faHome,
       label: "Mi Inicio",
-      href: "/dashboard/Administrador",
+      href: "/dashboard/administrador",
     },
     {
       icon: faSitemap,
       label: "Control de Secciones",
-      href: "/dashboard/Administrador/controlSecciones",
+      href: "/dashboard/administrador/controlSecciones",
     },
     {
       icon: faBowlRice,
       label: "Asignaturas",
-      href: "/dashboard/Administrador/gestionAsignaturas",
+      href: "/dashboard/administrador/gestionAsignaturas",
     },
     {
       icon: faClipboardList,
       label: "Carga Academica",
-      href: "/dashboard/Administrador/cargaAcademica",
+      href: "/dashboard/administrador/cargaAcademica",
     },
     /* {
       icon: faUserMinus,
@@ -95,22 +95,22 @@ export const menuLink = {
     {
       icon: faUserPlus,
       label: "Gestion de Docentes",
-      href: "/dashboard/Administrador/gestionDocentes",
+      href: "/dashboard/administrador/gestionDocentes",
     },
     {
       icon: faUserGraduate,
       label: "Gestion de Estudiantes",
-      href: "/dashboard/Administrador/gestionEstudiantes",
+      href: "/dashboard/administrador/gestionEstudiantes",
     },
     {
       icon: faCalendarCheck,
       label: "Configuración de Lapsos",
-      href: "/dashboard/Administrador/lapsos",
+      href: "/dashboard/administrador/lapsos",
     },
     {
       icon: faGraduationCap,
       label: "Promociones",
-      href: "/dashboard/Administrador/promociones",
+      href: "/dashboard/administrador/promociones",
     },
   ],
   sudo: [
@@ -138,7 +138,10 @@ export default function NavbarSidebar() {
   if (loading) return;
   if (!user) return;
 
-  const currentLinks = menuLink[user?.user?.role || "Estudiante"] || [];
+  const role =
+    user?.user.role == "director" ? "administrador" : user.user?.role;
+
+  const currentLinks = menuLink[role];
 
   return (
     <aside
@@ -148,7 +151,7 @@ export default function NavbarSidebar() {
         className={`mb-8 flex items-center border-b border-gray-200 pb-3 dark:border-slate-700`}
       >
         <div className="truncate">
-          <SigaceLogo className={"text-indigo-500"} />
+          <SigaceLogo className={"text-slate-900"} />
         </div>
       </div>
 

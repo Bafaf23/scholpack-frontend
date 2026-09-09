@@ -11,56 +11,66 @@ import Modal from "@/components/organism/Modal";
 import { useAuth } from "@/context/AuthContext";
 import { getSection } from "@/services/section/getSection";
 import { getStudenNotEnrollment } from "@/services/student/getStudenNotEnrollment";
-import { getStudentSection } from "@/services/student/getStudentSection";
+import { getStudentSection } from "@/services/section/getStudentSection";
 import { getPreinscription } from "@/services/student/getPreinscription";
 import { faInfo, faPlus } from "@fortawesome/free-solid-svg-icons";
 import { useState, useEffect, useCallback, startTransition } from "react";
 
-// Corregido: Inicial con mayúscula para cumplir con la especificación de componentes React
 export default function ControlSecciones() {
   const { user } = useAuth();
   const [sections, setSections] = useState([]);
   const [isOpen, setIsOpen] = useState(false);
   const [students, setStudents] = useState([]);
-  const [studentsPre, setStudentsPre] = useState([]);
+  const [studentsPre, setStudentsPre] = useState(null);
 
   const [sectionsLoading, setSectionsLoading] = useState(true);
   const [studentsLoading, setStudentsLoading] = useState(true);
 
-  const period = user?.user?.id_period;
+  // Extracción segura del periodo escolar activo
+  const period = user?.user?.id_period || user?.id_period;
 
-  // Recupera los estudiantes que aún no pertenecen a ninguna sección
-  const loadStudents = useCallback(() => {
+  // Carga paralela y segura de estudiantes
+  const loadStudents = useCallback(async () => {
     if (!period) return;
     setStudentsLoading(true);
 
-    getStudenNotEnrollment({ id_period: period })
-      .then((res) => {
-        // Validación defensiva: Extrae .data si viene estructurado, o el array fallback
-        const studentDataList = res?.data ?? res ?? [];
-        setStudents(studentDataList);
-      })
-      .catch((err) =>
-        console.error(
-          "❌ [SIGACE UI]: Error al cargar estudiantes no inscritos:",
-          err,
-        ),
-      );
+    try {
+      const [notEnrolledRes, preinscriptionRes] = await Promise.allSettled([
+        getStudenNotEnrollment({ id_period: period }),
+        getPreinscription({ id_period: period }),
+      ]);
 
-    getPreinscription({ id_period: period })
-      .then((data) => {
-        setStudentsPre(data.data[0]);
-      })
-      .catch((err) =>
+      // Procesar Estudiantes no inscritos
+      if (notEnrolledRes.status === "fulfilled") {
+        const res = notEnrolledRes.value;
+        const studentDataList = res?.data ?? res ?? [];
+        setStudents(Array.isArray(studentDataList) ? studentDataList : []);
+      } else {
         console.error(
           "❌ [SIGACE UI]: Error al cargar estudiantes no inscritos:",
-          err,
-        ),
-      );
-    setStudentsLoading(false);
+          notEnrolledRes.reason,
+        );
+      }
+
+      // Procesar Preinscripción de forma ultra defensiva
+      if (preinscriptionRes.status === "fulfilled") {
+        const data = preinscriptionRes.value;
+        const preList = data?.data ?? data ?? [];
+        setStudentsPre(
+          Array.isArray(preList) && preList.length > 0 ? preList[0] : null,
+        );
+      } else {
+        console.error(
+          "❌ [SIGACE UI]: Error al cargar preinscripción:",
+          preinscriptionRes.reason,
+        );
+      }
+    } finally {
+      setStudentsLoading(false);
+    }
   }, [period]);
 
-  // Recupera las secciones y anida concurrentemente sus listas de alumnos
+  // Recupera secciones y anida concurrentemente sus listas de alumnos
   const loadSections = useCallback(() => {
     if (!period) return;
     setSectionsLoading(true);
@@ -79,8 +89,12 @@ export default function ControlSecciones() {
 
               return {
                 ...seccion,
-                sectionStudents: estudiantesDeLaSeccion,
-                current: estudiantesDeLaSeccion.length,
+                sectionStudents: Array.isArray(estudiantesDeLaSeccion)
+                  ? estudiantesDeLaSeccion
+                  : [],
+                current: Array.isArray(estudiantesDeLaSeccion)
+                  ? estudiantesDeLaSeccion.length
+                  : 0,
               };
             } catch (error) {
               console.error(
@@ -96,20 +110,19 @@ export default function ControlSecciones() {
           setSections(seccionesConEstudiantes);
         });
       })
-      .catch((err) =>
-        console.error("❌ [SIGACE UI]: Error al cargar secciones:", err),
-      )
+      .catch((err) => console.error(err))
       .finally(() => setSectionsLoading(false));
   }, [period]);
 
   useEffect(() => {
-    // eslint-disable-next-line react-hooks/set-state-in-effect
-    loadSections();
-    loadStudents();
-  }, [loadSections, loadStudents]);
+    if (period) {
+      // eslint-disable-next-line react-hooks/set-state-in-effect
+      loadSections();
+      loadStudents();
+    }
+  }, [period, loadSections, loadStudents]);
 
-  // La UI muestra el Skeleton solo si las secciones principales siguen pendientes de red
-  const isGlobalLoading = sectionsLoading;
+  const isGlobalLoading = sectionsLoading || studentsLoading;
 
   return (
     <div className="animate-in fade-in zoom-in-95 duration-500 ease-out">
@@ -134,21 +147,20 @@ export default function ControlSecciones() {
         <FormSection
           onSuccess={() => {
             loadSections();
+            loadStudents();
             setIsOpen(false);
           }}
         />
       </Modal>
 
-      {/* Banner Informativo con Estilo Premium Glassmorphism */}
       <section className="p-4">
         <Banner
           icon={faInfo}
-          titel="Informacion de interes"
-          message="En este módulo puedes crear y gestionar las secciones de tu institución, así como realizar el proceso de  inscripción y asignación  de los estudiantes."
+          titel="Información de interés"
+          message="En este módulo puedes crear y gestionar las secciones de tu institución, así como realizar el proceso de inscripción y asignación de los estudiantes."
         />
       </section>
 
-      {/* Botón de acción para entornos Mobile */}
       <div className="md:hidden p-3 w-full">
         <Button
           onClick={() => setIsOpen(true)}
@@ -159,7 +171,6 @@ export default function ControlSecciones() {
         </Button>
       </div>
 
-      {/* Renderizado Condicional Seguro */}
       {isGlobalLoading ? (
         <div className="p-3">
           <SkeletonCard />

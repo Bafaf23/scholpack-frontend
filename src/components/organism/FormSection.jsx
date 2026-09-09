@@ -43,8 +43,8 @@ export default function FormSection({ onSuccess }) {
     getTeachersAll().then((data) => {
       setTeachers(
         data.data.map((teacher) => ({
-          value: teacher.id_teacher,
-          label: `${teacher.document} - ${teacher.name} ${teacher.last_name}`,
+          value: teacher.id,
+          label: `${teacher.user.id_card} - ${teacher.user.name} ${teacher.user.last_name}`,
         })),
       );
     });

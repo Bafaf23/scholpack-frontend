@@ -10,7 +10,7 @@ import axios from "axios";
 export const getStudenNotEnrollment = async ({ id_period }) => {
   try {
     const response = await axios.get(
-      `${process.env.NEXT_PUBLIC_API_URL}/students/getStudentNotEnrolled/${id_period}`,
+      `${process.env.NEXT_PUBLIC_API_URL}/students/not-enrolled`,
       {
         withCredentials: true,
         headers: {

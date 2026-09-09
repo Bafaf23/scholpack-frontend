@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 
-export async function middleware(req) {
+export async function proxy(req) {
   const host = req.headers.get("host") || "";
   const subdomain = host.split(".")[0];
 
@@ -27,18 +27,21 @@ export async function middleware(req) {
 
     const data = await response.json();
 
-    console.log(" Subdomain consultado:", subdomain);
-    console.log(" Respuesta de la API:", data);
-
     if (!data || data.success === false) {
       return NextResponse.rewrite(new URL("/404", req.url));
     }
+    const requestHeaders = new Headers(req.headers);
+    requestHeaders.set("x-school-subdomain", subdomain);
+
+    return NextResponse.next({
+      request: {
+        headers: requestHeaders,
+      },
+    });
   } catch (e) {
     console.error("Error al verificar subdominio en middleware:", e);
     return NextResponse.rewrite(new URL("/404", req.url));
   }
-
-  return NextResponse.next();
 }
 
 export const config = {

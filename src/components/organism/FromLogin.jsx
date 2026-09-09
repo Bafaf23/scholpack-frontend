@@ -11,13 +11,21 @@ import { useRouter } from "next/navigation";
 import { useState } from "react";
 import { toast } from "react-hot-toast";
 
-export default function FromLogin() {
+export default function FromLogin({ schoolName }) {
   const router = useRouter();
+
   const [loading, setLoading] = useState(false);
+
   const [formData, setFormData] = useState({ email: "", password: "" });
 
   const handleChange = (e) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
+  };
+  const getGreeting = () => {
+    const hora = new Date().getHours();
+    if (hora >= 5 && hora < 12) return "Buenos días";
+    if (hora >= 12 && hora < 18) return "Buenas tardes";
+    return "Buenas noches";
   };
 
   const handleSubmit = async (e) => {
@@ -35,10 +43,7 @@ export default function FromLogin() {
       toast.error(data.error);
       setLoading(false);
       return;
-    } else if (
-      data.mustChangePassword === true ||
-      data.mustChangePassword === 1
-    ) {
+    } else if (data.mustChangePassword === true) {
       sessionStorage.setItem("user", JSON.stringify(data));
       toast.loading("La contraseña debe ser cambiada");
       router.push("/force-password-change");
@@ -49,32 +54,33 @@ export default function FromLogin() {
       const role = data?.user?.role;
 
       toast.success("Inicio de sesión exitoso");
-      router.push(`/dashboard/${role}`);
+
+      if (role === "director" || role === "gestion" || role === "subdirector") {
+        router.push(`/dashboard/administrador`);
+      } else {
+        router.push(`/dashboard/${role}`);
+      }
     }
     setLoading(false);
   };
-  return (
-    <div className="w-full max-w-md px-5 md:py-0">
-      {/* Botón para volver */}
-      <Links
-        direction="/"
-        className="group mb-8 inline-flex items-center gap-2 text-slate-500 transition-colors hover:text-indigo-600 dark:text-slate-400"
-        label={"Volver al inicio"}
-        classNameIcon={"transition-transform group-hover:-translate-x-1 "}
-        icon={faArrowLeft}
-      ></Links>
 
-      <div className="rounded-3xl border border-gray-200 bg-white p-8 shadow-2xl shadow-indigo-200/50 dark:border-slate-800 dark:bg-slate-900 dark:shadow-indigo-600/20">
-        <div className="mb-10 text-center">
-          <h1 className="mb-2 text-3xl font-black text-indigo-900 dark:text-indigo-600">
-            SIGACE<span className="text-cyan-500">.</span>
+  return (
+    <div className="w-full">
+      <div className="md:p-10 p-5">
+        <div className="mb-10">
+          <h1 className="mb-2 text-3xl font-extrabold uppercase text-transparent bg-clip-text bg-linear-to-r from-amber-600 via-orange-600 to-cyan-500 ">
+            ¡{getGreeting()}!
           </h1>
-          <p className="font-medium text-slate-500 dark:text-slate-300">
-            control de Estudios Inteligente
+          <p className="text-sm font-medium text-slate-600 dark:text-slate-300 tracking-wide">
+            Ingresa al sistema de{" "}
+            <span className="font-bold text-xl">
+              {schoolName ? schoolName : "ADMIN SUDO"}
+            </span>{" "}
+            para continuar.
           </p>
         </div>
 
-        <form onSubmit={handleSubmit} className="space-y-6">
+        <form onSubmit={handleSubmit} className="space-y-3">
           <Input
             label="Correo Electrónico"
             name="email"
@@ -93,7 +99,20 @@ export default function FromLogin() {
             onChange={handleChange}
           />
 
-          <div className="flex justify-end">
+          <div className="flex justify-between mt-8 items-center">
+            <div className="flex items-center gap-2">
+              <input
+                type="checkbox"
+                id="remember"
+                className="w-4 h-4 rounded border-slate-300 text-orange-600 focus:ring-orange-500 cursor-pointer"
+              />
+              <label
+                htmlFor="remember"
+                className="text-slate-600 dark:text-slate-300 cursor-pointer select-none font-medium"
+              >
+                Recordar usuario
+              </label>
+            </div>
             <Links
               icon={faKey}
               direction="/resetpass"
@@ -103,30 +122,14 @@ export default function FromLogin() {
           </div>
 
           <Button
-            classNameBtn="w-full bg-indigo-600 hover:bg-indigo-700 text-white py-4 rounded-2xl font-bold shadow-lg shadow-indigo-200 dark:shadow-indigo-500/30 transition-all flex justify-center items-center gap-2"
+            classNameBtn="w-full mt-8 bg-orange-600 hover:bg-orange-700 text-white py-4 rounded-2xl font-bold transition-all flex justify-center items-center gap-2"
             icon={faKey}
             type="submit"
             disabled={loading}
-            // eslint-disable-next-line react/no-children-prop
-            children={loading ? "Verificando..." : "Iniciar Sesión"}
-          ></Button>
-        </form>
-
-        <section className="mt-8 text-center text-sm text-slate-500 dark:text-slate-400">
-          ¿No tienes acceso?,{" "}
-          <Link
-            href="https://wa.link/a6tg3m"
-            className="text-indigo-600 dark:text-indigo-500"
           >
-            {" "}
-            <span className="cursor-pointer font-bold text-indigo-600 dark:text-indigo-500">
-              Contacta al administrador
-            </span>
-          </Link>
-          <div className="flex items-center justify-center mt-2">
-            <VersionTag />
-          </div>
-        </section>
+            {loading ? "Verificando..." : "Iniciar Sesión"}
+          </Button>
+        </form>
       </div>
     </div>
   );
