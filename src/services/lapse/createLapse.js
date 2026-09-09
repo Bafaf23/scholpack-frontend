@@ -15,7 +15,7 @@ export const createLapse = async (formDataLapse) => {
     };
 
     const response = await axios.post(
-      `${process.env.NEXT_PUBLIC_API_URL}/lapses/create`,
+      `${process.env.NEXT_PUBLIC_API_URL}/lapses`,
       requestBody,
       {
         withCredentials: true,

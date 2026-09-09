@@ -72,7 +72,7 @@ export default function LapsoPage() {
         setLapses(Array.isArray(lapsesList) ? lapsesList : []);
       });
     } catch (error) {
-      console.error("❌ [SIGACE UI]: Error recuperando lapsos:", error);
+      console.error("Error recuperando lapsos:", error);
     }
   }, []);
 
@@ -84,7 +84,7 @@ export default function LapsoPage() {
 
   const validLapsesCount = Array.isArray(lapses) ? lapses.length : 0;
   const canCreateMoreLapses = validLapsesCount < 3;
-  console.log(period);
+
   return (
     <div className="">
       {/* Encabezado e Interfaz Centralizada */}
@@ -284,7 +284,7 @@ export default function LapsoPage() {
           </div>
         ) : (
           /* Estado Vacío Estilizado Minimalista */
-          <div className="flex flex-col items-center justify-center min-h-[300px] border border-dashed border-slate-200 dark:border-slate-800 bg-slate-500/5 backdrop-blur-md rounded-2xl p-8 text-center animate-pulse">
+          <div className="flex flex-col items-center justify-center min-h-75 border border-dashed border-slate-200 dark:border-slate-800 bg-slate-500/5 backdrop-blur-md rounded-2xl p-8 text-center">
             <Icon
               icon={faBook}
               className="text-3xl text-slate-400 dark:text-slate-500 mb-3"

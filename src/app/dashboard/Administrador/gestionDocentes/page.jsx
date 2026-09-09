@@ -83,22 +83,18 @@ export default function GestionDocentesPage() {
   });
 
   if (authLoading) return <Loading />;
-  if (!user || user.user.role !== "Administrador") return <AccessDenied />;
+  if (
+    !user ||
+    user.user.role === "estudiantes" ||
+    user.user.role === "profesores"
+  )
+    return <AccessDenied />;
 
   return (
     <div className="animate-in fade-in zoom-in-95 duration-500 ease-out">
       {/* Sección Superior: Header y Botón Desktop */}
       <div className="flex flex-col sm:flex-row justify-between items-center gap-4 mb-4 p-1">
         <HeaderDashbord titelPage="Gestión de Docentes" />
-        <div className="hidden md:block">
-          <Button
-            onClick={() => setIsOpen(true)}
-            icon={faAdd}
-            classNameBtn="bg-indigo-600 hover:bg-indigo-700 transition-all p-2.5 rounded-xl text-slate-50 font-semibold cursor-pointer flex items-center gap-2 text-sm shadow-md shadow-indigo-500/10"
-          >
-            Registrar Docente
-          </Button>
-        </div>
       </div>
 
       {/* Modal de Registro */}
@@ -122,19 +118,9 @@ export default function GestionDocentesPage() {
           message="Para modificar la disponibilidad o el estado activo/inactivo de la nómina, por favor contacta a soporte técnico"
         />
       </section>
-      {/* Botón de Acción para Entornos Móviles */}
-      <div className="md:hidden p-3 w-full">
-        <Button
-          onClick={() => setIsOpen(true)}
-          icon={faAdd}
-          classNameBtn="bg-indigo-600 active:scale-95 transition-transform p-4 rounded-xl text-slate-50 font-bold cursor-pointer flex items-center justify-center gap-2 w-full shadow-lg shadow-indigo-500/20"
-        >
-          Registrar Docente
-        </Button>
-      </div>
 
       {/* Barra de Filtros y Búsquedas */}
-      <div className="p-3">
+      <div className="p-3 flex justify-between flex-col md:flex-row gap-5 w-full">
         <div className="max-w-md">
           <Search
             placeholder="Buscar por cédula o nombre..."
@@ -142,6 +128,15 @@ export default function GestionDocentesPage() {
             setSearch={setSearch}
             onSearch={handleSearch}
           />
+        </div>
+        <div>
+          <Button
+            onClick={() => setIsOpen(true)}
+            icon={faAdd}
+            classNameBtn="bg-indigo-600 hover:bg-indigo-700 active:scale-95 transition-all p-3 rounded-xl text-slate-50 font-bold cursor-pointer flex items-center justify-center gap-2 w-full md:w-auto whitespace-nowrap shadow-lg shadow-indigo-500/20"
+          >
+            Registrar Docente
+          </Button>
         </div>
       </div>
 
@@ -168,12 +163,12 @@ export default function GestionDocentesPage() {
                 className="transition-colors hover:bg-slate-50/50 dark:hover:bg-slate-900/30 group border-b border-slate-100 dark:border-slate-800"
               >
                 <td className="px-6 py-4 font-medium text-slate-700 dark:text-slate-300 text-sm">
-                  {teacher.document}
+                  {teacher.user.id_card}
                 </td>
                 <td className="px-6 py-4">
                   <div className="flex flex-col">
                     <span className="font-semibold text-slate-900 dark:text-slate-100 group-hover:text-indigo-600 dark:group-hover:text-indigo-400 transition-colors text-sm">
-                      {teacher.name} {teacher.last_name}
+                      {teacher.user.name} {teacher.user.last_name}
                     </span>
                     <span className="text-xs text-slate-400 font-mono mt-0.5">
                       {teacher.SIG}
@@ -202,9 +197,9 @@ export default function GestionDocentesPage() {
                 <td className="px-6 py-4 text-xs text-slate-500 dark:text-slate-400">
                   <div className="flex flex-col gap-0.5">
                     <span className="font-medium text-slate-700 dark:text-slate-300">
-                      {teacher.phone || "Sin Teléfono"}
+                      {teacher.user.phone || "Sin Teléfono"}
                     </span>
-                    <span>{teacher.email}</span>
+                    <span>{teacher.user.email}</span>
                   </div>
                 </td>
                 <td className="px-6 py-4">

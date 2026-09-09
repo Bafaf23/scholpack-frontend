@@ -52,23 +52,24 @@ export default function FormForgot() {
   };
 
   return (
-    <div className="w-full max-w-md px-5 md:py-0">
-      {/* Botón para volver al login */}
-      <Links
-        direction="/login"
-        className="group mb-8 inline-flex items-center gap-2 text-slate-500 transition-colors hover:text-indigo-600 dark:text-slate-400"
-        label={"Volver al inicio de sesión"}
-        classNameIcon={"transition-transform group-hover:-translate-x-1 "}
-        icon={faArrowLeft}
-      ></Links>
-
-      <div className="rounded-3xl border border-gray-200 bg-white p-8 shadow-2xl shadow-indigo-200/50 dark:border-slate-800 dark:bg-slate-900 dark:shadow-indigo-600/20">
-        <div className="mb-10 text-center">
-          <h1 className="mb-2 text-3xl font-black text-indigo-900 dark:text-indigo-600">
-            SIGACE<span className="text-cyan-500">.</span>
+    <div className="w-full">
+      <div className="p-10">
+        {/* Botón para volver al login */}
+        <Links
+          direction="/login"
+          className="group mb-8 inline-flex items-center gap-2 text-slate-500 transition-colors hover:text-cyan-600 dark:text-slate-400 md:hidden lg:hidden"
+          label={"Volver al inicio de sesión"}
+          classNameIcon={"transition-transform group-hover:-translate-x-1 "}
+          icon={faArrowLeft}
+        ></Links>
+        <div className="mb-8 space-y-2">
+          <h1 className="text-2xl md:text-3xl font-extrabold uppercase text-orange-500 tracking-tight">
+            Recupera tu acceso
           </h1>
-          <p className="font-medium text-slate-500 dark:text-slate-300">
-            Control de Estudios Inteligente
+          <p className="text-sm font-medium text-slate-500 dark:text-slate-300 leading-relaxed">
+            Ingresa tu correo electrónico registrado. Te enviaremos las
+            instrucciones necesarias para restablecer tu contraseña de forma
+            segura.
           </p>
         </div>
 
@@ -84,7 +85,7 @@ export default function FormForgot() {
           />
 
           <Button
-            classNameBtn="w-full bg-indigo-600 hover:bg-indigo-700 text-white py-4 rounded-2xl font-bold shadow-lg shadow-indigo-200 dark:shadow-indigo-500/30 transition-all flex justify-center items-center gap-2"
+            classNameBtn="w-full bg-orange-600 hover:bg-orange-700 text-white py-4 rounded-2xl font-bold shadow-lg shadow-orange-200 dark:shadow-orange-500/30 transition-all flex justify-center items-center gap-2"
             icon={faKey}
             type="submit"
             disabled={loading}

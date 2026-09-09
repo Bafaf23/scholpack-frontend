@@ -76,46 +76,25 @@ export default function FormResetPassword() {
   };
 
   return (
-    <div className="w-full max-w-4xl px-5 md:py-0 flex flex-col md:flex-row gap-6 items-center justify-center">
-      {/* Columna Extra (ej. Panel de requisitos o ilustración) */}
-      <div className="w-full max-w-md rounded-3xl border border-slate-200 bg-slate-50/50 p-6 dark:border-slate-800 dark:bg-slate-900/50">
-        <h3 className="mb-3 font-bold uppercase tracking-wider text-indigo-900 dark:text-indigo-400">
-          Requisitos de seguridad
-        </h3>
-        <ul className="space-y-2 font-medium text-slate-600 dark:text-slate-300">
-          <li className="flex items-start gap-2">
-            <span className="text-indigo-500 font-bold">1.</span>
-            La contraseña debe ser alfanumérica (letras y números).
-          </li>
-          <li className="flex items-start gap-2">
-            <span className="text-indigo-500 font-bold">2.</span>
-            <span>
-              Debe contener al menos un carácter especial permitido:{" "}
-              <code className="rounded bg-indigo-50 px-1.5 py-0.5 font-bold text-indigo-600 dark:bg-indigo-950/50 dark:text-indigo-400">
-                @*#$%
-              </code>
-            </span>
-          </li>
-        </ul>
-      </div>
-      {/* Columna del Formulario */}
+    <div className="w-full max-w-4xl px-10 md:py-0 flex flex-col md:flex-row gap-6 items-center justify-center">
       <div className="w-full max-w-md">
         {/* Botón para volver al login */}
         <Links
           direction="/"
-          className="group mb-8 inline-flex items-center gap-2 text-slate-500 transition-colors hover:text-indigo-600 dark:text-slate-400"
+          className="group mb-8 inline-flex md:hidden lg:hidden items-center gap-2 text-slate-500 transition-colors hover:text-cyan-600 dark:text-slate-400"
           label={"Volver al inicio de sesión"}
           classNameIcon={"transition-transform group-hover:-translate-x-1 "}
           icon={faArrowLeft}
         />
 
-        <div className="rounded-3xl border border-gray-200 bg-white p-8 shadow-2xl shadow-indigo-200/50 dark:border-slate-800 dark:bg-slate-900 dark:shadow-indigo-600/20">
-          <div className="mb-10 text-center">
-            <h1 className="mb-2 text-3xl font-black text-indigo-900 dark:text-indigo-600">
-              SIGACE<span className="text-cyan-500">.</span>
+        <div>
+          <div className="mb-8 space-y-2">
+            <h1 className="text-2xl md:text-3xl font-extrabold uppercase text-orange-600 dark:text-orange-500 tracking-tight">
+              Solo falta un paso
             </h1>
-            <p className="font-medium text-slate-500 dark:text-slate-300">
-              Control de Estudios Inteligente
+            <p className="text-sm font-medium text-slate-500 dark:text-slate-300 leading-relaxed">
+              Crea una nueva contraseña segura para finalizar la recuperación de
+              tu cuenta.
             </p>
           </div>
 
@@ -141,7 +120,7 @@ export default function FormResetPassword() {
             />
 
             <Button
-              classNameBtn="w-full bg-indigo-600 hover:bg-indigo-700 text-white py-4 rounded-2xl font-bold shadow-lg shadow-indigo-200 dark:shadow-indigo-500/30 transition-all flex justify-center items-center gap-2"
+              classNameBtn="w-full bg-orange-600 hover:bg-orange-700 text-white py-4 rounded-2xl font-bold shadow-lg shadow-orange-200 dark:shadow-orange-500/30 transition-all flex justify-center items-center gap-2"
               icon={faKey}
               type="submit"
               disabled={loading}

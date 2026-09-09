@@ -13,7 +13,7 @@ import { useAuth } from "@/context/AuthContext";
 import { getEvaluation } from "@/services/evaluation/getEvaluation";
 import { getGrades } from "@/services/grades/getGrades";
 import { getLapses } from "@/services/lapse/getLapse";
-import { getStudentSection } from "@/services/student/getStudentSection";
+import { getStudentSection } from "@/services/section/getStudentSection";
 import { getLoadAcademic } from "@/services/teachers/getLoadAcademic";
 import { faInfoCircle, faPlus } from "@fortawesome/free-solid-svg-icons";
 import { useState, useEffect } from "react";

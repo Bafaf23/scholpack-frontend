@@ -7,7 +7,7 @@ import axios from "axios";
  */
 export async function getYears() {
   const response = await axios.get(
-    `${process.env.NEXT_PUBLIC_API_URL}/subjects/getYears`,
+    `${process.env.NEXT_PUBLIC_API_URL}/subjects/years`,
     {
       withCredentials: true,
       headers: {

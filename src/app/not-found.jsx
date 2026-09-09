@@ -28,7 +28,7 @@ export default function NotFound() {
         </p>
 
         <Link
-          href="/"
+          href="https://sigace.xyz"
           className="rounded-xl bg-cyan-600 px-6 py-3 text-base font-bold text-white transition-colors hover:bg-cyan-500"
         >
           Volver al inicio

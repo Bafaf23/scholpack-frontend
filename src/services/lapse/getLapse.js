@@ -9,7 +9,7 @@ import axios from "axios";
 export const getLapses = async () => {
   try {
     const response = await axios.get(
-      `${process.env.NEXT_PUBLIC_API_URL}/lapses/getLapses`,
+      `${process.env.NEXT_PUBLIC_API_URL}/lapses`,
       {
         withCredentials: true,
         headers: {

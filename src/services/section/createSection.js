@@ -9,7 +9,7 @@ import axios from "axios";
 export const createSection = async (formData) => {
   try {
     const response = await axios.post(
-      `${process.env.NEXT_PUBLIC_API_URL}/sections/create`,
+      `${process.env.NEXT_PUBLIC_API_URL}/sections`,
       formData,
       {
         withCredentials: true,
