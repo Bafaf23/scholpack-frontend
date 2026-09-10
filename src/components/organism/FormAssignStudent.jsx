@@ -10,6 +10,7 @@ export default function FormAssignStudent({
   students,
   period,
   id_section,
+  idYear,
   onSuccess,
   mode = "inscrip",
 }) {
@@ -18,7 +19,8 @@ export default function FormAssignStudent({
     id_student: "",
     id_section: id_section,
     id_period: period,
-    status: "Activo",
+    id_year: idYear,
+    status: "activo",
   });
 
   const handleSubmit = async (e) => {
@@ -52,7 +54,8 @@ export default function FormAssignStudent({
       id_student: "",
       id_section: id_section,
       id_period: period,
-      status: "Activo",
+      id_year: idYear,
+      status: "activo",
     });
     onSuccess?.();
     setLoading(false);
@@ -63,7 +66,7 @@ export default function FormAssignStudent({
         label={"Seleciona un Estudiante"}
         options={students?.map((s) => ({
           value: s.id,
-          label: `${s.document} - ${s.name} ${s.last_name}`,
+          label: `${s.user.id_card} - ${s.user.name} ${s.user.last_name}`,
         }))}
         value={dataForm.id_student}
         onChange={(e) =>

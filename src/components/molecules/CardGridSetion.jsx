@@ -42,23 +42,25 @@ export default function CardGridSetion({
     <div className="grid gap-5 p-3 md:grid-cols-1 lg:grid-cols-2">
       {dataSet.map((section) => {
         // Formateamos el nombre del docente guía de manera limpia
-        const teacherName = section.teacher_name
-          ? `${section.teacher_name} ${section.teacher_last_name || ""}`.trim()
+        const teacherName = section.guide
+          ? `${section.guide.name} ${section.guide.last_name || ""}`.trim()
           : "No asignado";
 
         return (
           <CardSecction
             id={section.id}
             key={section.id}
-            grade={section.year_name}
-            identifier={section.name}
+            grade={section.name}
+            identifier={section.nomenclature}
             teacher={teacherName}
-            current={section.current ?? section.total_students ?? 0} // Usa la cuenta de la consulta en paralelo o fallback
+            idTeacher={section.guide.document}
+            current={section.students.length}
             max={section.capacity || 35}
             availableStudents={availableStudents}
             period={period}
+            idYearSection={section.year_id}
             id_section={section.id}
-            sectionStudents={section.sectionStudents || []}
+            sectionStudents={section.students || []}
             preinscriptionStudent={preinscriptionStudent}
           />
         );

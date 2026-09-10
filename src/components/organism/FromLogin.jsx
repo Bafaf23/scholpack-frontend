@@ -126,7 +126,7 @@ export default function FromLogin({ schoolName }) {
               onChange={handleChange}
             />
           ) : (
-            <div>
+            <div className="space-y-3">
               <Input
                 label="Correo Electrónico"
                 name="email"

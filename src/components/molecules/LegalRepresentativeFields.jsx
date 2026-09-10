@@ -22,8 +22,8 @@ const LegalRepresentativeFields = ({ datos, manejarCambio }) => {
   ];
 
   const dniType = [
-    { value: "V-", label: "Venezolano" },
-    { value: "E-", label: "Extranjero" },
+    { value: "V", label: "Venezolano" },
+    { value: "E", label: "Extranjero" },
   ];
 
   return (

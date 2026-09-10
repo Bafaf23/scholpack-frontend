@@ -8,7 +8,7 @@ import axios from "axios";
 export const createEnrollment = async (formData) => {
   try {
     const response = await axios.post(
-      `${process.env.NEXT_PUBLIC_API_URL}/enrollments/create`,
+      `${process.env.NEXT_PUBLIC_API_URL}/enrollments/`,
       formData,
       {
         withCredentials: true,

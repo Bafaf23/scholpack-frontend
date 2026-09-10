@@ -19,11 +19,14 @@ import {
   faShoePrints,
   faEdit,
   faSocks,
+  faHeading,
 } from "@fortawesome/free-solid-svg-icons";
 import { getPeriodStudent } from "@/services/academicPeriod/getPeriodStudent";
 import { getSubjectPending } from "@/services/subject/getSubjectPending";
 import { useParams, useRouter } from "next/navigation";
 import { useState, useEffect } from "react";
+import { faWineGlass } from "@fortawesome/free-solid-svg-icons/faWineGlass";
+import { faHeader } from "@fortawesome/free-solid-svg-icons/faHeader";
 
 export default function StudentRecords() {
   const { id } = useParams();
@@ -131,7 +134,7 @@ export default function StudentRecords() {
             </h3>
             <div className="flex gap-3 items-center">
               <h1 className="text-2xl font-black text-slate-800 uppercase mt-1">
-                {student.name} {student.last_name}
+                {student.studentInfo.firstName} {student.studentInfo.lastName}
               </h1>
               <Button
                 onClick={() => setIsOpen(true)}
@@ -141,7 +144,7 @@ export default function StudentRecords() {
             </div>
             <div className="flex flex-wrap gap-3 items-center mt-2">
               <p className="text-slate-500 font-medium text-sm">
-                {student.document || "Sin Cédula"}
+                {student.studentInfo.idCard || "Sin Cédula"}
               </p>
 
               {/* Tallas de uniforme */}
@@ -149,13 +152,13 @@ export default function StudentRecords() {
                 <div className="flex gap-1 items-center">
                   <Icon icon={faShirt} className="text-sm text-orange-500" />
                   <span className="text-xs font-bold text-slate-600">
-                    {student.shirt_size}
+                    {student.physicalProfile.sizes.shirt}
                   </span>
                 </div>
                 <div className="flex gap-1 items-center">
                   <Icon icon={faSocks} className="text-sm text-blue-500" />
                   <span className="text-xs font-bold text-slate-600">
-                    {student.pants_size}
+                    {student.physicalProfile.sizes.pants}
                   </span>
                 </div>
                 <div className="flex gap-1 items-center">
@@ -164,7 +167,19 @@ export default function StudentRecords() {
                     className="text-sm text-green-500"
                   />
                   <span className="text-xs font-bold text-slate-600">
-                    {student.shoe_size}
+                    {student.physicalProfile.sizes.shoes}
+                  </span>
+                </div>
+                <div className="flex gap-1 items-center">
+                  <Icon icon={faWineGlass} className="text-sm text-green-500" />
+                  <span className="text-xs font-bold text-slate-600">
+                    {student.physicalProfile.weight}
+                  </span>
+                </div>
+                <div className="flex gap-1 items-center">
+                  <Icon icon={faHeading} className="text-sm text-green-500" />
+                  <span className="text-xs font-bold text-slate-600">
+                    {student.physicalProfile.height}
                   </span>
                 </div>
               </div>
@@ -177,7 +192,7 @@ export default function StudentRecords() {
           <span className="text-[10px] font-bold text-slate-400 uppercase tracking-wider mb-1">
             Estatus del Estudiante
           </span>
-          {student.condition === "Repitiente" ? (
+          {student.condition === "repitiente" ? (
             <span className="inline-flex items-center px-3 py-1 rounded-full text-xs font-black bg-red-100 text-red-700 border border-red-200 uppercase tracking-wide">
               Repitiente (Mismo Año)
             </span>
@@ -204,7 +219,7 @@ export default function StudentRecords() {
                 Año
               </label>
               <span className="text-sm font-bold text-white uppercase block mt-0.5">
-                {student.name_year || "Sin Asignar"}
+                {student.enrolment || "Sin Asignar"}
               </span>
             </div>
             <div>
@@ -212,7 +227,7 @@ export default function StudentRecords() {
                 Sección
               </label>
               <span className="text-sm font-bold text-white uppercase block mt-0.5">
-                {student.name_section || "Sin Asignar"}
+                {student.enrolment || "Sin Asignar"}
               </span>
             </div>
           </div>
@@ -223,7 +238,7 @@ export default function StudentRecords() {
                 Matrícula Escolar
               </label>
               <span className="text-xs font-bold text-slate-700 block mt-0.5">
-                {student.tuition_number || "No asignado"}
+                {student.tuitionNumber || "No asignado"}
               </span>
             </div>
             <div>
@@ -231,7 +246,7 @@ export default function StudentRecords() {
                 SIG del Plantel
               </label>
               <span className="text-xs font-bold text-cyan-500 block mt-0.5">
-                {student.SIG || "N/A"}
+                {student.school.SIG || "N/A"}
               </span>
             </div>
           </div>

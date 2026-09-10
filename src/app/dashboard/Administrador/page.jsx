@@ -40,16 +40,15 @@ export default function AdminPage() {
         setDataLoading(true);
 
         // Despacho síncrono de promesas en el canal de red
-        const [/* studentsRes */ teachersRes, subjectsRes, sectionsRes] =
-          await Promise.all([
-            /* getStudents(), */
-            getTeachersAll(),
-            getSubjects(),
-            getSection(user.user.id_period),
-          ]);
-        const students = await getStudents();
-        // Adaptación defensiva: lee .data si viene de la API unificada, o el array directo si el service lo mapea
-        const studentsList = students?.data;
+        const [teachersRes, subjectsRes, sectionsRes] = await Promise.all([
+          getTeachersAll(),
+          getSubjects(),
+          getSection(),
+        ]);
+
+        const students = /* await getStudents() */ [];
+
+        const studentsList = students?.data || [];
         const teachersList = teachersRes?.data;
         const subjectsList = subjectsRes?.data;
         const sectionsList = sectionsRes?.data;
@@ -59,7 +58,7 @@ export default function AdminPage() {
           (subject, index, self) =>
             self.findIndex((s) => s.name === subject.name) === index,
         );
-
+        console.log(sectionsList);
         // Actualizaciones de estado agrupadas con React 18 Transition para mantener fluida la UI
         startTransition(() => {
           setStudentCount(studentsList.length);

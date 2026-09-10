@@ -26,7 +26,7 @@ export default function FormInscrip({ mode, student, onSuccess }) {
   const [formData, setFormData] = useState({
     id_student: student?.id_student || "",
     id_user: student?.id_user || "",
-    documentType: "V-",
+    documentType: "V",
     document: student?.document || "",
     name: student?.name || "",
     lastName: student?.last_name || "",
@@ -46,7 +46,7 @@ export default function FormInscrip({ mode, student, onSuccess }) {
 
     year: student?.id_year || "",
     section: student?.id_section || "",
-    role_id: 2,
+    role_id: 4,
 
     allergies: student?.allergies || "",
     shirtSize: student?.shirt_size || "",
@@ -65,7 +65,6 @@ export default function FormInscrip({ mode, student, onSuccess }) {
     repEmail: student?.rep_email || "",
   });
 
-  // 💡 Dinamismo de pasos totales corregido
   const totalSteps = mode === "edit" ? 2 : formData.isNewEntry ? 5 : 4;
 
   const handleChange = (e) => {
@@ -89,6 +88,7 @@ export default function FormInscrip({ mode, student, onSuccess }) {
         "Por favor, rellena los campos obligatorios del estudiante.",
       );
     }
+    console.log(formData);
 
     if (
       mode !== "edit" &&

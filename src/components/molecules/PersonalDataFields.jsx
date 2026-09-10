@@ -16,13 +16,13 @@ import SelectorInput from "./SelectorInput";
 
 const PersonalDataFields = ({ datos, manejarCambio, mode }) => {
   const documentType = [
-    { value: "V-", label: "Venezolano" },
-    { value: "CE-", label: "Cedula Estudiantil" },
+    { value: "V", label: "Venezolano" },
+    { value: "CE", label: "Cedula Estudiantil" },
   ];
 
   const genderSel = [
-    { label: "Femenino", value: "Femenino" },
-    { label: "Masculino", value: "Masculino" },
+    { label: "Femenino", value: "F" },
+    { label: "Masculino", value: "M" },
   ];
 
   const handleToggle = (e) => {

@@ -3,7 +3,6 @@ import axios from "axios";
 /**
  * Obtener las secciones de los estudiantes
  * @param {number} id_section- El ID de la section
- * @param {string} SIG codigo unico del colegio
  * @returns {Promise<Array>} - Las secciones de los estudiantes
  */
 export const getStudentSection = async (id_section) => {
