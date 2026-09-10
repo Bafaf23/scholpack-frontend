@@ -8,7 +8,7 @@ import axios from "axios";
 export const createLoad = async (formData) => {
   try {
     const response = await axios.post(
-      `${process.env.NEXT_PUBLIC_API_URL}/loadAcademic/create`,
+      `${process.env.NEXT_PUBLIC_API_URL}/loadAcademic/`,
       formData,
       {
         withCredentials: true,

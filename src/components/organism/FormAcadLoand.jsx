@@ -72,7 +72,7 @@ export default function FormAcadLoand({
           id={"subjectId"}
           options={subjects.map((su) => ({
             value: su.code_subject,
-            label: `${su.name} - ${su.year_name}`,
+            label: `${su.name} - ${su.year.name}`,
           }))}
           onChange={(e) =>
             setFormData({ ...formData, subjectId: e.target.value })
@@ -83,8 +83,8 @@ export default function FormAcadLoand({
           label={"Seleciona un profesor"}
           id={"teacherId"}
           options={teachers.map((teacher) => ({
-            value: teacher.id_teacher,
-            label: `${teacher.document} - ${teacher.name} ${teacher.last_name}`,
+            value: teacher.id,
+            label: `${teacher.user.id_card} - ${teacher.user.name} ${teacher.user.last_name}`,
           }))}
           name="teacherId"
           value={formData.teacherId}
@@ -99,7 +99,7 @@ export default function FormAcadLoand({
           id={"sectionId"}
           options={sections.map((sect) => ({
             value: sect.id,
-            label: `${sect.year_name} - ${sect.name}`,
+            label: `${sect.name} - ${sect.nomenclature}`,
           }))}
           name="sectionId"
           value={formData.sectionId}

@@ -93,27 +93,28 @@ export default function ControlSecciones() {
         seccionesData.map(async (seccion) => {
           try {
             const studentsRes = await getStudentSection(seccion.id);
-            const estudiantesDeLaSeccion = studentsRes?.data;
 
-            const isList = Array.isArray(estudiantesDeLaSeccion);
-            return estudiantesDeLaSeccion;
+            // Extraer la lista de estudiantes de forma segura
+            const estudiantesDeLaSeccion = studentsRes.data.students;
 
-            /* {
+            return {
               ...seccion,
-              sectionStudents: isList ? estudiantesDeLaSeccion : [],
-              current: isList ? estudiantesDeLaSeccion.length : 0,
-            }; */
+              students: estudiantesDeLaSeccion, // Proporciona la propiedad 'students' que espera CardGridSetion
+              current: estudiantesDeLaSeccion.length, // Se calcula dinámicamente según la cantidad real
+            };
           } catch (error) {
             console.error(
               `❌ [SIGACE UI]: Error cargando estudiantes de sección ${seccion.id}:`,
               error,
             );
-            return { ...seccion, sectionStudents: [], current: 0 };
+            return {
+              ...seccion,
+              students: [],
+              current: 0,
+            };
           }
         }),
       );
-
-      console.log(sections);
 
       startTransition(() => {
         setSections(seccionesConEstudiantes);
@@ -123,7 +124,6 @@ export default function ControlSecciones() {
     } finally {
       setSectionsLoading(false);
     }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [period]);
 
   useEffect(() => {

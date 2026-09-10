@@ -177,14 +177,15 @@ export default function GestionDocentesPage() {
                 </td>
                 <td className="px-6 py-4">
                   <div className="flex flex-wrap gap-1.5 max-w-xs">
-                    {teacher.academic_load &&
-                    teacher.academic_load.length > 0 ? (
-                      teacher.academic_load.map((subject, index) => (
+                    {teacher.load_academics &&
+                    teacher.load_academics.length > 0 ? (
+                      teacher.load_academics.map((subject, index) => (
                         <span
                           key={index}
                           className="inline-flex items-center rounded-lg bg-indigo-500/10 px-2 py-1 text-xs font-medium text-indigo-600 dark:text-indigo-400 border border-indigo-500/20"
                         >
-                          {subject.subject_name} ({subject.code_subject})
+                          {subject.section?.year?.name} {subject.section?.name}{" "}
+                          ({subject.subject?.name})
                         </span>
                       ))
                     ) : (

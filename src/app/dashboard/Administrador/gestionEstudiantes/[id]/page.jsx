@@ -4,7 +4,6 @@ import Loading from "@/app/loading";
 import Button from "@/components/atom/Button";
 import Icon from "@/components/atom/Icon";
 import AcademicRecord from "@/components/organism/AcademicRecord";
-import { useAuth } from "@/context/AuthContext";
 import { getRecordStudent } from "@/services/student/getRecordStudent";
 import { getStudentByI } from "@/services/student/getStudentById";
 import Modal from "@/components/organism/Modal";
@@ -18,15 +17,14 @@ import {
   faShirt,
   faShoePrints,
   faEdit,
-  faSocks,
-  faHeading,
+  faTag,
+  faWeightHanging,
+  faRulerVertical,
 } from "@fortawesome/free-solid-svg-icons";
 import { getPeriodStudent } from "@/services/academicPeriod/getPeriodStudent";
 import { getSubjectPending } from "@/services/subject/getSubjectPending";
 import { useParams, useRouter } from "next/navigation";
 import { useState, useEffect } from "react";
-import { faWineGlass } from "@fortawesome/free-solid-svg-icons/faWineGlass";
-import { faHeader } from "@fortawesome/free-solid-svg-icons/faHeader";
 
 export default function StudentRecords() {
   const { id } = useParams();
@@ -35,7 +33,7 @@ export default function StudentRecords() {
   const [student, setStudent] = useState(null);
   const [pendingSubjects, setPendingSubjects] = useState([]);
   const [isOpen, setIsOpen] = useState(false);
-  const [periodStudent, setPeriodStudent] = useState([]);
+  const [periodStudent, setPeriodStudent] = useState(null);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
@@ -47,36 +45,43 @@ export default function StudentRecords() {
 
         const studentPromise = getStudentByI(id);
         const recordPromise = getRecordStudent(id);
-        const perioidStudentPromise = getPeriodStudent(id);
-        const getPendingSubejtc = getSubjectPending(id);
+        const periodStudentPromise = getPeriodStudent(id);
+        const pendingSubjectsPromise = getSubjectPending(id);
 
-        const [resStudent, dataPeriodStudnet, dataSubejcPending, dataRecord] =
+        const [resStudent, dataPeriodStudent, dataSubjectPending, dataRecord] =
           await Promise.all([
             studentPromise,
-            perioidStudentPromise,
-            getPendingSubejtc,
+            periodStudentPromise,
+            pendingSubjectsPromise,
             recordPromise,
           ]);
 
-        if (dataRecord) {
+        if (resStudent?.data) {
+          setStudent(resStudent.data);
+        } else if (dataRecord?.data) {
           setStudent(dataRecord.data);
         }
 
-        if (resStudent) {
-          setStudent(resStudent.data);
+        if (dataPeriodStudent?.data) {
+          setPeriodStudent(
+            Array.isArray(dataPeriodStudent.data)
+              ? dataPeriodStudent.data[0]
+              : dataPeriodStudent.data,
+          );
         }
 
-        if (dataPeriodStudnet) {
-          setPeriodStudent(dataPeriodStudnet.data[0]);
-        }
-
-        if (dataSubejcPending) {
-          setPendingSubjects(dataSubejcPending.data.pending[0]);
+        if (dataSubjectPending?.data?.pending) {
+          setPendingSubjects(
+            Array.isArray(dataSubjectPending.data.pending)
+              ? dataSubjectPending.data.pending
+              : [],
+          );
         }
       } catch (error) {
         console.error("❌ Error al cargar expediente del estudiante:", error);
+      } finally {
+        setLoading(false);
       }
-      setLoading(false);
     };
 
     allStudentData();
@@ -105,7 +110,16 @@ export default function StudentRecords() {
       </section>
     );
   }
-  console.log(periodStudent);
+
+  const profile = student?.physicalProfile || {};
+  const sizes = profile.sizes || {};
+
+  const shirtSize = sizes.shirt || "-";
+  const pantsSize = sizes.pants || "-";
+  const shoesSize = sizes.shoes || "-";
+  const weight = profile.weight ? `${profile.weight} kg` : "-";
+  const height = profile.height ? `${profile.height} cm` : "-";
+
   return (
     <div className="max-w-7xl mx-auto p-5 space-y-6">
       <Button
@@ -119,10 +133,10 @@ export default function StudentRecords() {
       {/* Modal Edit */}
       <Modal
         isOpen={isOpen}
-        onClose={() => setIsOpen(!isOpen)}
-        title={"Editar Información del Estudiante"}
+        onClose={() => setIsOpen(false)}
+        title="Editar Información del Estudiante"
       >
-        <FormInscrip mode={"edit"} student={student} />
+        <FormInscrip mode="edit" student={student} />
       </Modal>
 
       {/* HEADER DEL ESTUDIANTE */}
@@ -134,7 +148,7 @@ export default function StudentRecords() {
             </h3>
             <div className="flex gap-3 items-center">
               <h1 className="text-2xl font-black text-slate-800 uppercase mt-1">
-                {student.studentInfo.firstName} {student.studentInfo.lastName}
+                {student.studentInfo?.firstName} {student.studentInfo?.lastName}
               </h1>
               <Button
                 onClick={() => setIsOpen(true)}
@@ -144,42 +158,68 @@ export default function StudentRecords() {
             </div>
             <div className="flex flex-wrap gap-3 items-center mt-2">
               <p className="text-slate-500 font-medium text-sm">
-                {student.studentInfo.idCard || "Sin Cédula"}
+                {student.studentInfo?.idCard || "Sin Cédula"}
               </p>
 
               {/* Tallas de uniforme */}
-              <div className="bg-slate-50 border border-slate-200 rounded-xl px-3 py-1 flex gap-3">
-                <div className="flex gap-1 items-center">
-                  <Icon icon={faShirt} className="text-sm text-orange-500" />
-                  <span className="text-xs font-bold text-slate-600">
-                    {student.physicalProfile.sizes.shirt}
+              <div className="flex flex-wrap items-center gap-3 rounded-xl border border-slate-200 bg-slate-50/80 px-3 py-1.5 dark:border-slate-800 dark:bg-slate-800/40">
+                {/* Camisa */}
+                <div
+                  className="flex items-center gap-1.5"
+                  title="Talla de Camisa"
+                >
+                  <Icon icon={faShirt} className="text-xs text-amber-500" />
+                  <span className="text-xs font-bold text-slate-700 dark:text-slate-300">
+                    {shirtSize}
                   </span>
                 </div>
-                <div className="flex gap-1 items-center">
-                  <Icon icon={faSocks} className="text-sm text-blue-500" />
-                  <span className="text-xs font-bold text-slate-600">
-                    {student.physicalProfile.sizes.pants}
+
+                {/* Pantalón */}
+                <div
+                  className="flex items-center gap-1.5"
+                  title="Talla de Pantalón"
+                >
+                  <Icon icon={faTag} className="text-xs text-indigo-500" />
+                  <span className="text-xs font-bold text-slate-700 dark:text-slate-300">
+                    {pantsSize}
                   </span>
                 </div>
-                <div className="flex gap-1 items-center">
+
+                {/* Calzado */}
+                <div
+                  className="flex items-center gap-1.5"
+                  title="Talla de Calzado"
+                >
                   <Icon
                     icon={faShoePrints}
-                    className="text-sm text-green-500"
+                    className="text-xs text-emerald-500"
                   />
-                  <span className="text-xs font-bold text-slate-600">
-                    {student.physicalProfile.sizes.shoes}
+                  <span className="text-xs font-bold text-slate-700 dark:text-slate-300">
+                    {shoesSize}
                   </span>
                 </div>
-                <div className="flex gap-1 items-center">
-                  <Icon icon={faWineGlass} className="text-sm text-green-500" />
-                  <span className="text-xs font-bold text-slate-600">
-                    {student.physicalProfile.weight}
+
+                <div className="h-3 w-px bg-slate-200 dark:bg-slate-700" />
+
+                {/* Peso */}
+                <div className="flex items-center gap-1.5" title="Peso">
+                  <Icon
+                    icon={faWeightHanging}
+                    className="text-xs text-cyan-500"
+                  />
+                  <span className="text-xs font-bold text-slate-700 dark:text-slate-300">
+                    {weight}
                   </span>
                 </div>
-                <div className="flex gap-1 items-center">
-                  <Icon icon={faHeading} className="text-sm text-green-500" />
-                  <span className="text-xs font-bold text-slate-600">
-                    {student.physicalProfile.height}
+
+                {/* Estatura */}
+                <div className="flex items-center gap-1.5" title="Estatura">
+                  <Icon
+                    icon={faRulerVertical}
+                    className="text-xs text-rose-500"
+                  />
+                  <span className="text-xs font-bold text-slate-700 dark:text-slate-300">
+                    {height}
                   </span>
                 </div>
               </div>
@@ -198,7 +238,7 @@ export default function StudentRecords() {
             </span>
           ) : (
             <span className="inline-flex items-center px-3 py-1 rounded-full text-xs font-black bg-emerald-100 text-emerald-700 border border-emerald-200 uppercase tracking-wide">
-              {student.condition} / Activo
+              {student.condition || "Regular"} / Activo
             </span>
           )}
         </div>
@@ -219,7 +259,7 @@ export default function StudentRecords() {
                 Año
               </label>
               <span className="text-sm font-bold text-white uppercase block mt-0.5">
-                {student.enrolment || "Sin Asignar"}
+                {student.enrolment?.year || student.enrolment || "Sin Asignar"}
               </span>
             </div>
             <div>
@@ -227,7 +267,7 @@ export default function StudentRecords() {
                 Sección
               </label>
               <span className="text-sm font-bold text-white uppercase block mt-0.5">
-                {student.enrolment || "Sin Asignar"}
+                {student.enrolment?.section || "Sin Asignar"}
               </span>
             </div>
           </div>
@@ -246,7 +286,7 @@ export default function StudentRecords() {
                 SIG del Plantel
               </label>
               <span className="text-xs font-bold text-cyan-500 block mt-0.5">
-                {student.school.SIG || "N/A"}
+                {student.school?.SIG || "N/A"}
               </span>
             </div>
           </div>
@@ -283,7 +323,7 @@ export default function StudentRecords() {
                     const isPassed = finalGrade >= 10;
                     return (
                       <tr
-                        key={index}
+                        key={subject.id || index}
                         className="border-b border-slate-100 hover:bg-slate-50/50 transition-colors"
                       >
                         <td className="p-3">

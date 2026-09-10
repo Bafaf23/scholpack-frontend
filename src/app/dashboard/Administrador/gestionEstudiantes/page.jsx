@@ -248,33 +248,37 @@ export default function GestionEstudiantesPage() {
                 </div>
               </td>
               <td className="px-6 py-4">
-                <div className="flex flex-col gap-1">
-                  {student.id_year || student.year ? (
-                    <span className="text-xs font-medium text-slate-700 dark:text-slate-300 bg-slate-100 dark:bg-slate-800 px-2 py-0.5 rounded border border-slate-200 dark:border-slate-700 w-fit">
-                      {student.year}
-                    </span>
-                  ) : (
-                    <span className="text-[10px] text-amber-600 bg-amber-500/10 px-2 py-0.5 rounded-md font-medium border border-amber-500/10 w-fit">
-                      Sin año
-                    </span>
-                  )}
-                  {student.id_section ? (
-                    <span className="text-xs font-bold text-cyan-600 dark:text-cyan-400">
-                      Sección {student.section}
-                    </span>
-                  ) : (
-                    <span className="text-[10px] text-amber-600 bg-amber-500/10 px-2 py-0.5 rounded-md font-medium border border-amber-500/10 w-fit">
-                      Sin sección
-                    </span>
-                  )}
-                </div>
+                {student.enrollments && student.enrollments.length > 0 ? (
+                  <div className="flex flex-col gap-1">
+                    {student.enrollments.map((en, index) => {
+                      const yearName = en.section?.year?.id;
+                      const sectionName = en.section?.name
+                        ? `"${en.section?.name}"`
+                        : "";
+
+                      return (
+                        <span
+                          key={en.id || index}
+                          className="w-fit rounded border border-slate-200 bg-slate-100 px-2 py-0.5 text-xs font-medium text-slate-700 dark:border-slate-700 dark:bg-slate-800 dark:text-slate-300"
+                        >
+                          {en.year?.name} - Sección &quot;{en.section?.name}
+                          &quot;
+                        </span>
+                      );
+                    })}
+                  </div>
+                ) : (
+                  <span className="text-xs text-slate-400 italic">
+                    Sin inscripción
+                  </span>
+                )}
               </td>
               <td className="px-6 py-4">
                 <div className="flex items-center gap-2">
                   {/* Comprobante de inscripción directo a la API del Back */}
-                  {student.year && student.section && (
+                  {student.enrollments && student.enrollments.length > 0 && (
                     <Link
-                      href={`${process.env.NEXT_PUBLIC_API_URL}/reports/planillaIns/${student.id}/${student.representative_id}`}
+                      href={`${process.env.NEXT_PUBLIC_API_URL}/reports/${student.id}/enrollment`}
                       target="_blank"
                     >
                       <Button
