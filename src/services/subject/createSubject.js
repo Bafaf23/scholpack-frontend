@@ -8,7 +8,7 @@ import axios from "axios";
 export async function createSubject(data) {
   try {
     const response = await axios.post(
-      `${process.env.NEXT_PUBLIC_API_URL}/subjects/create/`,
+      `${process.env.NEXT_PUBLIC_API_URL}/subjects/`,
       data,
       {
         withCredentials: true,

@@ -121,7 +121,6 @@ export default function RecordAcademico({ periodStudent, idStudent }) {
                           : "bg-emerald-50 text-emerald-600 border-emerald-200 dark:bg-emerald-950/30"
                       }`}
                     >
-                      {/* 🔥 CORRECCIÓN: Forzamos el parseo a String seguro antes del padStart */}
                       {subject.final_grade !== null
                         ? String(subject.final_grade).padStart(2, "0")
                         : "--"}

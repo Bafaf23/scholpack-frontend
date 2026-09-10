@@ -7,7 +7,7 @@ import axios from "axios";
 export async function getSubjects() {
   try {
     const response = await axios.get(
-      `${process.env.NEXT_PUBLIC_API_URL}/subjects/get`,
+      `${process.env.NEXT_PUBLIC_API_URL}/subjects`,
       {
         withCredentials: true,
         headers: {

@@ -1,7 +1,6 @@
 "use client";
 
 import Button from "@/components/atom/Button";
-import Icon from "@/components/atom/Icon";
 import SkeletonCard from "@/components/atom/SkeletonCard";
 import CardGridSetion from "@/components/molecules/CardGridSetion";
 import Banner from "@/components/atom/Banner";
@@ -18,6 +17,8 @@ import { useState, useEffect, useCallback, startTransition } from "react";
 
 export default function ControlSecciones() {
   const { user } = useAuth();
+  const [isMounted, setIsMounted] = useState(false);
+
   const [sections, setSections] = useState([]);
   const [isOpen, setIsOpen] = useState(false);
   const [students, setStudents] = useState([]);
@@ -29,7 +30,13 @@ export default function ControlSecciones() {
   // Extracción segura del periodo escolar activo
   const period = user?.user?.id_period || user?.id_period;
 
-  // Carga paralela y segura de estudiantes
+  // Sincronización estricta del lado del cliente
+  useEffect(() => {
+    // eslint-disable-next-line react-hooks/set-state-in-effect
+    setIsMounted(true);
+  }, []);
+
+  // Carga de estudiantes no inscritos y preinscripciones
   const loadStudents = useCallback(async () => {
     if (!period) return;
     setStudentsLoading(true);
@@ -40,7 +47,6 @@ export default function ControlSecciones() {
         getPreinscription({ id_period: period }),
       ]);
 
-      // Procesar Estudiantes no inscritos
       if (notEnrolledRes.status === "fulfilled") {
         const res = notEnrolledRes.value;
         const studentDataList = res?.data ?? res ?? [];
@@ -52,7 +58,6 @@ export default function ControlSecciones() {
         );
       }
 
-      // Procesar Preinscripción de forma ultra defensiva
       if (preinscriptionRes.status === "fulfilled") {
         const data = preinscriptionRes.value;
         const preList = data?.data ?? data ?? [];
@@ -70,57 +75,82 @@ export default function ControlSecciones() {
     }
   }, [period]);
 
-  // Recupera secciones y anida concurrentemente sus listas de alumnos
-  const loadSections = useCallback(() => {
+  // Carga de secciones y estudiantes asignados
+  const loadSections = useCallback(async () => {
     if (!period) return;
     setSectionsLoading(true);
 
-    getSection(period)
-      .then(async (res) => {
-        const seccionesData = res?.data ?? res ?? [];
-        if (!Array.isArray(seccionesData)) return;
+    try {
+      const res = await getSection();
+      const seccionesData = res?.data ?? res ?? [];
 
-        const seccionesConEstudiantes = await Promise.all(
-          seccionesData.map(async (seccion) => {
-            try {
-              const studentsRes = await getStudentSection(seccion.id);
-              const estudiantesDeLaSeccion =
-                studentsRes?.data ?? studentsRes ?? [];
+      if (!Array.isArray(seccionesData)) {
+        setSections([]);
+        return;
+      }
 
-              return {
-                ...seccion,
-                sectionStudents: Array.isArray(estudiantesDeLaSeccion)
-                  ? estudiantesDeLaSeccion
-                  : [],
-                current: Array.isArray(estudiantesDeLaSeccion)
-                  ? estudiantesDeLaSeccion.length
-                  : 0,
-              };
-            } catch (error) {
-              console.error(
-                `❌ [SIGACE UI]: Error cargando estudiantes de sección ${seccion.id}:`,
-                error,
-              );
-              return { ...seccion, sectionStudents: [], current: 0 };
-            }
-          }),
-        );
+      const seccionesConEstudiantes = await Promise.all(
+        seccionesData.map(async (seccion) => {
+          try {
+            const studentsRes = await getStudentSection(seccion.id);
 
-        startTransition(() => {
-          setSections(seccionesConEstudiantes);
-        });
-      })
-      .catch((err) => console.error(err))
-      .finally(() => setSectionsLoading(false));
+            // Extraer la lista de estudiantes de forma segura
+            const estudiantesDeLaSeccion = studentsRes.data.students;
+
+            return {
+              ...seccion,
+              students: estudiantesDeLaSeccion, // Proporciona la propiedad 'students' que espera CardGridSetion
+              current: estudiantesDeLaSeccion.length, // Se calcula dinámicamente según la cantidad real
+            };
+          } catch (error) {
+            console.error(
+              `❌ [SIGACE UI]: Error cargando estudiantes de sección ${seccion.id}:`,
+              error,
+            );
+            return {
+              ...seccion,
+              students: [],
+              current: 0,
+            };
+          }
+        }),
+      );
+
+      startTransition(() => {
+        setSections(seccionesConEstudiantes);
+      });
+    } catch (err) {
+      console.error("❌ [SIGACE UI]: Error al obtener secciones:", err);
+    } finally {
+      setSectionsLoading(false);
+    }
   }, [period]);
 
   useEffect(() => {
-    if (period) {
-      // eslint-disable-next-line react-hooks/set-state-in-effect
-      loadSections();
-      loadStudents();
+    let active = true;
+
+    if (isMounted && period) {
+      const fetchData = async () => {
+        if (active) {
+          await Promise.all([loadSections(), loadStudents()]);
+        }
+      };
+      fetchData();
     }
-  }, [period, loadSections, loadStudents]);
+
+    return () => {
+      active = false;
+    };
+  }, [isMounted, period, loadSections, loadStudents]);
+
+  // Si no se ha completado la hidratación inicial del navegador, se renderiza la vista por defecto
+  if (!isMounted) {
+    return (
+      <div className="p-3">
+        <SkeletonCard />
+      </div>
+    );
+  }
 
   const isGlobalLoading = sectionsLoading || studentsLoading;
 

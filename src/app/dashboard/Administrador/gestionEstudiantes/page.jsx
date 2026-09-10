@@ -87,21 +87,13 @@ export default function GestionEstudiantesPage() {
   });
 
   if (authLoading) return <Loading />;
-  if (!user || user.user.role !== "Administrador") return <AccessDenied />;
+  if (!user || user.user.role == "estudiante" || user.user.role == "profesor")
+    return <AccessDenied />;
   return (
     <div className="animate-in fade-in zoom-in-95 duration-500 ease-out">
       {/* Sección Superior: Header y Botón Crear */}
       <div className="flex flex-col sm:flex-row justify-between items-center gap-4 mb-4 p-1">
         <HeaderDashbord titelPage="Gestión de Estudiantes" />
-        <div className="w-full sm:w-auto hidden md:block">
-          <Button
-            onClick={() => setIsOpent(true)}
-            icon={faAdd}
-            classNameBtn="bg-indigo-600 hover:bg-indigo-700 transition-all p-2.5 rounded-xl text-slate-50 font-semibold cursor-pointer flex items-center justify-center gap-2 text-sm shadow-md shadow-indigo-500/10 w-full"
-          >
-            Crear Estudiante
-          </Button>
-        </div>
       </div>
 
       {/* Modales */}
@@ -133,17 +125,8 @@ export default function GestionEstudiantesPage() {
           }}
         />
       </Modal>
-      <div className="md:hidden p-3 w-full">
-        <Button
-          onClick={() => setIsOpent(true)}
-          icon={faAdd}
-          classNameBtn="bg-indigo-600 active:scale-95 transition-transform p-4 rounded-xl text-slate-50 font-bold cursor-pointer flex items-center justify-center gap-2 w-full shadow-lg shadow-indigo-500/20"
-        >
-          Crear Estudiante
-        </Button>
-      </div>
       {/* Filtros y Métricas Rápidas */}
-      <section className="p-4">
+      <section className="p-2">
         <div className="p-4 flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 bg-slate-500/5 backdrop-blur-md border border-slate-500/10 rounded-2xl mb-4">
           <div className="w-full sm:max-w-md">
             <Search
@@ -153,9 +136,23 @@ export default function GestionEstudiantesPage() {
               onSearch={handleSearch}
             />
           </div>
-          <p className="text-xs font-semibold text-slate-500 dark:text-slate-400 bg-slate-500/10 px-3 py-1.5 rounded-xl border border-slate-500/10 whitespace-nowrap">
-            Matrícula: {filteredStudents.length} de {students.length}
-          </p>
+          <div className="flex gap-3 justify-end items-center w-full">
+            <p
+              className="text-xs font-semibold text-slate-500 dark:text-slate-400 bg-slate-500/10
+            p-3 rounded-xl border border-slate-500/10 whitespace-nowrap"
+            >
+              Matrícula: {filteredStudents.length} de {students.length}
+            </p>
+            <div className="w-full md:w-auto">
+              <Button
+                onClick={() => setIsOpent(true)}
+                icon={faAdd}
+                classNameBtn="bg-indigo-600 hover:bg-indigo-700 transition-all p-3 rounded-xl text-slate-50 font-semibold cursor-pointer flex items-center justify-center gap-2 text-sm shadow-md shadow-indigo-500/10 w-full"
+              >
+                Crear Estudiante
+              </Button>
+            </div>
+          </div>
         </div>
       </section>
 
@@ -184,13 +181,13 @@ export default function GestionEstudiantesPage() {
               <td className="px-6 py-4">
                 <div className="flex flex-col gap-1.5">
                   <Link
-                    href={`/dashboard/Administrador/gestionEstudiantes/${student.id}`}
+                    href={`/dashboard/administrador/gestionEstudiantes/${student.id}`}
                     className="font-bold text-cyan-700 dark:text-cyan-400 text-xs uppercase tracking-wide border border-cyan-500/20 rounded-lg px-2.5 py-1 inline-flex items-center bg-cyan-500/10 w-fit hover:bg-cyan-500/20 transition-colors"
                   >
                     {student.tuition_number}
                   </Link>
                   <span
-                    className={`text-[10px] uppercase tracking-wider font-extrabold px-2 py-0.5 rounded-full w-fit ${student.condition === "Nuevo Ingreso" ? "bg-emerald-500/10 text-emerald-600" : "bg-rose-500/10 text-rose-600"}`}
+                    className={`text-[10px] uppercase tracking-wider font-extrabold px-2 py-0.5 rounded-full w-fit ${student.condition === "nuevo_ingreso" ? "bg-emerald-500/10 text-emerald-600" : "bg-orange-500/10 text-orange-600"}`}
                   >
                     {student.condition}
                   </span>
@@ -198,11 +195,11 @@ export default function GestionEstudiantesPage() {
               </td>
               <td className="px-6 py-4">
                 <div className="flex flex-col">
-                  <span className="text-sm font-bold text-slate-900 dark:text-slate-100 group-hover:text-indigo-600 dark:group-hover:text-indigo-400 transition-colors">
-                    {student.name} {student.last_name}
+                  <span className="text-sm font-bold text-slate-900 dark:text-slate-100 group-hover:text-cyan-600 dark:group-hover:text-indigo-400 transition-colors">
+                    {student.user.name} {student.user.last_name}
                   </span>
                   <span className="text-xs text-slate-400 font-mono mt-0.5">
-                    {student.document}
+                    {student.user.id_card}
                   </span>
                 </div>
               </td>
@@ -229,55 +226,59 @@ export default function GestionEstudiantesPage() {
               <td className="px-6 py-4 text-slate-600 dark:text-slate-400 text-sm">
                 <div className="flex flex-col">
                   <span className="font-medium">
-                    {student.phone || "Sin tlf"}
+                    {student.user.phone || "Sin tlf"}
                   </span>
-                  <span className="text-xs text-slate-400 max-w-[140px] truncate">
-                    {student.email}
+                  <span className="text-xs text-slate-400 max-w-35 truncate">
+                    {student.user.email}
                   </span>
                 </div>
               </td>
               <td className="px-6 py-4">
                 <div className="flex flex-col">
                   <span className="text-sm font-bold text-slate-800 dark:text-slate-200">
-                    {student.representative_name}{" "}
-                    {student.representative_last_name}
+                    {student.representative.name}{" "}
+                    {student.representative.last_name}
                   </span>
                   <span className="text-xs text-slate-400">
-                    {student.representative_phone}
+                    {student.representative.phone}
                   </span>
                   <span className="text-[10px] text-indigo-500 dark:text-indigo-400 font-semibold mt-0.5">
-                    ({student.representative_relationship || "Tutor"})
+                    ({student.representative.relationship || "Tutor"})
                   </span>
                 </div>
               </td>
               <td className="px-6 py-4">
-                <div className="flex flex-col gap-1">
-                  {student.id_year || student.year ? (
-                    <span className="text-xs font-medium text-slate-700 dark:text-slate-300 bg-slate-100 dark:bg-slate-800 px-2 py-0.5 rounded border border-slate-200 dark:border-slate-700 w-fit">
-                      {student.year}
-                    </span>
-                  ) : (
-                    <span className="text-[10px] text-amber-600 bg-amber-500/10 px-2 py-0.5 rounded-md font-medium border border-amber-500/10 w-fit">
-                      Sin año
-                    </span>
-                  )}
-                  {student.id_section ? (
-                    <span className="text-xs font-bold text-cyan-600 dark:text-cyan-400">
-                      Sección {student.section}
-                    </span>
-                  ) : (
-                    <span className="text-[10px] text-amber-600 bg-amber-500/10 px-2 py-0.5 rounded-md font-medium border border-amber-500/10 w-fit">
-                      Sin sección
-                    </span>
-                  )}
-                </div>
+                {student.enrollments && student.enrollments.length > 0 ? (
+                  <div className="flex flex-col gap-1">
+                    {student.enrollments.map((en, index) => {
+                      const yearName = en.section?.year?.id;
+                      const sectionName = en.section?.name
+                        ? `"${en.section?.name}"`
+                        : "";
+
+                      return (
+                        <span
+                          key={en.id || index}
+                          className="w-fit rounded border border-slate-200 bg-slate-100 px-2 py-0.5 text-xs font-medium text-slate-700 dark:border-slate-700 dark:bg-slate-800 dark:text-slate-300"
+                        >
+                          {en.year?.name} - Sección &quot;{en.section?.name}
+                          &quot;
+                        </span>
+                      );
+                    })}
+                  </div>
+                ) : (
+                  <span className="text-xs text-slate-400 italic">
+                    Sin inscripción
+                  </span>
+                )}
               </td>
               <td className="px-6 py-4">
                 <div className="flex items-center gap-2">
                   {/* Comprobante de inscripción directo a la API del Back */}
-                  {student.year && student.section && (
+                  {student.enrollments && student.enrollments.length > 0 && (
                     <Link
-                      href={`${process.env.NEXT_PUBLIC_API_URL}/reports/planillaIns/${student.id}/${student.representative_id}`}
+                      href={`${process.env.NEXT_PUBLIC_API_URL}/reports/${student.id}/enrollment`}
                       target="_blank"
                     >
                       <Button
@@ -314,8 +315,8 @@ export default function GestionEstudiantesPage() {
                     {student.tuition_number || "SIN MATRÍCULA"}
                   </span>
                   <h3 className="text-sm font-bold text-slate-800 dark:text-slate-200 capitalize mt-0.5">
-                    {student.name?.toLowerCase()}{" "}
-                    {student.last_name?.toLowerCase()}
+                    {student.user.name?.toLowerCase()}{" "}
+                    {student.user.last_name?.toLowerCase()}
                   </h3>
                 </div>
 
@@ -339,7 +340,7 @@ export default function GestionEstudiantesPage() {
               <div className="grid grid-cols-2 gap-2 text-[11px] text-slate-600 dark:text-slate-400">
                 <p>
                   <span className="text-slate-400">C.I:</span>{" "}
-                  {student.document}
+                  {student.user.id_card}
                 </p>
                 <p>
                   <span className="text-slate-400">Género:</span>{" "}
@@ -347,7 +348,7 @@ export default function GestionEstudiantesPage() {
                 </p>
                 <p className="col-span-2 truncate">
                   <span className="text-slate-400">Email:</span>{" "}
-                  {student.email || "N/A"}
+                  {student.user.email || "N/A"}
                 </p>
               </div>
 
@@ -356,14 +357,14 @@ export default function GestionEstudiantesPage() {
                   Representante Legal:
                 </p>
                 <p className="capitalize font-medium text-slate-800 dark:text-slate-200">
-                  {student.representative_name?.toLowerCase()}{" "}
-                  {student.representative_last_name?.toLowerCase()}{" "}
+                  {student.representative.name.toLowerCase()}{" "}
+                  {student.representative.last_name.toLowerCase()}{" "}
                   <span className="text-slate-400 font-normal">
                     ({student.representative_relationship || "Tutor"})
                   </span>
                 </p>
                 <p className="text-slate-500 text-[11px] mt-0.5">
-                  {student.representative_phone}
+                  {student.representative.relationship}
                 </p>
               </div>
 
@@ -377,7 +378,7 @@ export default function GestionEstudiantesPage() {
                   </span>
                 </div>
                 <span
-                  className={`px-2 py-0.5 rounded-full font-bold text-[10px] ${student.condition === "Nuevo Ingreso" ? "bg-emerald-500/10 text-emerald-600" : "bg-rose-500/10 text-rose-600"}`}
+                  className={`px-2 py-0.5 rounded-full font-bold text-[10px] ${student.condition === "nuevo_ingreso" ? "bg-emerald-500/10 text-emerald-600" : "bg-orange-500/10 text-orange-600"}`}
                 >
                   {student.condition}
                 </span>

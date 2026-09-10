@@ -2,9 +2,8 @@ import axios from "axios";
 
 /**
  * Obtener las secciones de los estudiantes
- * @param {number} id_section- El ID de la section
- * @param {string} SIG codigo unico del colegio
- * @returns {Promise<Array>} - Las secciones de los estudiantes
+ * @param {number} id_section - El ID de la sección
+ * @returns {Promise<Array>} - Las secciones de los estudiantes (retorna [] si está vacía)
  */
 export const getStudentSection = async (id_section) => {
   try {
@@ -19,6 +18,13 @@ export const getStudentSection = async (id_section) => {
     );
     return response.data;
   } catch (error) {
-    return { error: error.response.data.message };
+    // Si la sección no tiene estudiantes (status 404), retornamos un arreglo vacío
+    // para que la sección SÍ se renderice en la pantalla con 0 alumnos.
+    if (error?.response?.status === 404) {
+      return [];
+    }
+
+    // Si ocurre cualquier otro error, también devolvemos [] para no tumbar la sección
+    return [];
   }
 };

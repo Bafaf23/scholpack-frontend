@@ -40,7 +40,6 @@ export default function CargaAcademicaPage() {
         getLoad(),
       ])
         .then(([teachersRes, sectionsRes, subjectsRes, loadRes]) => {
-          // Axios + Interceptor: Si limpia el canal, extrae el array directo, sino aplica fallback defensivo
           const teachersList = teachersRes?.data ?? teachersRes ?? [];
           const sectionsList = sectionsRes?.data ?? sectionsRes ?? [];
           const subjectsList = subjectsRes?.data ?? subjectsRes ?? [];

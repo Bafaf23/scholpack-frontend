@@ -7,7 +7,7 @@ import axios from "axios";
 export const getLoad = async () => {
   try {
     const response = await axios.get(
-      `${process.env.NEXT_PUBLIC_API_URL}/loadAcademic/get`,
+      `${process.env.NEXT_PUBLIC_API_URL}/loadAcademic/`,
       {
         withCredentials: true,
         headers: {
