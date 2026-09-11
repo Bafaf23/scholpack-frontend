@@ -186,7 +186,7 @@ export default function CargarNotas() {
   if (loading || loadingPantalla) return <Loading />;
 
   const role = user?.user?.role ?? user?.role;
-  if (!user || role !== "Profesor") {
+  if (!user || role !== "profesor") {
     return <AccessDenied />;
   }
 

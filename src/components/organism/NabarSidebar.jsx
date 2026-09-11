@@ -30,17 +30,17 @@ export const menuLink = {
       icon: faHome,
       label: "Inicio",
 
-      href: `/dashboard/Profesor`,
+      href: `/dashboard/profesor`,
     },
     {
       icon: faListCheck,
       label: "Plan Evaluativo",
-      href: `/dashboard/Profesor/planEvaluativo`,
+      href: `/dashboard/profesor/planEvaluativo`,
     },
     {
       icon: faPenToSquare,
       label: "Cargas de Notas",
-      href: `/dashboard/Profesor/cargarNotas`,
+      href: `/dashboard/profesor/cargarNotas`,
     },
     /* {
       icon: faUserCheck,
