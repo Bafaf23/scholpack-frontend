@@ -56,10 +56,22 @@ export default function PlanEvaluativo() {
         toast.error(data.error);
         return;
       }
-      setSubjects(data.data);
 
-      if (data.data.length > 0) {
-        setSelectedSubject(data.data[0]);
+      const rawAcademics = data.data?.load_academics || [];
+
+      // Normalizamos la estructura para un acceso más sencillo y limpio
+      const formattedAcademics = rawAcademics.map((item) => ({
+        id_load_academic: item.id,
+        code_subject: item.subject?.code_subject,
+        name: item.subject?.name,
+        section_name: item.section?.name,
+        year_name: item.section?.year?.name,
+      }));
+
+      setSubjects(formattedAcademics);
+
+      if (formattedAcademics.length > 0) {
+        setSelectedSubject(formattedAcademics[0]);
       }
     };
 
@@ -119,9 +131,11 @@ export default function PlanEvaluativo() {
   if (loading) return <Loading />;
 
   const role = user?.user?.role ?? user?.role;
-  if (!user || role !== "Profesor") {
+  if (!user || role !== "profesor") {
     return <AccessDenied />;
   }
+
+  console.log(selectedSubject);
 
   const porcentajeTotal = evaluations
     .filter(Boolean)
@@ -179,10 +193,10 @@ export default function PlanEvaluativo() {
               <Selector
                 options={subjects.map((subject) => ({
                   value: subject.code_subject,
-                  label: `${subject.subject_name} - ${subject.year_name}`,
+                  label: `${subject.name} (${subject.year_name} "${subject.section_name}")`,
                 }))}
                 name="materia"
-                label="Materia"
+                label="Asignatura"
                 value={selectedSubject?.code_subject ?? ""}
                 onChange={(e) => {
                   const subject = subjects.find(
@@ -203,11 +217,11 @@ export default function PlanEvaluativo() {
             </div>
             <div className="flex flex-col min-w-0">
               <span className="text-xs font-medium text-slate-400 dark:text-slate-500 uppercase tracking-wider">
-                Materia
+                Asignatura
               </span>
               <span className="text-sm font-semibold text-slate-700 dark:text-slate-200 truncate italic">
                 {selectedSubject
-                  ? `${selectedSubject.subject_name} - ${selectedSubject.year_name} ${selectedSubject.section_name ?? ""}`.trim()
+                  ? `${selectedSubject.name} — ${selectedSubject.year_name} "${selectedSubject.section_name}"`
                   : "Sin materia asignada"}
               </span>
             </div>
@@ -251,7 +265,8 @@ export default function PlanEvaluativo() {
                     : "text-amber-600 dark:text-amber-500"
                 }`}
               >
-                {porcentajeTotal}%
+                {porcentajeTotal}% -{" "}
+                <span className="text-gray-300">{100 - porcentajeTotal}%</span>
               </span>
             </div>
           </div>

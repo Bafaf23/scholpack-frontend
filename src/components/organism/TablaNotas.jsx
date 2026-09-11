@@ -61,15 +61,13 @@ export default function TablaNotas({ data, students, notes, activities }) {
       <div
         className={`transition-all duration-300 ease-in-out ${
           isOpen
-            ? "max-h-[6000px] opacity-100"
+            ? "max-h-1500 opacity-100"
             : "max-h-0 overflow-hidden opacity-0"
         }`}
       >
-        {/* 🛠️ SOLUCIÓN: Definimos un max-h táctico para pantallas medianas con overflow-y-auto */}
         <div className="overflow-x-auto overflow-y-auto max-h-[70vh] scrollbar-thin pb-2">
           <table className="w-full border-collapse text-left">
             <thead>
-              {/* 📌 Cabecera pegajosa (Sticky): Al hacer scroll vertical, los títulos no se pierden */}
               <tr className="sticky top-0 z-10 border-b border-slate-200 bg-slate-50 dark:border-slate-800 dark:bg-slate-900 shadow-sm">
                 <th className="px-6 py-4 text-sm font-bold text-slate-500 dark:text-slate-400">
                   <Icon icon={faUser} className="mr-2 text-slate-400" />
@@ -77,11 +75,14 @@ export default function TablaNotas({ data, students, notes, activities }) {
                 </th>
                 {activities.map((activity, index) => (
                   <th
-                    className="px-4 py-4 text-center text-sm font-bold text-slate-500 dark:text-slate-400 min-w-[120px]"
+                    className="px-4 py-4 text-center text-sm font-bold text-slate-500 dark:text-slate-400 min-w-30"
                     key={activity.id ?? index}
                   >
-                    <span className="block text-slate-700 dark:text-slate-300 truncate max-w-[150px] mx-auto">
+                    <span className="block text-slate-700 dark:text-slate-300 truncate max-w-37.5 mx-auto">
                       {activity.activity}
+                    </span>
+                    <span className="block text-slate-500 dark:text-slate-300 truncate max-w-37.5 mx-auto">
+                      {activity.referent_teorical}
                     </span>
                     <span className="text-xs text-slate-400 block font-normal mt-0.5">
                       {activity.porcentage}%
@@ -113,7 +114,7 @@ export default function TablaNotas({ data, students, notes, activities }) {
               ) : (
                 students.map((student) => {
                   const notaDelEstudiante = notes.find(
-                    (n) => n.id_student === student.id,
+                    (n) => n.id_student === student.id_student,
                   );
 
                   const definitivaRaw = notaDelEstudiante?.final_grade;
@@ -136,7 +137,7 @@ export default function TablaNotas({ data, students, notes, activities }) {
                             {student.name} {student.last_name}
                           </span>
                           <span className="text-xs text-slate-400 font-normal mt-0.5">
-                            {student.document || `C.I: ${student.id}`}
+                            {student.id_card || `C.I: ${student.id_student}`}
                           </span>
                         </div>
                       </td>

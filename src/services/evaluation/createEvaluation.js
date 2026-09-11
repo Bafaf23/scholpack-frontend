@@ -8,7 +8,7 @@ import axios from "axios";
 export const createEvaluation = async (data) => {
   try {
     const response = await axios.post(
-      `${process.env.NEXT_PUBLIC_API_URL}/evaluations/create`,
+      `${process.env.NEXT_PUBLIC_API_URL}/evaluations/`,
       data,
       {
         withCredentials: true,

@@ -39,25 +39,34 @@ export default function CargarNotas() {
       lapse.is_active === "1",
   );
 
-  // Carga inicial: Materias del Profesor
+  // 1. Carga inicial: Materias del Profesor
   useEffect(() => {
-    if (!user?.user?.id) return;
+    const userId = user?.user?.id ?? user?.id;
+    if (!userId) return;
 
     const loadPantallaInicial = async () => {
       try {
         setLoadingPantalla(true);
         const cargaResponse = await getLoadAcademic();
-        setSubjects(cargaResponse?.data ?? []);
+
+        const rawLoads =
+          cargaResponse?.data?.load_academics ??
+          cargaResponse?.data ??
+          (Array.isArray(cargaResponse) ? cargaResponse : []);
+
+        // Guardamos el array original entregado por la API
+        setSubjects(Array.isArray(rawLoads) ? rawLoads : []);
       } catch (error) {
         console.error("Error al cargar los datos de la pantalla:", error);
       } finally {
         setLoadingPantalla(false);
       }
     };
-    loadPantallaInicial();
-  }, [user?.user?.id]);
 
-  // Carga de Lapsos de la escuela (CORREGIDO)
+    loadPantallaInicial();
+  }, [user?.user?.id, user?.id]);
+
+  // 2. Carga de Lapsos de la escuela
   useEffect(() => {
     const fetchLapses = async () => {
       const response = await getLapses();
@@ -65,7 +74,6 @@ export default function CargarNotas() {
         toast.error(response.error);
         return;
       }
-      // Accedemos a response.data que contiene el arreglo real de Momentos de SIGACE
       const rawLapses = response?.data ?? response;
       setLapses(Array.isArray(rawLapses) ? rawLapses : []);
     };
@@ -73,9 +81,10 @@ export default function CargarNotas() {
     fetchLapses();
   }, []);
 
-  // Sincronización de datos de la materia en paralelo
+  // 3. Sincronización de datos de la materia en paralelo
   useEffect(() => {
-    const idLoadAcademic = selectedSubject?.id_load_academic;
+    const idLoadAcademic = selectedSubject?.id;
+    const idSection = selectedSubject?.section?.id;
 
     if (!idLoadAcademic) {
       // eslint-disable-next-line react-hooks/set-state-in-effect
@@ -90,20 +99,26 @@ export default function CargarNotas() {
     const fetchMateriaData = async () => {
       setLoadingNotes(true);
       try {
-        const idSection = selectedSubject?.id_section;
+        const currentLapses = Array.isArray(lapses) ? lapses : [];
 
         const [gradesRes, studentsRes, activitiesRes] = await Promise.all([
           getGrades(idLoadAcademic),
           idSection ? getStudentSection(idSection) : Promise.resolve([]),
-          lapses && lapses.length > 0
+          currentLapses.length > 0
             ? Promise.all(
-                lapses.map(async (lapso) => {
+                currentLapses.map(async (lapso) => {
                   const res = await getEvaluation(idLoadAcademic, lapso.id);
-                  const rawList = Array.isArray(res) ? res : (res?.data ?? []);
+                  const rawList = Array.isArray(res)
+                    ? res
+                    : Array.isArray(res?.data)
+                      ? res.data
+                      : [];
 
                   const uniqueList = rawList.filter(
                     (item, index, self) =>
-                      self.findIndex((t) => t.id === item.id) === index,
+                      item &&
+                      item.id &&
+                      self.findIndex((t) => t?.id === item.id) === index,
                   );
 
                   return {
@@ -117,8 +132,8 @@ export default function CargarNotas() {
 
         if (!isMounted) return;
 
-        // 1. Procesar notas
-        const emptyGradesByLapse = lapses.map((lapso) => ({
+        // Procesar notas
+        const emptyGradesByLapse = currentLapses.map((lapso) => ({
           id: lapso.id,
           id_lapse: lapso.id,
           name: lapso.name,
@@ -139,29 +154,32 @@ export default function CargarNotas() {
               : [];
 
           setNotesData(
-            lapses.map((lapso) => ({
+            currentLapses.map((lapso) => ({
               id: lapso.id,
               id_lapse: lapso.id,
               name: lapso.name,
               is_active: lapso.is_active,
-              students: flatGrades.filter((g) => g.lapse_name === lapso.name),
+              students: flatGrades.filter((g) => g?.lapse_name === lapso.name),
             })),
           );
         }
 
-        // 2. Procesar Estudiantes
+        // Procesar Estudiantes
         if (studentsRes?.error) {
           toast.error(studentsRes.error);
+          setEstudiantesDisponibles([]);
         } else {
-          setEstudiantesDisponibles(
-            Array.isArray(studentsRes)
-              ? studentsRes
-              : (studentsRes?.data ?? []),
-          );
+          const studentList = Array.isArray(studentsRes)
+            ? studentsRes
+            : Array.isArray(studentsRes?.data.students)
+              ? studentsRes.data.students
+              : [];
+
+          setEstudiantesDisponibles(studentList);
         }
 
-        // 3. Guardar Evaluaciones
-        setActivities(activitiesRes);
+        // Guardar Evaluaciones
+        setActivities(Array.isArray(activitiesRes) ? activitiesRes : []);
       } catch (error) {
         console.error("Error cargando datos de la sección:", error);
         if (isMounted)
@@ -176,12 +194,7 @@ export default function CargarNotas() {
     return () => {
       isMounted = false;
     };
-  }, [
-    selectedSubject?.id_load_academic,
-    selectedSubject?.id_section,
-    refreshNotas,
-    lapses,
-  ]);
+  }, [selectedSubject?.id, selectedSubject?.section?.id, refreshNotas, lapses.length, lapses]);
 
   if (loading || loadingPantalla) return <Loading />;
 
@@ -201,17 +214,16 @@ export default function CargarNotas() {
           {subjects.length > 0 && (
             <div className="max-w-xs">
               <Selector
-                options={subjects.map((subject) => ({
-                  value: subject.code_subject,
-                  label: `${subject.subject_name} - ${subject.year_name} "${subject.section_name}"`,
+                options={subjects.map((item) => ({
+                  value: item.id.toString(),
+                  label: `${item.subject?.name ?? ""} - ${item.section?.year?.name ?? ""} "${item.section?.name ?? ""}"`,
                 }))}
                 name="materia"
                 label="Materia"
-                value={selectedSubject?.code_subject ?? ""}
+                value={selectedSubject?.id?.toString() ?? ""}
                 onChange={(e) => {
-                  const subject = subjects.find(
-                    (s) => s.code_subject === e.target.value,
-                  );
+                  const selectedId = Number(e.target.value);
+                  const subject = subjects.find((s) => s.id === selectedId);
                   if (subject) setSelectedSubject(subject);
                 }}
               />
@@ -242,7 +254,7 @@ export default function CargarNotas() {
                   }
                   onSave={() => {
                     setRefreshNotas((prev) => !prev);
-                    setIsModalOpen(false); // Cierra automáticamente el modal tras guardar exitosamente
+                    setIsModalOpen(false);
                   }}
                   onCancel={() => setIsModalOpen(false)}
                 />
