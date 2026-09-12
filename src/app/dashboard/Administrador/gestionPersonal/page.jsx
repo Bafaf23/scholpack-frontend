@@ -12,7 +12,7 @@ import TableInsti from "@/components/molecules/TableInsti";
 import FormRegister from "@/components/organism/FormRegister";
 import Modal from "@/components/organism/Modal";
 import { useAuth } from "@/context/AuthContext";
-import { getTeachersAll } from "@/services/teachers/getTeachersAll";
+import { userSchool } from "@/services/user/userSchool";
 import {
   faAdd,
   faIdCard,
@@ -24,9 +24,9 @@ import {
 } from "@fortawesome/free-solid-svg-icons";
 import { useState, useEffect, useCallback, startTransition } from "react";
 
-export default function GestionDocentesPage() {
+export default function GestionPersonalPage() {
   const [isOpen, setIsOpen] = useState(false);
-  const [teachers, setTeachers] = useState([]);
+  const [users, setUsers] = useState([]);
   const [search, setSearch] = useState("");
   const [filter, setFilter] = useState("");
 
@@ -37,13 +37,12 @@ export default function GestionDocentesPage() {
   const loadTeachers = useCallback((silent = false) => {
     if (!silent) setDataLoading(true);
 
-    getTeachersAll()
+    userSchool()
       .then((res) => {
-        // Axios + Interceptor: extrae la colección directa o aplica fallback defensivo
-        const teachersList = res?.data ?? res ?? [];
+        const users = res?.data ?? [];
 
         startTransition(() => {
-          setTeachers(teachersList);
+          setUsers(users);
         });
       })
       .catch((err) =>
@@ -73,10 +72,10 @@ export default function GestionDocentesPage() {
   };
 
   // Filtrado optimizado sobre el estado local
-  const filteredTeachers = teachers.filter((teacher) => {
-    const cedulaStr = String(teacher?.document || "");
-    const nameStr = String(teacher?.name || "");
-    const lastNameStr = String(teacher?.last_name || "");
+  const filteredUsers = users.filter((users) => {
+    const cedulaStr = String(users?.id_card || "");
+    const nameStr = String(users?.name || "");
+    const lastNameStr = String(users?.last_name || "");
     const completeTerm = `${cedulaStr} ${nameStr} ${lastNameStr}`.toLowerCase();
 
     return completeTerm.includes(filter.toLowerCase().trim());
@@ -92,9 +91,8 @@ export default function GestionDocentesPage() {
 
   return (
     <div className="animate-in fade-in zoom-in-95 duration-500 ease-out">
-      {/* Sección Superior: Header y Botón Desktop */}
       <div className="flex flex-col sm:flex-row justify-between items-center gap-4 mb-4 p-1">
-        <HeaderDashbord titelPage="Gestión de Docentes" />
+        <HeaderDashbord titelPage="Gestión de Personal" />
       </div>
 
       {/* Modal de Registro */}
@@ -150,129 +148,98 @@ export default function GestionDocentesPage() {
           <TableInsti
             titelTable={[
               { name: "Cédula", icon: faIdCard },
-              { name: "Docente", icon: faUser },
-              { name: "Carga Académica (Materias)", icon: faBuilding },
+              { name: "Nombre y apellido", icon: faUser },
+              { name: "Rol", icon: faBuilding },
               { name: "Contacto", icon: faPhone },
               { name: "Estatus", icon: faInfoCircle },
             ]}
-            data={filteredTeachers}
+            data={filteredUsers}
             // 🖥️ Vista de Escritorio (Estructura de Filas)
-            renderTableRows={(teacher) => (
+            renderTableRows={(user) => (
               <tr
-                key={teacher.id_teacher}
+                key={user.id}
                 className="transition-colors hover:bg-slate-50/50 dark:hover:bg-slate-900/30 group border-b border-slate-100 dark:border-slate-800"
               >
                 <td className="px-6 py-4 font-medium text-slate-700 dark:text-slate-300 text-sm">
-                  {teacher.user.id_card}
+                  {user.id_card}
                 </td>
                 <td className="px-6 py-4">
                   <div className="flex flex-col">
                     <span className="font-semibold text-slate-900 dark:text-slate-100 group-hover:text-indigo-600 dark:group-hover:text-indigo-400 transition-colors text-sm">
-                      {teacher.user.name} {teacher.user.last_name}
+                      {user.name} {user.last_name}
                     </span>
                     <span className="text-xs text-slate-400 font-mono mt-0.5">
-                      {teacher.SIG}
+                      {user.id || "-"}
                     </span>
                   </div>
                 </td>
                 <td className="px-6 py-4">
-                  <div className="flex flex-wrap gap-1.5 max-w-xs">
-                    {teacher.load_academics &&
-                    teacher.load_academics.length > 0 ? (
-                      teacher.load_academics.map((subject, index) => (
-                        <span
-                          key={index}
-                          className="inline-flex items-center rounded-lg bg-indigo-500/10 px-2 py-1 text-xs font-medium text-indigo-600 dark:text-indigo-400 border border-indigo-500/20"
-                        >
-                          {subject.section?.year?.name} {subject.section?.name}{" "}
-                          ({subject.subject?.name})
-                        </span>
-                      ))
-                    ) : (
-                      <span className="text-xs text-amber-600 dark:text-amber-400 bg-amber-500/10 border border-amber-500/20 px-2 py-0.5 rounded-lg font-medium italic">
-                        Sin carga asignada
-                      </span>
-                    )}
+                  <div className="flex flex-wrap gap-1.5 max-w-xs capitalize font-bold">
+                    {user.role.name}
                   </div>
                 </td>
                 <td className="px-6 py-4 text-xs text-slate-500 dark:text-slate-400">
                   <div className="flex flex-col gap-0.5">
                     <span className="font-medium text-slate-700 dark:text-slate-300">
-                      {teacher.user.phone || "Sin Teléfono"}
+                      {user.phone || "Sin Teléfono"}
                     </span>
-                    <span>{teacher.user.email}</span>
+                    <span>{user.email}</span>
                   </div>
                 </td>
                 <td className="px-6 py-4">
                   <span
                     className={`inline-flex items-center rounded-full px-2.5 py-0.5 text-xs font-medium border ${
-                      teacher.is_active
+                      user.is_active
                         ? "bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 border-emerald-500/20"
                         : "bg-rose-500/10 text-rose-600 dark:text-rose-400 border-rose-500/20"
                     }`}
                   >
-                    {teacher.is_active ? "Activo" : "Inactivo"}
+                    {user.is_active ? "Activo" : "Inactivo"}
                   </span>
                 </td>
               </tr>
             )}
             // 📱 Vista Móvil (Tarjetas Flexibles)
-            renderMovilCard={(teacher) => (
+            renderMovilCard={(user) => (
               <div
-                key={`card-teacher-${teacher.id_teacher}`}
+                key={`card-user-${user.id}`}
                 className="rounded-2xl border border-slate-100 dark:border-slate-800 bg-white dark:bg-slate-900 p-4 shadow-sm mb-3 border-dashed"
               >
                 <div className="flex items-center justify-between border-b border-slate-100 dark:border-slate-800 pb-2 mb-3">
                   <div>
                     <span className="text-[10px] font-bold text-slate-400 dark:text-slate-500 block tracking-wider">
-                      C.I. {teacher.document}
+                      C.I. {user.document}
                     </span>
                     <h3 className="text-sm font-bold text-slate-800 dark:text-slate-200">
-                      {teacher.name} {teacher.last_name}
+                      {user.name} {user.last_name}
                     </h3>
                   </div>
                   <span className="text-xs bg-indigo-500/10 text-indigo-600 dark:text-indigo-400 font-mono px-2 py-0.5 rounded-lg border border-indigo-500/10">
-                    {teacher.SIG}
+                    {user.id}
                   </span>
                 </div>
                 <div className="space-y-3 text-xs text-slate-600 dark:text-slate-400">
-                  <div>
-                    <strong className="text-slate-400 dark:text-slate-500 block mb-1 font-medium">
-                      Materias Asignadas:
-                    </strong>
-                    <div className="flex flex-wrap gap-1.5">
-                      {teacher.academic_load &&
-                      teacher.academic_load.length > 0 ? (
-                        teacher.academic_load.map((subject, i) => (
-                          <span
-                            key={i}
-                            className="bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-300 px-2 py-0.5 rounded-md text-[10px] font-medium border border-slate-200 dark:border-slate-700/60"
-                          >
-                            {subject.subject_name} ({subject.code_subject})
-                          </span>
-                        ))
-                      ) : (
-                        <span className="text-[11px] text-amber-600 dark:text-amber-400 italic">
-                          Ninguna carga activa
-                        </span>
-                      )}
-                    </div>
-                  </div>
-                  <div className="flex justify-between items-center pt-1 text-[11px] border-t border-slate-100 dark:border-slate-800/60">
+                  <div className="flex justify-between items-center pt-1 text-[11px]">
+                    <p>
+                      <strong className="text-slate-400 dark:text-slate-500">
+                        Email:
+                      </strong>{" "}
+                      {user.email || "No registrado"}
+                    </p>
                     <p>
                       <strong className="text-slate-400 dark:text-slate-500">
                         Tlf:
                       </strong>{" "}
-                      {teacher.phone || "No registrado"}
+                      {user.phone || "No registrado"}
                     </p>
                     <span
                       className={`inline-flex items-center rounded-full px-2 py-0.5 text-[10px] font-medium ${
-                        teacher.is_active
+                        user.is_active
                           ? "bg-emerald-500/10 text-emerald-600"
                           : "bg-rose-500/10 text-rose-600"
                       }`}
                     >
-                      {teacher.is_active ? "Activo" : "Inactivo"}
+                      {user.is_active ? "Activo" : "Inactivo"}
                     </span>
                   </div>
                 </div>

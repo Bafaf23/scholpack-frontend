@@ -94,8 +94,8 @@ export const menuLink = {
 
     {
       icon: faUserPlus,
-      label: "Gestion de Docentes",
-      href: "/dashboard/administrador/gestionDocentes",
+      label: "Gestion de Personal",
+      href: "/dashboard/administrador/gestionPersonal",
     },
     {
       icon: faUserGraduate,
