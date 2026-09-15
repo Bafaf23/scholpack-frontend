@@ -136,7 +136,7 @@ export default function TeachersPage() {
         </div>
 
         {/* Periodo */}
-        <div className="col-span-1">
+        <div className="col-span-2 md:col-span-1">
           <InfoCard
             label="Periodo Escolar"
             value={user?.user?.period ?? "Activo"}

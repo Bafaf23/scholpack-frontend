@@ -43,7 +43,7 @@ export default function Input({
         onWheel={(e) => e.target.blur()}
         onChange={onChange}
         placeholder={placeholder}
-        className={`relative w-full [appearance:textfield] rounded-xl border border-slate-200 bg-slate-50 px-4 py-3 transition-all placeholder:text-slate-400 focus:border-cyan-500 focus:ring-2 focus:ring-cyan-500/50 focus:outline-none dark:border-slate-500 dark:bg-slate-300 [&::-webkit-inner-spin-button]:appearance-none [&::-webkit-outer-spin-button]:appearance-none ${readOnly ? "cursor-not-allowed text-gray-400" : " text-slate-700"}`}
+        className={`relative w-full [appearance:textfield] rounded-xl border border-slate-200 bg-slate-50 px-4 py-3 transition-all placeholder:text-slate-400 focus:border-orange-500 focus:ring-2 focus:ring-orange-500/50 focus:outline-none dark:border-slate-700 dark:bg-slate-800 [&::-webkit-inner-spin-button]:appearance-none [&::-webkit-outer-spin-button]:appearance-none ${readOnly ? "cursor-not-allowed text-gray-400" : " text-slate-200"}`}
         readOnly={readOnly}
       />
     </div>

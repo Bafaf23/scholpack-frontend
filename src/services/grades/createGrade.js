@@ -8,7 +8,7 @@ import axios from "axios";
 export const createGrade = async (data) => {
   try {
     const response = await axios.put(
-      `${process.env.NEXT_PUBLIC_API_URL}/grades/uploadNote`,
+      `${process.env.NEXT_PUBLIC_API_URL}/grades/`,
       data,
       {
         withCredentials: true,

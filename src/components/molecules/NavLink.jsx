@@ -27,7 +27,7 @@ export default function NavLink({
 
   const activeStyles = active
     ? "bg-orange-500/10 font-bold text-orange-600 dark:bg-orange-500/20 dark:text-orange-400"
-    : "hover:text-gray-900 dark:text-slate-400 dark:hover:bg-slate-800 dark:hover:text-slate-200";
+    : "hover:text-gray-900 dark:text-zinc-200 dark:hover:bg-zinc-800 dark:hover:text-zinc-300";
 
   return (
     <Link

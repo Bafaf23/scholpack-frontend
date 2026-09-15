@@ -26,7 +26,7 @@ export default function FormRegister({ user, mode, onSuccess, role }) {
     email: user?.email || "",
     phone: user?.phone || "",
     SIG: user?.SIG || "",
-    role_id: Number(5),
+    role_id: Number(3),
   });
 
   const handleChange = (e) => {
@@ -37,7 +37,7 @@ export default function FormRegister({ user, mode, onSuccess, role }) {
   async function handleSubmit(e) {
     e.preventDefault();
     setLoading(true);
-    console.log(data);
+
     if (!data.email) {
       setLoading(false);
       toast.error("Los campos no pueden estar vacíos");

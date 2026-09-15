@@ -8,7 +8,7 @@ import axios from "axios";
 export async function getSchoolBySIG(SIG) {
   try {
     const response = await axios.get(
-      `${process.env.NEXT_PUBLIC_API_URL}/schools/getSchoolBySIG/${SIG}`,
+      `${process.env.NEXT_PUBLIC_API_URL}/schools/${SIG}`,
       {
         withCredentials: true,
         headers: {

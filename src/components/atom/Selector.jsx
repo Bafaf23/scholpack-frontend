@@ -20,7 +20,7 @@ export default function Selector({
   label,
   onChange,
   options = [],
-  className = "text-slate-600",
+  className = "text-slate-600 dark:text-slate-500",
   value,
 }) {
   return (
@@ -33,10 +33,9 @@ export default function Selector({
         value={value || ""}
         id={id}
         onChange={onChange}
-        className="w-full rounded-xl border border-slate-200 bg-slate-50 px-4 py-3 text-slate-700..."
+        className="w-full rounded-xl border border-slate-200 dark:border-slate-700 bg-slate-100 dark:bg-slate-800 px-4 py-3 text-slate-700 dark:text-slate-50 ..."
         required
       >
-    
         <option value="" disabled hidden>
           Seleccione una opción
         </option>

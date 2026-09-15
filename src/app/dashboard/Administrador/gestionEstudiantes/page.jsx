@@ -12,6 +12,7 @@ import SkeletonCard from "@/components/atom/SkeletonCard";
 import Modal from "@/components/organism/Modal";
 import { useAuth } from "@/context/AuthContext";
 import { getStudents } from "@/services/student/getStudents";
+import Banner from "@/components/atom/Banner";
 import {
   faAdd,
   faBook,
@@ -21,6 +22,7 @@ import {
   faCalendar,
   faUserTie,
   faAward,
+  faInfo,
 } from "@fortawesome/free-solid-svg-icons";
 import Link from "next/link";
 import { useState, useEffect, useCallback, startTransition } from "react";
@@ -78,9 +80,9 @@ export default function GestionEstudiantesPage() {
 
   // Filtrado reactivo
   const filteredStudents = students.filter((student) => {
-    const cedulaStr = String(student?.document || "");
-    const nameStr = String(student?.name || "");
-    const lastNameStr = String(student?.last_name || "");
+    const cedulaStr = String(student?.user.id_card || "");
+    const nameStr = String(student?.user.name || "");
+    const lastNameStr = String(student?.user.last_name || "");
     const completeTerm = `${cedulaStr} ${nameStr} ${lastNameStr}`.toLowerCase();
 
     return completeTerm.includes(appliedFilter.toLowerCase().trim());
@@ -125,6 +127,14 @@ export default function GestionEstudiantesPage() {
           }}
         />
       </Modal>
+
+      <div className="p-2">
+        <Banner
+          icon={faInfo}
+          titel="Más informacion"
+          message="Para saber más informacion de los estudiantes haz clik sobre el numero de la matricula"
+        />
+      </div>
       {/* Filtros y Métricas Rápidas */}
       <section className="p-2">
         <div className="p-4 flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 bg-slate-500/5 backdrop-blur-md border border-slate-500/10 rounded-2xl mb-4">

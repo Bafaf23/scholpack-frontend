@@ -13,6 +13,7 @@ import Banner from "@/components/atom/Banner";
 import { deleteSchool } from "@/services/school/deleteSchool";
 import { useState, useEffect } from "react";
 import { getSchools } from "@/services/school/getSchool";
+import { getCDDE } from "@/services/school/getCDDE";
 import { getUsers } from "@/services/user/getUsers";
 import Icon from "@/components/atom/Icon";
 import FormInstitucion from "@/components/organism/FormInstitucion";
@@ -39,19 +40,22 @@ export default function InstitucionesPage() {
   const [search, setSearch] = useState("");
   const [appliedFilter, setAppliedFilter] = useState("");
   const [isOpenEdit, setIsOpenEdit] = useState(false);
+  const [cdee, setCdde] = useState(null);
 
   useEffect(() => {
     const fetchData = async () => {
       try {
         setLoading(true);
 
-        const [schoolsRes, usersRes] = await Promise.all([
+        const [schoolsRes, usersRes, cddeRes] = await Promise.all([
           getSchools(),
           getUsers(),
+          getCDDE(),
         ]);
 
         setInstitutions(schoolsRes.data);
         setUsers(usersRes.data);
+        setCdde(cddeRes.data);
       } catch (error) {
         console.error("Error al cargar datos del panel:", error);
       } finally {
@@ -101,7 +105,7 @@ export default function InstitucionesPage() {
             onClose={() => setIsOpen(false)}
           >
             <FormInstitucion
-              directores={users.filter((user) => user.role === "director")}
+              cdde={cdee}
               onSuccess={() => {
                 setIsOpen(false);
                 fechSchool();

@@ -12,6 +12,7 @@ import TablaNotas from "@/components/organism/TablaNotas";
 import { useAuth } from "@/context/AuthContext";
 import { getEvaluation } from "@/services/evaluation/getEvaluation";
 import { getGrades } from "@/services/grades/getGrades";
+
 import { getLapses } from "@/services/lapse/getLapse";
 import { getStudentSection } from "@/services/section/getStudentSection";
 import { getLoadAcademic } from "@/services/teachers/getLoadAcademic";
@@ -54,7 +55,6 @@ export default function CargarNotas() {
           cargaResponse?.data ??
           (Array.isArray(cargaResponse) ? cargaResponse : []);
 
-        // Guardamos el array original entregado por la API
         setSubjects(Array.isArray(rawLoads) ? rawLoads : []);
       } catch (error) {
         console.error("Error al cargar los datos de la pantalla:", error);
@@ -171,7 +171,7 @@ export default function CargarNotas() {
         } else {
           const studentList = Array.isArray(studentsRes)
             ? studentsRes
-            : Array.isArray(studentsRes?.data.students)
+            : Array.isArray(studentsRes?.data?.students)
               ? studentsRes.data.students
               : [];
 
@@ -194,7 +194,37 @@ export default function CargarNotas() {
     return () => {
       isMounted = false;
     };
-  }, [selectedSubject?.id, selectedSubject?.section?.id, refreshNotas, lapses.length, lapses]);
+  }, [
+    selectedSubject?.id,
+    selectedSubject?.section?.id,
+    refreshNotas,
+    lapses.length,
+    lapses,
+  ]);
+
+  // Handler para guardar o actualizar una nota individual desde la tabla
+  const handleSaveGrade = async ({ student_id, evaluation_id, grade }) => {
+    try {
+      const response = await saveGrade({
+        student_id,
+        evaluation_id,
+        load_academic_id: selectedSubject?.id,
+        grade,
+      });
+
+      if (response?.error) {
+        toast.error(response.error);
+        throw new Error(response.error);
+      }
+
+      toast.success("Nota actualizada correctamente");
+      // Refrescar notas para recalculación inmediata de la nota definitiva
+      setRefreshNotas((prev) => !prev);
+    } catch (error) {
+      console.error("Error guardando calificación:", error);
+      throw error; // Lanza el error para que GradeInput revierta al valor anterior
+    }
+  };
 
   if (loading || loadingPantalla) return <Loading />;
 
@@ -205,12 +235,10 @@ export default function CargarNotas() {
 
   return (
     <>
-      <div className="flex flex-col items-start justify-between md:flex-row">
-        <HeaderDashbord titelPage={"Cargar notas"} />
-      </div>
+      <HeaderDashbord titelPage={"Cargar notas"} />
 
-      <div className="mt-6 flex flex-col gap-5 p-3 font-bold text-gray-500/60">
-        <div className="flex flex-col justify-between md:flex-row md:items-center lg:flex-row">
+      <div className="flex flex-col gap-5 p-3 font-bold text-gray-500/60">
+        <div className="flex flex-col justify-between md:flex-row md:items-center lg:flex-row gap-4 w-full">
           {subjects.length > 0 && (
             <div className="max-w-xs">
               <Selector
@@ -219,7 +247,7 @@ export default function CargarNotas() {
                   label: `${item.subject?.name ?? ""} - ${item.section?.year?.name ?? ""} "${item.section?.name ?? ""}"`,
                 }))}
                 name="materia"
-                label="Materia"
+                label="Asignatuira"
                 value={selectedSubject?.id?.toString() ?? ""}
                 onChange={(e) => {
                   const selectedId = Number(e.target.value);
@@ -229,18 +257,20 @@ export default function CargarNotas() {
               />
             </div>
           )}
+
           {activeLapse && selectedSubject && (
             <div>
               <Button
                 classNameBtn={
-                  "bg-indigo-500 p-2 rounded-md text-slate-50 font-bold cursor-pointer flex items-center gap-1"
+                  "bg-indigo-500 p-3 rounded-lg text-slate-50 font-bold cursor-pointer flex items-center gap-1 w-full"
                 }
                 icon={faPlus}
                 disabled={!activeLapse || !selectedSubject}
                 onClick={() => setIsModalOpen(true)}
               >
-                {"Añadir Nueva Calificación"}
+                {"Nueva Calificacion"}
               </Button>
+
               <Modal
                 isOpen={isModalOpen}
                 onClose={() => setIsModalOpen(false)}
@@ -284,6 +314,7 @@ export default function CargarNotas() {
                   (n) => n.id === lapso.id || n.id_lapse === lapso.id,
                 )?.students ?? []
               }
+              onSaveGrade={handleSaveGrade}
               key={lapso.id}
             />
           ))

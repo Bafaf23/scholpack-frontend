@@ -96,7 +96,7 @@ export default function FromLogin({ schoolName }) {
           {hasRememberedUser ? (
             <h1 className="mb-2 text-3xl font-extrabold uppercase text-transparent bg-clip-text bg-linear-to-r from-amber-600 via-orange-600 to-cyan-500 ">
               ¡{getGreeting()}!,{" "}
-              <span className="capitalize text-slate-900">
+              <span className="capitalize text-slate-900 dark:text-zinc-200">
                 {hasRememberedUser ? rememberUser.name : ""}
               </span>
             </h1>
@@ -106,7 +106,7 @@ export default function FromLogin({ schoolName }) {
             </h1>
           )}
 
-          <p className="text-sm font-medium text-slate-600 dark:text-slate-300 tracking-wide">
+          <p className="text-sm font-medium text-slate-600 dark:text-slate-200 tracking-wide">
             Ingresa al sistema de{" "}
             <span className="font-bold text-xl">
               {schoolName ? schoolName : "ADMIN SUDO"}
@@ -118,6 +118,7 @@ export default function FromLogin({ schoolName }) {
         <form onSubmit={handleSubmit} className="space-y-3">
           {hasRememberedUser ? (
             <InputPass
+            
               label="Contraseña"
               name="password"
               type="password"

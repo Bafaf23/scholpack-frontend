@@ -151,7 +151,7 @@ export default function PlanEvaluativo() {
   };
 
   return (
-    <>
+    <div className="p-2">
       <div className="flex flex-col items-start justify-between md:flex-row">
         <HeaderDashbord titelPage={"Plan Evaluativo"} />
         <div className="p-3">
@@ -186,10 +186,10 @@ export default function PlanEvaluativo() {
         </div>
       </div>
 
-      <div className="mt-6 flex flex-col gap-5 p-3 font-bold text-gray-500/60">
+      <div className=" flex flex-col gap-5  font-bold text-gray-500/60">
         <div className="flex flex-col justify-between md:flex-row md:items-center lg:flex-row">
           {subjects.length > 1 && (
-            <div className="max-w-xs">
+            <div className="p-2">
               <Selector
                 options={subjects.map((subject) => ({
                   value: subject.code_subject,
@@ -209,7 +209,7 @@ export default function PlanEvaluativo() {
           )}
         </div>
 
-        <div className="px-3 grid grid-cols-2 lg:grid-cols-3 gap-3">
+        <div className="p-2 grid grid-cols-2 lg:grid-cols-3 gap-3">
           {/* Tarjeta: Materia */}
           <div className="flex items-center gap-3 bg-white dark:bg-slate-800/60 rounded-xl p-3 border border-slate-200/80 dark:border-slate-700/50 shadow-sm transition-all">
             <div className="p-2 bg-cyan-50 dark:bg-cyan-950/40 rounded-lg text-cyan-600 dark:text-cyan-400 flex items-center justify-center">
@@ -284,7 +284,6 @@ export default function PlanEvaluativo() {
             { name: "Acciones", icon: faEllipsis },
           ]}
           renderTableRows={(row) => (
-            // 🌟 CORREGIDO: Usar row.id como key única de la fila de evaluación
             <tr
               key={row.id || row.id_evaluation}
               className="transition-colors text-slate-500 hover:bg-slate-50/50"
@@ -311,6 +310,80 @@ export default function PlanEvaluativo() {
               </td>
             </tr>
           )}
+          renderMovilCard={(rows) => (
+            <div
+              key={rows.id || rows.id_evaluation}
+              className="flex flex-col gap-3 rounded-xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 p-4 shadow-sm transition-all hover:shadow-md"
+            >
+              {/* Cabecera de la Card: Porcentaje y Acciones */}
+              <div className="flex items-center justify-between border-b border-slate-100 dark:border-slate-800 pb-3">
+                <div className="flex items-center gap-2">
+                  <span className="rounded-md bg-orange-50 dark:bg-orange-950/30 px-2.5 py-1 text-sm font-bold text-orange-600 dark:text-orange-400">
+                    {rows.porcentage ?? rows.percentage ?? 0}%
+                  </span>
+                  <span className="text-xs font-semibold text-cyan-600 dark:text-cyan-400">
+                    {rows.date
+                      ? new Date(
+                          rows.date.includes("T")
+                            ? rows.date
+                            : `${rows.date}T00:00:00`,
+                        ).toLocaleDateString("es-ES")
+                      : "Sin fecha"}
+                  </span>
+                </div>
+
+                {/* Botón de Eliminar */}
+                <Button
+                  classNameBtn="p-2 rounded-lg text-slate-400 hover:text-red-600 hover:bg-red-50 dark:hover:bg-red-950/30 transition-colors w-8 h-8 flex items-center justify-center"
+                  icon={faTrash}
+                  title="Eliminar evaluación"
+                  onClick={() => {
+                    setEvaluation(rows);
+                    setIsConfirmActionModalOpen(true);
+                  }}
+                />
+              </div>
+
+              {/* Cuerpo de la Card */}
+              <div className="space-y-2 text-sm text-slate-600 dark:text-slate-300">
+                <div>
+                  <span className="block text-xs font-medium text-slate-400 dark:text-slate-500">
+                    Actividad
+                  </span>
+                  <p className="font-semibold text-slate-800 dark:text-slate-200">
+                    {rows.activity || "—"}
+                  </p>
+                </div>
+
+                <div>
+                  <span className="block text-xs font-medium text-slate-400 dark:text-slate-500">
+                    Referente Teórico
+                  </span>
+                  <p>{rows.referent_teorical || "—"}</p>
+                </div>
+
+                <div className="grid grid-cols-2 gap-2 pt-1 border-t border-slate-100 dark:border-slate-800/60 text-xs">
+                  <div>
+                    <span className="block font-medium text-slate-400 dark:text-slate-500">
+                      Técnica
+                    </span>
+                    <span className="font-medium text-slate-700 dark:text-slate-300">
+                      {rows.technical || "—"}
+                    </span>
+                  </div>
+
+                  <div>
+                    <span className="block font-medium text-slate-400 dark:text-slate-500">
+                      Instrumento
+                    </span>
+                    <span className="font-medium text-slate-700 dark:text-slate-300">
+                      {rows.instrument || "—"}
+                    </span>
+                  </div>
+                </div>
+              </div>
+            </div>
+          )}
         />
       </div>
 
@@ -328,6 +401,6 @@ export default function PlanEvaluativo() {
         cancelLabel="Cancelar"
         variant="danger"
       />
-    </>
+    </div>
   );
 }

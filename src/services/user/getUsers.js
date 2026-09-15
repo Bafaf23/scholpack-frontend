@@ -4,7 +4,6 @@ import axios from "axios";
  * Obtiene los usuarios del sistema desde el backend
  * @returns {Promise<Array<Object>>}
  */
-
 export async function getUsers() {
   try {
     const response = await axios.get(
@@ -19,7 +18,15 @@ export async function getUsers() {
 
     return response.data;
   } catch (error) {
-    console.error("Error al obtener los usuarios:", error);
+    if (error.response) {
+      console.error(
+        `Error API (${error.response.status}):`,
+        error.response.data,
+      );
+    } else {
+      console.error("Error al obtener los usuarios:", error.message);
+    }
+
     return [];
   }
 }
