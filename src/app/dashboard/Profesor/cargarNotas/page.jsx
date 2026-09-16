@@ -6,13 +6,13 @@ import Icon from "@/components/atom/Icon";
 import Selector from "@/components/atom/Selector";
 import AccessDenied from "@/components/molecules/AccessDenied";
 import FormCargaNotas from "@/components/molecules/FromCargaNotas";
+import { createGrade } from "@/services/grades/createGrade";
 import HeaderDashbord from "@/components/molecules/HeaderDashbord";
 import Modal from "@/components/organism/Modal";
 import TablaNotas from "@/components/organism/TablaNotas";
 import { useAuth } from "@/context/AuthContext";
 import { getEvaluation } from "@/services/evaluation/getEvaluation";
-import { getGrades } from "@/services/grades/getGrades";
-
+import { getGradeAcrivity } from "@/services/grades/getGradeActivity";
 import { getLapses } from "@/services/lapse/getLapse";
 import { getStudentSection } from "@/services/section/getStudentSection";
 import { getLoadAcademic } from "@/services/teachers/getLoadAcademic";
@@ -33,12 +33,7 @@ export default function CargarNotas() {
   const [activities, setActivities] = useState([]);
   const [refreshNotas, setRefreshNotas] = useState(false);
 
-  const activeLapse = lapses.find(
-    (lapse) =>
-      lapse.is_active === true ||
-      lapse.is_active === 1 ||
-      lapse.is_active === "1",
-  );
+  const activeLapse = lapses.find((lapse) => lapse.is_active === true);
 
   // 1. Carga inicial: Materias del Profesor
   useEffect(() => {
@@ -101,8 +96,8 @@ export default function CargarNotas() {
       try {
         const currentLapses = Array.isArray(lapses) ? lapses : [];
 
-        const [gradesRes, studentsRes, activitiesRes] = await Promise.all([
-          getGrades(idLoadAcademic),
+        // Ejecutar estudiantes, evaluaciones y notas en paralelo
+        const [studentsRes, activitiesRes, gradesRes] = await Promise.all([
           idSection ? getStudentSection(idSection) : Promise.resolve([]),
           currentLapses.length > 0
             ? Promise.all(
@@ -128,6 +123,8 @@ export default function CargarNotas() {
                 }),
               )
             : Promise.resolve([]),
+
+          getGradeAcrivity(idLoadAcademic),
         ]);
 
         if (!isMounted) return;
@@ -147,21 +144,7 @@ export default function CargarNotas() {
           }
           setNotesData(emptyGradesByLapse);
         } else {
-          const flatGrades = Array.isArray(gradesRes?.data)
-            ? gradesRes.data
-            : Array.isArray(gradesRes)
-              ? gradesRes
-              : [];
-
-          setNotesData(
-            currentLapses.map((lapso) => ({
-              id: lapso.id,
-              id_lapse: lapso.id,
-              name: lapso.name,
-              is_active: lapso.is_active,
-              students: flatGrades.filter((g) => g?.lapse_name === lapso.name),
-            })),
-          );
+          setNotesData(gradesRes.data);
         }
 
         // Procesar Estudiantes
@@ -203,12 +186,11 @@ export default function CargarNotas() {
   ]);
 
   // Handler para guardar o actualizar una nota individual desde la tabla
-  const handleSaveGrade = async ({ student_id, evaluation_id, grade }) => {
+  const handleSaveGrade = async ({ id_student, id_evaluation, grade }) => {
     try {
-      const response = await saveGrade({
-        student_id,
-        evaluation_id,
-        load_academic_id: selectedSubject?.id,
+      const response = await createGrade({
+        id_student,
+        id_evaluation,
         grade,
       });
 
@@ -218,11 +200,10 @@ export default function CargarNotas() {
       }
 
       toast.success("Nota actualizada correctamente");
-      // Refrescar notas para recalculación inmediata de la nota definitiva
       setRefreshNotas((prev) => !prev);
     } catch (error) {
       console.error("Error guardando calificación:", error);
-      throw error; // Lanza el error para que GradeInput revierta al valor anterior
+      throw error;
     }
   };
 
@@ -247,7 +228,7 @@ export default function CargarNotas() {
                   label: `${item.subject?.name ?? ""} - ${item.section?.year?.name ?? ""} "${item.section?.name ?? ""}"`,
                 }))}
                 name="materia"
-                label="Asignatuira"
+                label="Asignatura"
                 value={selectedSubject?.id?.toString() ?? ""}
                 onChange={(e) => {
                   const selectedId = Number(e.target.value);
@@ -302,22 +283,20 @@ export default function CargarNotas() {
             Cargando notas...
           </div>
         ) : (
-          lapses.map((lapso) => (
-            <TablaNotas
-              data={lapso}
-              students={EstudiantesDisponibles}
-              activities={
-                activities.find((a) => a.id_lapse === lapso.id)?.list ?? []
-              }
-              notes={
-                notesData.find(
-                  (n) => n.id === lapso.id || n.id_lapse === lapso.id,
-                )?.students ?? []
-              }
-              onSaveGrade={handleSaveGrade}
-              key={lapso.id}
-            />
-          ))
+          lapses.map((lapso) => {
+            return (
+              <TablaNotas
+                key={lapso.id}
+                data={lapso}
+                students={EstudiantesDisponibles}
+                activities={
+                  activities.find((a) => a.id_lapse === lapso.id)?.list ?? []
+                }
+                notes={notesData}
+                onSaveGrade={handleSaveGrade}
+              />
+            );
+          })
         )}
       </div>
     </>

@@ -7,7 +7,7 @@ import axios from "axios";
 export async function getSubjectPending(id_student) {
   try {
     const response = await axios.get(
-      `${process.env.NEXT_PUBLIC_API_URL}/subjects/getSubjectPending/${id_student}`,
+      `${process.env.NEXT_PUBLIC_API_URL}/students/${id_student}/subject-pending`,
       {
         withCredentials: true,
         headers: {

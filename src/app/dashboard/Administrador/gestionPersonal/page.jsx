@@ -174,7 +174,7 @@ export default function GestionPersonalPage() {
                   </div>
                 </td>
                 <td className="px-6 py-4">
-                  <div className="flex flex-wrap gap-1.5 max-w-xs capitalize font-bold">
+                  <div className="flex flex-wrap gap-1.5 max-w-xs capitalize font-bold dark:text-orange-500">
                     {user.role.name}
                   </div>
                 </td>

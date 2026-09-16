@@ -29,11 +29,17 @@ function GradeInput({ initialGrade, onSave }) {
   };
 
   const handleBlur = async () => {
-    if (grade === (initialGrade ?? "") || grade === "") return;
+    const normalizedGrade = grade === "" ? null : Number(grade);
+    const normalizedInitial =
+      initialGrade === null || initialGrade === undefined
+        ? null
+        : Number(initialGrade);
+
+    if (normalizedGrade === normalizedInitial) return;
 
     setIsSaving(true);
     try {
-      await onSave(grade === "" ? null : Number(grade));
+      await onSave(normalizedGrade);
     } catch (error) {
       console.error("Error guardando nota:", error);
       setGrade(initialGrade ?? "");
@@ -56,7 +62,7 @@ function GradeInput({ initialGrade, onSave }) {
         ${
           isSaving
             ? "bg-amber-100 text-amber-800 dark:bg-amber-900/40 dark:text-amber-300 border-amber-400"
-            : " dark:bg-slate-800 text-slate-800 dark:text-slate-200 border-slate-100 dark:border-slate-700 focus:border-blue-500 focus:ring-1 focus:ring-blue-500"
+            : "dark:bg-zinc-900 text-zinc-800 dark:text-slate-300 border-slate-100 dark:border-zinc-800 focus:border-blue-500 focus:ring-1 focus:ring-blue-500"
         }
       `}
     />
@@ -85,9 +91,9 @@ export default function TablaNotas({
   const status = isActive ? "Activo" : "Inactivo";
 
   return (
-    <div className="rounded-xl bg-white shadow dark:bg-slate-950 border border-slate-100 dark:border-slate-800/50 hidden md:block lg:block">
+    <div className="rounded-xl bg-white shadow dark:bg-zinc-900 border border-slate-100 dark:border-slate-800/50 hidden md:block lg:block">
       {/* Cabecera */}
-      <div className="flex items-center justify-between border-b border-slate-200 bg-slate-50/50 px-6 py-4 dark:border-slate-800 dark:bg-slate-800/50 ">
+      <div className="flex items-center justify-between border-b border-slate-200 bg-slate-50/50 px-6 py-4 dark:border-slate-800 dark:bg-slate-800/50">
         <div>
           <h2 className="text-lg font-bold text-slate-800 dark:text-slate-200 tracking-tight">
             {name}
@@ -119,24 +125,23 @@ export default function TablaNotas({
       {/* Tabla Colapsable */}
       <div
         className={`transition-all duration-300 ease-in-out ${
-          isOpen
-            ? "max-h-1500 opacity-100"
-            : "max-h-0 overflow-hidden opacity-0"
+          isOpen ? "max-h-375 opacity-100" : "max-h-0 overflow-hidden opacity-0"
         }`}
       >
-        <div className="overflow-x-auto overflow-y-auto max-h-[70vh] scrollbar-thin pb-2">
+        <div className="overflow-x-auto overflow-y-auto max-h-[67vh] scrollbar-thin pb-2">
           <table className="w-full border-collapse text-left">
             <thead>
-              <tr className="sticky top-0 z-10 border-b border-slate-200 bg-slate-50 dark:border-slate-800 dark:bg-slate-900 shadow-sm">
-                <th className="px-6 py-4 text-sm font-bold text-slate-500 dark:text-slate-400">
-                  <Icon icon={faIndent} className="mr-2 text-slate-400" />N
+              <tr className="sticky top-0 z-10 border-b border-slate-200 bg-slate-50 dark:border-slate-800 dark:bg-slate-950 shadow-sm">
+                <th className="px-6 py-4 text-sm font-bold text-slate-500 dark:text-zinc-200">
+                  <Icon icon={faIndent} className="mr-2" />
+                  N°
                 </th>
-                <th className="px-6 py-4 text-sm font-bold text-slate-500 dark:text-slate-400">
-                  <Icon icon={faIdCard} className="mr-2 text-slate-400" />
+                <th className="px-6 py-4 text-sm font-bold text-slate-500 dark:text-zinc-200">
+                  <Icon icon={faIdCard} className="mr-2" />
                   Matrícula
                 </th>
-                <th className="px-6 py-4 text-sm font-bold text-slate-500 dark:text-slate-400">
-                  <Icon icon={faUser} className="mr-2 text-slate-400" />
+                <th className="px-6 py-4 text-sm font-bold text-slate-500 dark:text-zinc-200">
+                  <Icon icon={faUser} className="mr-2" />
                   Estudiante
                 </th>
                 {activities.map((activity, index) => (
@@ -155,10 +160,10 @@ export default function TablaNotas({
                     </span>
                   </th>
                 ))}
-                <th className="px-6 py-4 text-center text-sm font-bold text-slate-600 dark:text-slate-400 bg-slate-100/50 dark:bg-slate-800/50">
+                <th className="px-6 py-4 text-center text-sm font-bold text-slate-600 dark:text-zinc-200 bg-slate-100/50 dark:bg-slate-800/50">
                   Definitiva
                 </th>
-                <th className="px-6 py-4 text-center text-sm font-bold text-slate-500 dark:text-slate-400">
+                <th className="px-6 py-4 text-center text-sm font-bold text-slate-500 dark:text-zinc-200">
                   Estatus
                 </th>
               </tr>
@@ -179,37 +184,43 @@ export default function TablaNotas({
                 </tr>
               ) : (
                 students.map((student, index) => {
-                  const studentId = student.id_student ?? student.id;
-                  const notaDelEstudiante = notes.find(
-                    (n) => n.id_student === studentId,
-                  );
+                  const tuitionNumber = student?.tuition_number;
 
-                  const definitivaRaw = notaDelEstudiante?.final_grade;
-                  const definitiva =
-                    definitivaRaw !== undefined && definitivaRaw !== null
-                      ? parseFloat(definitivaRaw).toFixed(2)
-                      : "0.00";
+                  // Cálculo ponderado acumulado en caliente
+                  const acumulado = activities.reduce((acc, act) => {
+                    console.log(notes);
+                    const currentNote = notes.find(
+                      (n) =>
+                        n.tuition_number === tuitionNumber &&
+                        n.evaluation_id === act.id,
+                    );
+                    const gradeVal = Number(currentNote?.grade ?? 0);
+                    const weight = Number(act.porcentage ?? 0) / 100;
+                    return acc + gradeVal * weight;
+                  }, 0);
 
-                  const approved = parseFloat(definitiva) >= 10;
+                  const definitivaNum = Math.round(acumulado);
+                  const definitivaStr = acumulado.toFixed(2);
+                  const approved = definitivaNum >= 10;
 
                   return (
                     <tr
-                      key={studentId}
+                      key={tuitionNumber}
                       className="transition-colors hover:bg-slate-50/40 dark:hover:bg-slate-800/20"
                     >
-                      <td className="px-6 py-4 font-semibold text-slate-500 dark:text-slate-300">
+                      <td className="px-6 py-4 font-semibold text-slate-500 dark:text-zinc-200">
                         {index + 1}
                       </td>
-                      <td className="px-6 py-4 font-semibold text-cyan-600 dark:text-slate-300">
+                      <td className="px-6 py-4 font-semibold text-cyan-600 dark:text-zinc-200">
                         {student.tuition_number}
                       </td>
                       <td className="px-6 py-4">
                         <div className="flex flex-col">
-                          <span className="font-semibold text-slate-700 dark:text-slate-300">
+                          <span className="font-semibold text-slate-700 dark:text-zinc-200">
                             {student.name} {student.last_name}
                           </span>
-                          <span className="text-xs text-slate-400 font-normal mt-0.5">
-                            {student.id_card || `C.I: ${studentId}`}
+                          <span className="text-xs text-slate-400 font-normal mt-0.5 dark:text-zinc-500">
+                            {student.id_card}
                           </span>
                         </div>
                       </td>
@@ -218,8 +229,8 @@ export default function TablaNotas({
                       {activities.map((activity, aIndex) => {
                         const currentNote = notes.find(
                           (n) =>
-                            n.id_student === studentId &&
-                            n.id_evaluation === activity.id,
+                            n.tuition_number === tuitionNumber &&
+                            n.evaluation_id === activity.id,
                         );
 
                         return (
@@ -232,8 +243,8 @@ export default function TablaNotas({
                               onSave={async (newGrade) => {
                                 if (onSaveGrade) {
                                   await onSaveGrade({
-                                    student_id: studentId,
-                                    evaluation_id: activity.id,
+                                    id_student: student.id_student,
+                                    id_evaluation: activity.id,
                                     grade: newGrade,
                                   });
                                 }
@@ -251,8 +262,9 @@ export default function TablaNotas({
                               ? "text-emerald-600 dark:text-emerald-400"
                               : "text-red-500 dark:text-red-400"
                           }`}
+                          title={`Nota acumulada exacta: ${definitivaStr}`}
                         >
-                          {definitiva}
+                          {definitivaNum}
                         </span>
                       </td>
 

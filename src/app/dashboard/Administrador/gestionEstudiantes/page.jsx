@@ -137,7 +137,7 @@ export default function GestionEstudiantesPage() {
       </div>
       {/* Filtros y Métricas Rápidas */}
       <section className="p-2">
-        <div className="p-4 flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 bg-slate-500/5 backdrop-blur-md border border-slate-500/10 rounded-2xl mb-4">
+        <div className="p-4 flex flex-col sm:flex-row justify-between items-stretch sm:items-center gap-4 bg-white/70 dark:bg-zinc-900/60 backdrop-blur-md border border-slate-200/80 dark:border-zinc-700/50 rounded-2xl mb-4 shadow-sm">
           <div className="w-full sm:max-w-md">
             <Search
               placeholder="Buscar por cédula o nombre..."
@@ -146,18 +146,21 @@ export default function GestionEstudiantesPage() {
               onSearch={handleSearch}
             />
           </div>
-          <div className="flex gap-3 justify-end items-center w-full">
-            <p
-              className="text-xs font-semibold text-slate-500 dark:text-slate-400 bg-slate-500/10
-            p-3 rounded-xl border border-slate-500/10 whitespace-nowrap"
-            >
-              Matrícula: {filteredStudents.length} de {students.length}
+
+          <div className="flex flex-col sm:flex-row gap-3 justify-end items-stretch sm:items-center w-full sm:w-auto">
+            <p className="text-xs font-semibold text-slate-600 dark:text-zinc-300 bg-slate-100 dark:bg-zinc-800/80 p-3 rounded-xl border border-slate-200 dark:border-zinc-700/60 whitespace-nowrap text-center sm:text-left">
+              Matrícula:{" "}
+              <span className="text-slate-900 dark:text-zinc-100 font-bold">
+                {filteredStudents.length}
+              </span>{" "}
+              de {students.length}
             </p>
-            <div className="w-full md:w-auto">
+
+            <div className="w-full sm:w-auto">
               <Button
                 onClick={() => setIsOpent(true)}
                 icon={faAdd}
-                classNameBtn="bg-indigo-600 hover:bg-indigo-700 transition-all p-3 rounded-xl text-slate-50 font-semibold cursor-pointer flex items-center justify-center gap-2 text-sm shadow-md shadow-indigo-500/10 w-full"
+                classNameBtn="bg-indigo-600 hover:bg-indigo-500 active:bg-indigo-700 transition-colors p-3 rounded-xl text-white font-semibold cursor-pointer flex items-center justify-center gap-2 text-sm shadow-sm shadow-indigo-500/20 w-full whitespace-nowrap"
               >
                 Crear Estudiante
               </Button>
@@ -292,23 +295,21 @@ export default function GestionEstudiantesPage() {
                       target="_blank"
                     >
                       <Button
-                        title="Descargar Planilla"
+                        icon={faClipboardList}
+                        title="Descargar Planilla de Inscripscion"
                         classNameBtn="p-1.5 rounded-lg bg-cyan-600 text-white hover:bg-cyan-700 transition-colors"
-                      >
-                        <Icon icon={faClipboardList} className="w-3.5 h-3.5" />
-                      </Button>
+                      ></Button>
                     </Link>
                   )}
                   {/* Notas Certificadas */}
                   <Button
+                    icon={faAward}
                     onClick={() =>
                       alert("Esta opción no está disponible por el momento")
                     }
                     title="Descargar Notas Certificadas"
                     classNameBtn="p-1.5 rounded-lg bg-orange-500 text-white hover:bg-orange-600 transition-colors"
-                  >
-                    <Icon icon={faAward} className="w-3.5 h-3.5" />
-                  </Button>
+                  ></Button>
                 </div>
               </td>
             </tr>

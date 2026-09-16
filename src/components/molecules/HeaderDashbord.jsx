@@ -62,7 +62,7 @@ export default function HeaderDashbord({ user, titelPage }) {
               </Link>
             </div>
           ) : (
-            <h1 className="text-2xl font-bold uppercase md:text-3xl">
+            <h1 className="text-2xl font-bold uppercase md:text-3xl dark:text-zinc-300">
               {titelPage}
             </h1>
           )}

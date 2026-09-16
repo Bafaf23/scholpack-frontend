@@ -1,4 +1,5 @@
 "use client";
+
 import Button from "@/components/atom/Button";
 import Icon from "@/components/atom/Icon";
 import HeaderDashbord from "@/components/molecules/HeaderDashbord";
@@ -12,7 +13,6 @@ import {
   faLayerGroup,
   faUser,
   faGraduationCap,
-  faCircleInfo,
   faInfo,
 } from "@fortawesome/free-solid-svg-icons";
 import Link from "next/link";
@@ -23,7 +23,6 @@ import toast from "react-hot-toast";
 export default function PromocionesPage() {
   const { user } = useAuth();
 
-  // 1. CORRECCIÓN: Mantener una estructura de objeto consistente desde el inicio
   const [students, setStudents] = useState({ data: [], count: 0 });
   const [loading, setLoading] = useState(true);
 
@@ -41,7 +40,6 @@ export default function PromocionesPage() {
         setLoading(true);
         const response = await getApproved(currentPeriodId);
 
-        // 2. CORRECCIÓN: Si response.data es el array, lo guardamos estructurado correctamente
         const studentList = Array.isArray(response.data) ? response.data : [];
         setStudents({
           data: studentList,
@@ -68,7 +66,6 @@ export default function PromocionesPage() {
         toast.error(response.message);
       } else {
         toast.success(response.message || "Estudiantes promovidos con éxito");
-        // Opcional: Recargar la lista tras promoverlos
         setStudents({ data: [], count: 0 });
       }
     } catch (error) {
@@ -80,33 +77,33 @@ export default function PromocionesPage() {
   };
 
   const statusStyles = {
-    Aprobado: "bg-emerald-50 text-emerald-700 border border-emerald-200",
-    "Materia Pendiente": "bg-amber-50 text-amber-700 border border-amber-200",
-    Reprobado: "bg-rose-50 text-rose-700 border border-rose-200",
+    Aprobado:
+      "bg-emerald-50 text-emerald-700 border-emerald-200 dark:bg-emerald-950/40 dark:text-emerald-400 dark:border-emerald-800/60",
+    "Materia Pendiente":
+      "bg-amber-50 text-amber-700 border-amber-200 dark:bg-amber-950/40 dark:text-amber-400 dark:border-amber-800/60",
+    Reprobado:
+      "bg-rose-50 text-rose-700 border-rose-200 dark:bg-rose-950/40 dark:text-rose-400 dark:border-rose-800/60",
   };
 
   return (
-    <div>
+    <div className=" transition-colors">
       <HeaderDashbord titelPage="Promoción" />
 
-      <div className="p-4">
-        <section className="mb-4">
+      <div className="p-4 space-y-4">
+        <section>
           <Banner
             icon={faInfo}
             titel="Nota Informativa"
-            message=" En este módulo estarán listados todos los estudiantes que
-                cumplen con el mínimo aprobatorio para ser promovidos al
-                siguiente año superior."
+            message="En este módulo estarán listados todos los estudiantes que cumplen con el mínimo aprobatorio para ser promovidos al siguiente año superior."
           />
         </section>
 
-        <div className="flex justify-end mb-4">
+        <div className="flex justify-end">
           <Button
             onClick={() => handlePromotion()}
             icon={faGraduationCap}
-            // 3. CORRECCIÓN: Uso consistente de la propiedad .data
             disabled={loading || students.data.length === 0}
-            classNameBtn="flex items-center gap-2 bg-cyan-600 hover:bg-cyan-700 disabled:bg-gray-300 text-white font-semibold px-4 py-2.5 rounded-lg transition-colors text-sm"
+            classNameBtn="flex items-center gap-2 bg-orange-600 hover:bg-orange-700 disabled:bg-slate-300 dark:disabled:bg-zinc-800 dark:disabled:text-zinc-600 text-white font-semibold px-4 py-2.5 rounded-xl transition-all shadow-md shadow-orange-500/10 text-sm cursor-pointer disabled:cursor-not-allowed dark:bg-orange-500 dark:hover:bg-orange-600"
           >
             Promover Estudiantes ({students.count})
           </Button>
@@ -114,12 +111,18 @@ export default function PromocionesPage() {
 
         <div>
           {loading ? (
-            <p className="text-cyan-700 font-medium">Cargando...</p>
+            <div className="flex items-center justify-center py-12">
+              <p className="text-orange-600 dark:text-orange-400 font-medium animate-pulse text-sm">
+                Cargando estudiantes aptos...
+              </p>
+            </div>
           ) : students.data.length === 0 ? (
-            <p className="text-slate-500 text-center py-10 bg-slate-100 rounded-2xl border border-slate-300 border-dashed">
-              No hay estudiantes aptos para promoción en este periodo. Una vez
-              finalizado el periodo académico este módulo estará activo.
-            </p>
+            <div className="text-slate-500 dark:text-zinc-400 text-center py-12 px-4 bg-white dark:bg-zinc-900 rounded-2xl border border-slate-200 dark:border-zinc-800 border-dashed">
+              <p className="text-sm max-w-lg mx-auto">
+                No hay estudiantes aptos para promoción en este periodo. Una vez
+                finalizado el periodo académico este módulo estará activo.
+              </p>
+            </div>
           ) : (
             <TableInsti
               titelTable={[
@@ -129,38 +132,46 @@ export default function PromocionesPage() {
                 { name: "Período", icon: faLayerGroup },
                 { name: "Estado", icon: faCheck },
               ]}
-              // 5. CORRECCIÓN: Pasar el objeto estructurado o solo el array dependiendo de lo que espere TableInsti
-              // Si TableInsti espera el array directo, cambia a data={students.data}
               data={students.data}
               renderTableRows={(student) => (
                 <tr
                   key={student.id_student}
-                  className="transition-colors group hover:bg-slate-50/50"
+                  className="transition-colors group hover:bg-slate-50/60 dark:hover:bg-zinc-800/50 border-b border-slate-100 dark:border-zinc-800/60"
                 >
                   <td className="px-6 py-4">
                     <Link
                       href={`/dashboard/Administrador/gestionEstudiantes/${student.id_student}`}
-                      className="font-bold text-cyan-700 text-sm border border-cyan-700/10 rounded-md px-2 py-1 bg-cyan-50"
+                      className="font-bold text-orange-600 dark:text-orange-400 text-xs border border-orange-500/20 rounded-lg px-2.5 py-1 bg-orange-50 dark:bg-orange-500/10 hover:underline inline-block transition-colors"
                     >
                       {student.tuition_number}
                     </Link>
                   </td>
-                  <td className="flex flex-col">
-                    <span className="font-bold group-hover:text-indigo-600">
-                      {student.name} {student.last_name}
-                    </span>
-                    <span className="text-sm text-slate-500">
-                      {student.document}
-                    </span>
+
+                  <td className="px-6 py-4">
+                    <div className="flex flex-col">
+                      <span className="font-semibold text-slate-800 dark:text-zinc-100 group-hover:text-orange-600 dark:group-hover:text-orange-400 transition-colors">
+                        {student.name} {student.last_name}
+                      </span>
+                      <span className="text-xs text-slate-400 dark:text-zinc-400">
+                        {student.document}
+                      </span>
+                    </div>
                   </td>
-                  <td>
+
+                  <td className="px-6 py-4 text-sm text-slate-600 dark:text-zinc-300">
                     {student.year_name} - {student.current_section}
                   </td>
-                  <td>{student.period}</td>
 
-                  <td>
+                  <td className="px-6 py-4 text-sm text-slate-600 dark:text-zinc-300">
+                    {student.period}
+                  </td>
+
+                  <td className="px-6 py-4">
                     <div
-                      className={`px-2 py-1 w-fit border rounded-full text-xs ${statusStyles[student.status] || "bg-gray-50 text-gray-700"}`}
+                      className={`px-3 py-1 w-fit border rounded-full text-xs font-semibold ${
+                        statusStyles[student.status] ||
+                        "bg-slate-50 text-slate-700 border-slate-200 dark:bg-zinc-800 dark:text-zinc-300 dark:border-zinc-700"
+                      }`}
                     >
                       {student.status}
                     </div>
