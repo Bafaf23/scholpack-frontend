@@ -47,7 +47,7 @@ export default function AdminPage() {
           getSection(),
         ]);
 
-        const students = /* await getStudents() */ [];
+        const students = await getStudents();
 
         const studentsList = students?.data || [];
         const teachersList = teachersRes?.data;
@@ -127,7 +127,7 @@ export default function AdminPage() {
             description="Asignaturas base cargadas"
           />
 
-          <div className="col-span-4">
+          <div className="col-span-2 md:col-span-4">
             <Banner
               titel="La segurida es lo primero"
               icon={faCircleInfo}

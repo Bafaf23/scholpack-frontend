@@ -7,7 +7,9 @@ import axios from "axios";
  */
 export async function getRecordStudent(idStudent, idPeriod) {
   try {
-    const url = `${process.env.NEXT_PUBLIC_API_URL}/students/${idStudent}/record?id_period=${idPeriod}`;
+    const url = idPeriod
+      ? `${process.env.NEXT_PUBLIC_API_URL}/students/${idStudent}/record?id_period=${idPeriod}`
+      : `${process.env.NEXT_PUBLIC_API_URL}/students/${idStudent}/record`;
 
     const response = await axios.get(url, {
       withCredentials: true,

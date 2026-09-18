@@ -72,9 +72,9 @@ export default function CargaAcademicaPage() {
   }, [loadCatalogData]);
 
   return (
-    <div className="animate-in fade-in zoom-in-95 duration-500 ease-out">
+    <div className="animate-in fade-in zoom-in-95 duration-500 ease-out p-2">
       {/* Encabezado Principal y Botón de Escritorio */}
-      <div className="flex flex-col sm:flex-row justify-between items-center gap-4 mb-4 p-1">
+      <div className="flex flex-col sm:flex-row justify-between items-center gap-4">
         <HeaderDashbord titelPage="Gestión de Carga Académica" />
         <div className="hidden md:block">
           <Button
@@ -99,7 +99,7 @@ export default function CargaAcademicaPage() {
           sections={sections}
           id_period={id_period}
           onSuccess={() => {
-            loadCatalogData(true); // Refresco silencioso invisible en segundo plano tras guardar
+            loadCatalogData(true);
             setIsOpen(false);
           }}
         />
@@ -122,13 +122,15 @@ export default function CargaAcademicaPage() {
           <SkeletonCard />
         </div>
       ) : (
-        <ListAcademicLoand
-          academicLoads={academicLoads}
-          subjects={subjects}
-          teachers={teachers}
-          sections={sections}
-          onRefresh={() => loadCatalogData(true)} // Callback opcional si la lista requiere refrescar al eliminar
-        />
+        <div className="mt-5">
+          <ListAcademicLoand
+            academicLoads={academicLoads}
+            subjects={subjects}
+            teachers={teachers}
+            sections={sections}
+            onRefresh={() => loadCatalogData(true)}
+          />
+        </div>
       )}
     </div>
   );

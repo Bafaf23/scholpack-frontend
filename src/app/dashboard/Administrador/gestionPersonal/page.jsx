@@ -144,7 +144,7 @@ export default function GestionPersonalPage() {
           <SkeletonCard />
         </div>
       ) : (
-        <div className="p-1">
+        <div className="p-3">
           <TableInsti
             titelTable={[
               { name: "Cédula", icon: faIdCard },

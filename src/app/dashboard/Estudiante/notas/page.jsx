@@ -14,7 +14,7 @@ import {
   faClipboardList,
   faPrint,
 } from "@fortawesome/free-solid-svg-icons";
-import Link from "next/link";
+import AccessDenied from "@/components/molecules/AccessDenied";
 import { useEffect, useState } from "react";
 import toast from "react-hot-toast";
 
@@ -130,6 +130,8 @@ export default function NotasPage() {
 
   if (loading) return <Loading />;
 
+  if (user?.user.role != "estudiante") return <AccessDenied />;
+
   return (
     <main>
       <HeaderDashbord titelPage="Panel de Notas" />
@@ -154,21 +156,20 @@ export default function NotasPage() {
         </div>
 
         {/* Tarjetas Superiores Informativas */}
-        <div className="grid md:grid-cols-3 mb-4 gap-3">
+        <div className="mb-4 grid grid-cols-1 gap-3 sm:grid-cols-2 md:grid-cols-3">
           {/* Tarjeta: Periodo */}
-          <div className="flex items-center gap-3 bg-white dark:bg-slate-800/60 rounded-xl p-3 border border-slate-200/80 dark:border-slate-700/50 shadow-sm transition-all">
-            <div className="p-2 bg-cyan-50 dark:bg-cyan-950/40 rounded-lg text-cyan-600 dark:text-cyan-400 flex items-center justify-center">
+          <div className="flex items-center gap-3 rounded-xl border border-slate-200/80 bg-white p-3 shadow-sm transition-all dark:border-slate-700/50 dark:bg-slate-800/60">
+            <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-lg bg-cyan-50 text-cyan-600 dark:bg-cyan-950/40 dark:text-cyan-400">
               <Icon icon={faClock} className="text-base" />
             </div>
-            <div className="flex flex-col">
-              <span className="text-xs font-bold text-slate-400 dark:text-slate-500 uppercase tracking-wider">
-                Periodo
+            <div className="flex flex-col min-w-0">
+              <span className="text-[10px] font-bold uppercase tracking-wider text-slate-400 dark:text-slate-500">
+                Período y Lapso
               </span>
-              <div className="flex gap-3">
-                <span className="text-sm font-semibold text-slate-700 dark:text-slate-200">
-                  {user?.user?.period || "2025 - 2026"}
-                </span>
-                <span className="text-sm font-semibold text-slate-700 dark:text-slate-200">
+              <div className="flex items-center gap-2 truncate text-sm font-semibold text-slate-700 dark:text-slate-200">
+                <span>{user?.user?.period || "2025 - 2026"}</span>
+                <span className="text-slate-300 dark:text-slate-600">•</span>
+                <span className="text-cyan-600 dark:text-cyan-400 font-medium">
                   {lapse?.name || "Cargando..."}
                 </span>
               </div>
@@ -176,24 +177,28 @@ export default function NotasPage() {
           </div>
 
           {/* Tarjeta: Promedio General */}
-          <div className="flex items-center gap-3 bg-white dark:bg-slate-800/60 rounded-xl p-3 border border-slate-200/80 dark:border-slate-700/50 shadow-sm transition-all">
-            <div className="p-2 bg-indigo-50 dark:bg-indigo-950/40 rounded-lg text-indigo-600 dark:text-indigo-400 flex items-center justify-center">
+          <div className="flex items-center gap-3 rounded-xl border border-slate-200/80 bg-white p-3 shadow-sm transition-all dark:border-slate-700/50 dark:bg-slate-800/60">
+            <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-lg bg-indigo-50 text-indigo-600 dark:bg-indigo-950/40 dark:text-indigo-400">
               <Icon icon={faGraduationCap} className="text-base" />
             </div>
             <div className="flex flex-col">
-              <span className="text-xs font-bold text-slate-400 dark:text-slate-500 uppercase tracking-wider">
+              <span className="text-[10px] font-bold uppercase tracking-wider text-slate-400 dark:text-slate-500">
                 Promedio General
               </span>
               <span
-                className={`text-sm font-black ${parseFloat(generalAverage) >= 9.5 ? "text-green-600 dark:text-green-400" : "text-red-500"}`}
+                className={`text-sm font-black ${
+                  parseFloat(generalAverage) >= 10
+                    ? "text-emerald-600 dark:text-emerald-400"
+                    : "text-rose-600 dark:text-rose-400"
+                }`}
               >
-                {generalAverage} pts
+                {generalAverage ? `${generalAverage} pts` : "N/A"}
               </span>
             </div>
           </div>
 
           {/* Botón de Impresión */}
-          <div className="flex items-center justify-end">
+          <div className="flex items-center justify-start sm:col-span-2 md:col-span-1 md:justify-end">
             <Button
               icon={faPrint}
               disabled={loadingType !== null || !section.sectionId}
@@ -204,9 +209,9 @@ export default function NotasPage() {
                   "Boleta",
                 )
               }
-              classNameBtn="bg-indigo-500 rounded-xl text-white font-medium flex gap-2 justify-center items-center cursor-pointer hover:bg-indigo-700 transition-colors w-fit p-3 shadow-sm disabled:opacity-50 disabled:cursor-not-allowed"
+              classNameBtn="w-full sm:w-auto h-full min-h-[48px] px-5 rounded-xl bg-orange-600 hover:bg-orange-700 text-white font-medium flex gap-2 justify-center items-center cursor-pointer transition-all shadow-sm active:scale-[0.98] disabled:opacity-50 disabled:cursor-not-allowed disabled:active:scale-100"
             >
-              {"Imprimir Boleta"}
+              Imprimir Boleta
             </Button>
           </div>
         </div>
@@ -217,7 +222,7 @@ export default function NotasPage() {
             <TarjetaMateriaNotas key={subject.id} subject={subject} />
           ))
         ) : (
-          <div className="text-center p-6 text-slate-600 dark:text-slate-500 border bg-slate-200 border-slate-400 rounded-2xl border-dashed">
+          <div className="rounded-2xl border border-dashed border-slate-300 bg-slate-100 p-6 text-center text-slate-600 transition-colors dark:border-slate-800 dark:bg-slate-900/50 dark:text-slate-400">
             Aún no hay materias registradas en tu sección.
           </div>
         )}

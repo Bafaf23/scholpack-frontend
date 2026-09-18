@@ -12,6 +12,10 @@ import {
   faPrint,
   faFilePdf,
   faUsers,
+  faList,
+  faDashboard,
+  faSubtract,
+  faGraduationCap,
 } from "@fortawesome/free-solid-svg-icons";
 import toast from "react-hot-toast";
 
@@ -212,7 +216,8 @@ export default function CardSection({
         <div className="space-y-2.5 border-t border-slate-100 bg-slate-50/80 p-3.5 dark:border-slate-800 dark:bg-slate-800/40">
           {/* Descargas en Grid */}
           <div className="grid grid-cols-2 gap-2">
-            <button
+            <Button
+              icon={faList}
               type="button"
               disabled={studentCount === 0 || loadingType !== null}
               onClick={() =>
@@ -221,18 +226,17 @@ export default function CardSection({
                   "lista",
                 )
               }
-              className="flex items-center justify-center gap-1.5 rounded-xl bg-cyan-600 px-3 py-2 text-xs font-semibold text-white shadow-sm transition-all hover:bg-cyan-700 active:scale-95 disabled:cursor-not-allowed disabled:opacity-50"
+              classNameBtn="flex items-center justify-center gap-1.5 rounded-xl bg-cyan-600 px-3 py-2 text-md font-semibold text-white shadow-sm transition-all hover:bg-cyan-700 active:scale-95 disabled:cursor-not-allowed disabled:opacity-50"
             >
               {loadingType === "lista" ? (
-                <span className="animate-pulse">Cargando...</span>
+                <span>Cargando...</span>
               ) : (
-                <>
-                  <Icon icon={faPrint} /> Lista
-                </>
+                <span>Lista</span>
               )}
-            </button>
+            </Button>
 
-            <button
+            <Button
+              icon={faDashboard}
               type="button"
               disabled={studentCount === 0 || loadingType !== null}
               onClick={() =>
@@ -241,16 +245,32 @@ export default function CardSection({
                   "consolidado",
                 )
               }
-              className="flex items-center justify-center gap-1.5 rounded-xl bg-amber-600 px-3 py-2 text-xs font-semibold text-white shadow-sm transition-all hover:bg-amber-700 active:scale-95 disabled:cursor-not-allowed disabled:opacity-50"
+              classNameBtn="flex items-center justify-center gap-1.5 rounded-xl bg-amber-600 px-3 py-2 text-md font-semibold text-white shadow-sm transition-all hover:bg-amber-700 active:scale-95 disabled:cursor-not-allowed disabled:opacity-50"
             >
               {loadingType === "consolidado" ? (
-                <span className="animate-pulse">Cargando...</span>
+                <span>Cargando...</span>
               ) : (
-                <>
-                  <Icon icon={faFilePdf} /> Rendimiento
-                </>
+                <span>Rendimiento</span>
               )}
-            </button>
+            </Button>
+            <Button
+              icon={faGraduationCap}
+              type="button"
+              disabled={studentCount === 0 || loadingType !== null}
+              onClick={() =>
+                handleDownload(
+                  `${process.env.NEXT_PUBLIC_API_URL}/reports/${id}/rfre`,
+                  "RFRE",
+                )
+              }
+              classNameBtn="flex items-center justify-center gap-1.5 rounded-xl bg-green-600 px-3 py-2 text-md font-semibold text-white shadow-sm transition-all hover:bg-green-700 active:scale-95 disabled:cursor-not-allowed disabled:opacity-50 col-span-2"
+            >
+              {loadingType === "RFRE" ? (
+                <span>Cargando...</span>
+              ) : (
+                <span>Resumen Final del Rendimiento Estudiantil (MPPE)</span>
+              )}
+            </Button>
           </div>
 
           {/* Acciones de Inscripción */}

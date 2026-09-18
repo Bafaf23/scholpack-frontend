@@ -21,7 +21,7 @@ export default function RecordPega() {
 
   if (!user) return <Loading />;
 
-  if (user?.user.role != "Estudiante") return <AccessDenied />;
+  if (user?.user.role != "estudiante") return <AccessDenied />;
 
   return (
     <>
