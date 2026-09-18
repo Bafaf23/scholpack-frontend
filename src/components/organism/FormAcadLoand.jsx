@@ -1,4 +1,5 @@
 "use client";
+import Loading from "@/app/loading";
 import Button from "../atom/Button";
 import Selector from "../atom/Selector";
 import { createLoad } from "@/services/loadacadmic/createLoad";
@@ -63,6 +64,8 @@ export default function FormAcadLoand({
     }
   };
 
+  if (loanding) return <Loading />;
+
   return (
     <form onSubmit={handleSubmit} className="flex flex-col gap-5">
       <div className="grid grid-cols-2 gap-2">
@@ -71,8 +74,8 @@ export default function FormAcadLoand({
           name="subjectId"
           id={"subjectId"}
           options={subjects.map((su) => ({
-            value: su.code_subject,
-            label: `${su.name} - ${su.year.name}`,
+            value: su?.code_subject,
+            label: `${su?.name}`,
           }))}
           onChange={(e) =>
             setFormData({ ...formData, subjectId: e.target.value })

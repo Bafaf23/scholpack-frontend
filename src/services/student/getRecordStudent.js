@@ -7,15 +7,14 @@ import axios from "axios";
  */
 export async function getRecordStudent(idStudent, idPeriod) {
   try {
-    const response = await axios.get(
-      `${process.env.NEXT_PUBLIC_API_URL}/students/getRecordStudent/${idStudent}?id_period=${idPeriod}`,
-      {
-        withCredentials: true,
-        headers: {
-          "Content-Type": "application/json",
-        },
+    const url = `${process.env.NEXT_PUBLIC_API_URL}/students/${idStudent}/record?id_period=${idPeriod}`;
+
+    const response = await axios.get(url, {
+      withCredentials: true,
+      headers: {
+        "Content-Type": "application/json",
       },
-    );
+    });
     return response.data;
   } catch (error) {
     console.log(error);

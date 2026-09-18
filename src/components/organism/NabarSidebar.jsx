@@ -11,7 +11,6 @@ import {
   faSignOutAlt,
   faListCheck,
   faPenToSquare,
-  faUserCheck,
   faSitemap,
   faCalendarCheck,
   faBowlRice,
@@ -30,17 +29,17 @@ export const menuLink = {
       icon: faHome,
       label: "Inicio",
 
-      href: `/dashboard/Profesor`,
+      href: `/dashboard/profesor`,
     },
     {
       icon: faListCheck,
       label: "Plan Evaluativo",
-      href: `/dashboard/Profesor/planEvaluativo`,
+      href: `/dashboard/profesor/planEvaluativo`,
     },
     {
       icon: faPenToSquare,
       label: "Cargas de Notas",
-      href: `/dashboard/Profesor/cargarNotas`,
+      href: `/dashboard/profesor/cargarNotas`,
     },
     /* {
       icon: faUserCheck,
@@ -94,8 +93,8 @@ export const menuLink = {
 
     {
       icon: faUserPlus,
-      label: "Gestion de Docentes",
-      href: "/dashboard/administrador/gestionDocentes",
+      label: "Gestion de Personal",
+      href: "/dashboard/administrador/gestionPersonal",
     },
     {
       icon: faUserGraduate,
@@ -148,10 +147,10 @@ export default function NavbarSidebar() {
       className={`hidden p-3 transition-all duration-300 md:hidden md:flex-col lg:flex`}
     >
       <div
-        className={`mb-8 flex items-center border-b border-gray-200 pb-3 dark:border-slate-700`}
+        className={`mb-8 flex items-center border-b border-gray-200 pb-3 dark:border-zinc-500`}
       >
         <div className="truncate">
-          <SigaceLogo className={"text-slate-900"} />
+          <SigaceLogo className={"text-slate-900 dark:text-slate-400"} />
         </div>
       </div>
 
@@ -163,7 +162,6 @@ export default function NavbarSidebar() {
             label={link.label}
             icon={link.icon}
             active={pathname === link.href}
-            classNameIcon={link.active ? "text-cyan-600" : ""}
           />
         ))}
       </nav>
@@ -172,11 +170,11 @@ export default function NavbarSidebar() {
       <div className="flex items-center justify-between">
         <ItemProfile user={user?.user} />
       </div>
-      <div className="mt-auto border-t border-slate-400/30 pt-4 dark:border-slate-700">
+      <div className="mt-auto border-t border-slate-400/30 pt-4 dark:border-zinc-500">
         <Button
           icon={faSignOutAlt}
           onClick={() => handleLogout()}
-          classNameBtn={`flex items-center gap-3 w-full text-gray-600/70 p-2 hover:bg-red-500/50 hover:text-red-900 rounded-lg transition-all text-md dark:text-slate-500 dark:hover:bg-red-300/50 dark:hover:text-red-600`}
+          classNameBtn={`flex items-center gap-3 w-full text-gray-600/70 p-2 hover:bg-red-500/50 hover:text-red-900 rounded-lg transition-all text-md dark:text-zinc-200 dark:hover:bg-red-300/50 dark:hover:text-red-600`}
         >
           {"Cerrar Sesion"}
         </Button>

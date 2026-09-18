@@ -10,7 +10,7 @@ import axios from "axios";
 export const getEvaluation = async (idLoadAcademic, idLapse) => {
   try {
     const response = await axios.get(
-      `${process.env.NEXT_PUBLIC_API_URL}/evaluations/get/${idLoadAcademic}?id_lapse=${idLapse}`,
+      `${process.env.NEXT_PUBLIC_API_URL}/evaluations/${idLoadAcademic}?id_lapse=${idLapse}`,
       {
         withCredentials: true,
         headers: {

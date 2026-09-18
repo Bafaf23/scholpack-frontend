@@ -19,7 +19,7 @@ import toast from "react-hot-toast";
 export default function TeachersPage() {
   const { user, loading: authLoading } = useAuth();
   const router = useRouter();
-  const [loadAcademic, setLoadAcademic] = useState([]);
+  const [loadAcademic, setLoadAcademic] = useState(null);
   const [dataLoading, setDataLoading] = useState(false);
 
   useEffect(() => {
@@ -31,7 +31,8 @@ export default function TeachersPage() {
           toast.error(data.error);
           return;
         }
-        setLoadAcademic(data.data);
+        // Guardamos data.data que es el objeto con load_academics
+        setLoadAcademic(data?.data || null);
       } catch (error) {
         console.error("Error al cargar la carga académica:", error);
         toast.error("Error al conectar con el servidor");
@@ -43,37 +44,47 @@ export default function TeachersPage() {
     fetchLoadAcademic();
   }, []);
 
-  // Primero validamos la carga de la autenticación
+  // Validación de estados de autenticación y carga
   if (authLoading) return <Loading />;
 
   const role = user?.user?.role ?? user?.role;
-  if (!user || role !== "Profesor") {
+  if (!user || role !== "profesor") {
     router.push("/");
     return <AccessDenied />;
   }
 
-  // Si la sesión es correcta pero los datos de las materias aún se están pidiendo
   if (dataLoading) return <Loading />;
 
-  // --- CÁLCULO DE TOTALES ÚNICOS ---
+  // --- EXTRACCIÓN SEGURA DEL LISTADO DE CARGAS ---
+  const list = loadAcademic?.load_academics || [];
+
+  // --- CÁLCULO DE TOTALES Y MATRICES ---
+  const totalMaterias = list.length;
+
   const totalSecciones = new Set(
-    loadAcademic.map((item) => `${item.year_name}-${item.section_name}`),
+    list.map(
+      (item) =>
+        `${item?.section?.year?.name || ""}-${item?.section?.name || ""}`,
+    ),
   ).size;
 
-  const totalAnos = new Set(loadAcademic.map((item) => item.year_name)).size;
+  const totalAnos = new Set(
+    list.map((item) => item?.section?.year?.name).filter(Boolean),
+  ).size;
 
-  // --- LISTAS FORMATEADAS (SIN DUPLICADOS) PARA LAS DESCRIPCIONES ---
+  // --- LISTAS FORMATEADAS PARA DESCRIPCIONES ---
   const listaMaterias = [
-    ...new Set(loadAcademic.map((item) => item.subject_name)),
-  ].join(", ");
-  const listaSecciones = [
-    ...new Set(loadAcademic.map((item) => item.section_name)),
-  ].join(", ");
-  const listaAnos = [
-    ...new Set(loadAcademic.map((item) => item.year_name)),
+    ...new Set(list.map((item) => item?.subject?.name).filter(Boolean)),
   ].join(", ");
 
-  console.log(loadAcademic);
+  const listaSecciones = [
+    ...new Set(list.map((item) => item?.section?.name).filter(Boolean)),
+  ].join(", ");
+
+  const listaAnos = [
+    ...new Set(list.map((item) => item?.section?.year?.name).filter(Boolean)),
+  ].join(", ");
+
   return (
     <div className="animate-in fade-in duration-500">
       <HeaderDashbord user={user} />
@@ -83,11 +94,11 @@ export default function TeachersPage() {
         <div className="col-span-1">
           <InfoCard
             label="Materias asignadas"
-            value={loadAcademic.length || 0}
+            value={totalMaterias}
             icon={faBook}
             colorClass="bg-green-500/60 text-green-500/90"
             description={
-              loadAcademic.length > 0
+              totalMaterias > 0
                 ? `Materias: ${listaMaterias}`
                 : "Sin materias asignadas"
             }
@@ -124,7 +135,8 @@ export default function TeachersPage() {
           />
         </div>
 
-        <div className="col-span-1">
+        {/* Periodo */}
+        <div className="col-span-2 md:col-span-1">
           <InfoCard
             label="Periodo Escolar"
             value={user?.user?.period ?? "Activo"}

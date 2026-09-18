@@ -1,13 +1,14 @@
 import axios from "axios";
 
 /**
- * Obtiene las materias pendientes de un estudiante
+ * Obtiene a todo el personal del colegio, excluyendo a los estudiantes.
  * @returns {Promise<Array<Object>>}
  */
-export async function getSubjectPending(id_student) {
+
+export async function userSchool() {
   try {
     const response = await axios.get(
-      `${process.env.NEXT_PUBLIC_API_URL}/subjects/getSubjectPending/${id_student}`,
+      `${process.env.NEXT_PUBLIC_API_URL}/users/userSchool`,
       {
         withCredentials: true,
         headers: {
@@ -15,9 +16,10 @@ export async function getSubjectPending(id_student) {
         },
       },
     );
+
     return response.data;
   } catch (error) {
-    console.error("Error de conexión con el servidor Flask:", error);
+    console.error("Error al obtener los usuarios:", error);
     return [];
   }
 }

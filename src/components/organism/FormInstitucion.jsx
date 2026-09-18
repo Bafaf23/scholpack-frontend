@@ -3,6 +3,7 @@ import Selector from "../atom/Selector";
 import Button from "../atom/Button";
 import { useState } from "react";
 import { createSchool } from "@/services/school/createSchool";
+import { getCDDE } from "@/services/school/getCDDE";
 import { updateSchool } from "@/services/school/updateSchool";
 import toast from "react-hot-toast";
 import Banner from "../atom/Banner";
@@ -11,10 +12,12 @@ import { faCheck, faInfo } from "@fortawesome/free-solid-svg-icons";
 export default function FormInstitucion({
   institution,
   onSuccess,
+  cdde,
   isEdit = false,
 }) {
   const [loading, setLoading] = useState(false);
   const [currentPage, setCurrentPage] = useState(1);
+
   const [formData, setFormData] = useState({
     SIG: institution?.SIG || "",
     name: institution?.name || institution?.school_name || "",
@@ -177,6 +180,16 @@ export default function FormInstitucion({
                 />
               </div>
             )}
+            <Selector
+              label="Centro de Desarrollo Estudiantil"
+              name="cdceId"
+              value={formData.cdceId}
+              onChange={(e) => handleChange("cdceId", e, target.value)}
+              options={cdde.map((item) => ({
+                value: item.id,
+                label: item.name,
+              }))}
+            />
           </div>
         </div>
       )}

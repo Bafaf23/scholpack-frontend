@@ -60,7 +60,7 @@ export default function FormCargaNotas({
     if (grade === "") return alert("Debes ingresar una calificación");
 
     const formData = {
-      id_student: EstudianteSeleccionado.id,
+      id_student: EstudianteSeleccionado.id_student,
       id_evaluation: idEvaluation,
       grade: grade,
     };

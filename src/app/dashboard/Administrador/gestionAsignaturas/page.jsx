@@ -6,8 +6,9 @@ import SkeletonCard from "@/components/atom/SkeletonCard";
 import ListSubjects from "@/components/molecules/ListSubjects";
 import HeaderGestionMaterias from "@/components/organism/HeaderGestionMaterias";
 import { getSubjects } from "@/services/subject/getSujects";
-import { faInfoCircle } from "@fortawesome/free-solid-svg-icons";
+import { faInfo, faInfoCircle } from "@fortawesome/free-solid-svg-icons";
 import { useCallback, useEffect, useState, startTransition } from "react";
+import Banner from "@/components/atom/Banner";
 
 export default function MateriasPage() {
   const [dataSubjects, setDataSubjects] = useState([]);
@@ -45,34 +46,17 @@ export default function MateriasPage() {
   }, [loadSubjects]);
 
   return (
-    <div className="animate-in fade-in zoom-in-95 duration-500 ease-out">
+    <div>
       {/* Actualización silenciosa premium al crear materia */}
       <HeaderGestionMaterias onSubjectCreated={() => loadSubjects(true)} />
 
       {/* Banner Informativo con Estilo Premium Glassmorphism */}
       <div className="p-4">
-        <div className="flex items-start gap-3 rounded-2xl border border-blue-500/20 bg-blue-500/10 p-4 backdrop-blur-md shadow-sm dark:border-blue-900/30 dark:bg-blue-950/20">
-          <Icon
-            icon={faInfoCircle}
-            className="mt-0.5 text-xl text-blue-600 dark:text-blue-400 shrink-0"
-          />
-          <div className="space-y-1">
-            <h4 className="text-sm font-semibold text-blue-900 dark:text-blue-300">
-              Información Institucional
-            </h4>
-            <p className="text-sm text-blue-700 leading-relaxed dark:text-blue-400/90">
-              Las asignaturas registradas se asignarán automáticamente al{" "}
-              <span className="font-semibold text-blue-900 dark:text-blue-200">
-                Liceo
-              </span>{" "}
-              bajo tu gestión de{" "}
-              <span className="font-semibold text-blue-900 dark:text-blue-200">
-                Administrador
-              </span>
-              .
-            </p>
-          </div>
-        </div>
+        <Banner
+          titel="Sobre las asignaturas"
+          icon={faInfo}
+          message=" Las asignaturas registradas se asignarán automáticamente al Liceo  bajo tu gestión adminstrativa"
+        />
       </div>
 
       {/* Renderizado Condicional de Datos */}
@@ -83,7 +67,7 @@ export default function MateriasPage() {
       ) : (
         <ListSubjects
           dataSubjects={dataSubjects}
-          onSubjectDeleted={() => loadSubjects(true)} // Borrado reactivo invisible sin parpadeos
+          onSubjectDeleted={() => loadSubjects(true)}
         />
       )}
     </div>

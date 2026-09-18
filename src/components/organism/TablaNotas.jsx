@@ -6,10 +6,76 @@ import {
   faUser,
   faAngleDown,
   faInbox,
+  faIndent,
+  faIdCard,
 } from "@fortawesome/free-solid-svg-icons";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 
-export default function TablaNotas({ data, students, notes, activities }) {
+// Componente para la celda individual de notas
+function GradeInput({ initialGrade, onSave }) {
+  const [grade, setGrade] = useState(initialGrade ?? "");
+  const [isSaving, setIsSaving] = useState(false);
+
+  useEffect(() => {
+    // eslint-disable-next-line react-hooks/set-state-in-effect
+    setGrade(initialGrade ?? "");
+  }, [initialGrade]);
+
+  const handleChange = (e) => {
+    const val = e.target.value;
+    if (val === "" || (/^\d*\.?\d*$/.test(val) && Number(val) <= 20)) {
+      setGrade(val);
+    }
+  };
+
+  const handleBlur = async () => {
+    const normalizedGrade = grade === "" ? null : Number(grade);
+    const normalizedInitial =
+      initialGrade === null || initialGrade === undefined
+        ? null
+        : Number(initialGrade);
+
+    if (normalizedGrade === normalizedInitial) return;
+
+    setIsSaving(true);
+    try {
+      await onSave(normalizedGrade);
+    } catch (error) {
+      console.error("Error guardando nota:", error);
+      setGrade(initialGrade ?? "");
+    } finally {
+      setIsSaving(false);
+    }
+  };
+
+  return (
+    <input
+      type="text"
+      inputMode="decimal"
+      value={grade}
+      placeholder="—"
+      onChange={handleChange}
+      onBlur={handleBlur}
+      onKeyDown={(e) => e.key === "Enter" && e.target.blur()}
+      disabled={isSaving}
+      className={`w-14 text-center py-1 px-2 border rounded-md transition-colors font-semibold outline-none text-sm
+        ${
+          isSaving
+            ? "bg-amber-100 text-amber-800 dark:bg-amber-900/40 dark:text-amber-300 border-amber-400"
+            : "dark:bg-zinc-900 text-zinc-800 dark:text-slate-300 border-slate-100 dark:border-zinc-800 focus:border-blue-500 focus:ring-1 focus:ring-blue-500"
+        }
+      `}
+    />
+  );
+}
+
+export default function TablaNotas({
+  data,
+  students = [],
+  notes = [],
+  activities = [],
+  onSaveGrade,
+}) {
   const [isOpen, setIsOpen] = useState(true);
 
   if (!data) {
@@ -21,14 +87,13 @@ export default function TablaNotas({ data, students, notes, activities }) {
   }
 
   const name = data.name;
-  const isActive =
-    data.is_active === true || data.is_active === 1 || data.is_active === "1";
+  const isActive = data.is_active === true;
   const status = isActive ? "Activo" : "Inactivo";
 
   return (
-    <div className="rounded-xl bg-white shadow dark:bg-slate-900 border border-slate-100 dark:border-slate-800/50">
-      {/* Cabecera de la Tarjeta */}
-      <div className="flex items-center justify-between border-b border-slate-200 bg-slate-50/50 px-6 py-4 dark:border-slate-800 dark:bg-slate-800/50 ">
+    <div className="rounded-xl bg-white shadow dark:bg-zinc-900 border border-slate-100 dark:border-slate-800/50 hidden md:block lg:block">
+      {/* Cabecera */}
+      <div className="flex items-center justify-between border-b border-slate-200 bg-slate-50/50 px-6 py-4 dark:border-slate-800 dark:bg-slate-800/50">
         <div>
           <h2 className="text-lg font-bold text-slate-800 dark:text-slate-200 tracking-tight">
             {name}
@@ -57,41 +122,48 @@ export default function TablaNotas({ data, students, notes, activities }) {
         </div>
       </div>
 
-      {/* Contenedor colapsable con soporte completo de scroll interno para listas largas */}
+      {/* Tabla Colapsable */}
       <div
         className={`transition-all duration-300 ease-in-out ${
-          isOpen
-            ? "max-h-[6000px] opacity-100"
-            : "max-h-0 overflow-hidden opacity-0"
+          isOpen ? "max-h-375 opacity-100" : "max-h-0 overflow-hidden opacity-0"
         }`}
       >
-        {/* 🛠️ SOLUCIÓN: Definimos un max-h táctico para pantallas medianas con overflow-y-auto */}
-        <div className="overflow-x-auto overflow-y-auto max-h-[70vh] scrollbar-thin pb-2">
+        <div className="overflow-x-auto overflow-y-auto max-h-[67vh] scrollbar-thin pb-2">
           <table className="w-full border-collapse text-left">
             <thead>
-              {/* 📌 Cabecera pegajosa (Sticky): Al hacer scroll vertical, los títulos no se pierden */}
-              <tr className="sticky top-0 z-10 border-b border-slate-200 bg-slate-50 dark:border-slate-800 dark:bg-slate-900 shadow-sm">
-                <th className="px-6 py-4 text-sm font-bold text-slate-500 dark:text-slate-400">
-                  <Icon icon={faUser} className="mr-2 text-slate-400" />
+              <tr className="sticky top-0 z-10 border-b border-slate-200 bg-slate-50 dark:border-slate-800 dark:bg-slate-950 shadow-sm">
+                <th className="px-6 py-4 text-sm font-bold text-slate-500 dark:text-zinc-200">
+                  <Icon icon={faIndent} className="mr-2" />
+                  N°
+                </th>
+                <th className="px-6 py-4 text-sm font-bold text-slate-500 dark:text-zinc-200">
+                  <Icon icon={faIdCard} className="mr-2" />
+                  Matrícula
+                </th>
+                <th className="px-6 py-4 text-sm font-bold text-slate-500 dark:text-zinc-200">
+                  <Icon icon={faUser} className="mr-2" />
                   Estudiante
                 </th>
                 {activities.map((activity, index) => (
                   <th
-                    className="px-4 py-4 text-center text-sm font-bold text-slate-500 dark:text-slate-400 min-w-[120px]"
+                    className="px-4 py-4 text-center text-sm font-bold text-slate-500 dark:text-slate-400 min-w-30"
                     key={activity.id ?? index}
                   >
-                    <span className="block text-slate-700 dark:text-slate-300 truncate max-w-[150px] mx-auto">
+                    <span className="block text-slate-700 dark:text-slate-300 truncate max-w-37.5 mx-auto">
                       {activity.activity}
+                    </span>
+                    <span className="block text-slate-500 dark:text-slate-300 truncate max-w-37.5 mx-auto">
+                      {activity.referent_teorical}
                     </span>
                     <span className="text-xs text-slate-400 block font-normal mt-0.5">
                       {activity.porcentage}%
                     </span>
                   </th>
                 ))}
-                <th className="px-6 py-4 text-center text-sm font-bold text-slate-600 dark:text-slate-400 bg-slate-100/50 dark:bg-slate-800/50">
+                <th className="px-6 py-4 text-center text-sm font-bold text-slate-600 dark:text-zinc-200 bg-slate-100/50 dark:bg-slate-800/50">
                   Definitiva
                 </th>
-                <th className="px-6 py-4 text-center text-sm font-bold text-slate-500 dark:text-slate-400">
+                <th className="px-6 py-4 text-center text-sm font-bold text-slate-500 dark:text-zinc-200">
                   Estatus
                 </th>
               </tr>
@@ -100,7 +172,7 @@ export default function TablaNotas({ data, students, notes, activities }) {
               {students.length === 0 ? (
                 <tr>
                   <td
-                    colSpan={activities.length + 3}
+                    colSpan={activities.length + 5}
                     className="px-6 py-10 text-center text-slate-400 font-normal"
                   >
                     <Icon
@@ -111,59 +183,78 @@ export default function TablaNotas({ data, students, notes, activities }) {
                   </td>
                 </tr>
               ) : (
-                students.map((student) => {
-                  const notaDelEstudiante = notes.find(
-                    (n) => n.id_student === student.id,
-                  );
+                students.map((student, index) => {
+                  const tuitionNumber = student?.tuition_number;
 
-                  const definitivaRaw = notaDelEstudiante?.final_grade;
-                  const definitiva =
-                    definitivaRaw !== undefined && definitivaRaw !== null
-                      ? parseFloat(definitivaRaw).toFixed(2)
-                      : "0.00";
+                  // Cálculo ponderado acumulado en caliente
+                  const acumulado = activities.reduce((acc, act) => {
+                    console.log(notes);
+                    const currentNote = notes.find(
+                      (n) =>
+                        n.tuition_number === tuitionNumber &&
+                        n.evaluation_id === act.id,
+                    );
+                    const gradeVal = Number(currentNote?.grade ?? 0);
+                    const weight = Number(act.porcentage ?? 0) / 100;
+                    return acc + gradeVal * weight;
+                  }, 0);
 
-                  const approved = parseFloat(definitiva) >= 10.0;
+                  const definitivaNum = Math.round(acumulado);
+                  const definitivaStr = acumulado.toFixed(2);
+                  const approved = definitivaNum >= 10;
 
                   return (
                     <tr
-                      key={student.id}
+                      key={tuitionNumber}
                       className="transition-colors hover:bg-slate-50/40 dark:hover:bg-slate-800/20"
                     >
-                      {/* Nombre del Estudiante */}
+                      <td className="px-6 py-4 font-semibold text-slate-500 dark:text-zinc-200">
+                        {index + 1}
+                      </td>
+                      <td className="px-6 py-4 font-semibold text-cyan-600 dark:text-zinc-200">
+                        {student.tuition_number}
+                      </td>
                       <td className="px-6 py-4">
                         <div className="flex flex-col">
-                          <span className="font-semibold text-slate-700 dark:text-slate-300">
+                          <span className="font-semibold text-slate-700 dark:text-zinc-200">
                             {student.name} {student.last_name}
                           </span>
-                          <span className="text-xs text-slate-400 font-normal mt-0.5">
-                            {student.document || `C.I: ${student.id}`}
+                          <span className="text-xs text-slate-400 font-normal mt-0.5 dark:text-zinc-500">
+                            {student.id_card}
                           </span>
                         </div>
                       </td>
 
-                      {/* Celdas de Evaluaciones Individuales */}
+                      {/* Celdas de Evaluaciones */}
                       {activities.map((activity, aIndex) => {
                         const currentNote = notes.find(
                           (n) =>
-                            n.id_student === student.id &&
-                            n.id_evaluation === activity.id,
+                            n.tuition_number === tuitionNumber &&
+                            n.evaluation_id === activity.id,
                         );
-
-                        const hasGrade =
-                          currentNote?.grade !== null &&
-                          currentNote?.grade !== undefined;
 
                         return (
                           <td
-                            className="px-4 py-4 text-center text-slate-600 dark:text-slate-400 font-bold"
+                            className="px-4 py-4 text-center font-bold"
                             key={activity.id ?? aIndex}
                           >
-                            {hasGrade ? currentNote.grade : "—"}
+                            <GradeInput
+                              initialGrade={currentNote?.grade}
+                              onSave={async (newGrade) => {
+                                if (onSaveGrade) {
+                                  await onSaveGrade({
+                                    id_student: student.id_student,
+                                    id_evaluation: activity.id,
+                                    grade: newGrade,
+                                  });
+                                }
+                              }}
+                            />
                           </td>
                         );
                       })}
 
-                      {/* Celda de la Nota Definitiva */}
+                      {/* Nota Definitiva */}
                       <td className="px-6 py-4 text-center bg-slate-50/30 dark:bg-slate-800/10">
                         <span
                           className={`text-sm font-black ${
@@ -171,8 +262,9 @@ export default function TablaNotas({ data, students, notes, activities }) {
                               ? "text-emerald-600 dark:text-emerald-400"
                               : "text-red-500 dark:text-red-400"
                           }`}
+                          title={`Nota acumulada exacta: ${definitivaStr}`}
                         >
-                          {definitiva}
+                          {definitivaNum}
                         </span>
                       </td>
 
@@ -189,7 +281,7 @@ export default function TablaNotas({ data, students, notes, activities }) {
                             className={`h-1.5 w-1.5 rounded-full ${
                               approved ? "bg-emerald-500" : "bg-red-500"
                             }`}
-                          ></span>
+                          />
                           {approved ? "Aprobado" : "Reprobado"}
                         </span>
                       </td>

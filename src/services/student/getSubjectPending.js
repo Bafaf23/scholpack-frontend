@@ -1,14 +1,13 @@
 import axios from "axios";
 
 /**
- * Obtiene las instituciones del sistema desde el backend Flask.
- * @param {string} SIG Codigo SIG del Colegio
- * @returns {Promise<Object>}
+ * Obtiene las materias pendientes de un estudiante
+ * @returns {Promise<Array<Object>>}
  */
-export async function getSchoolBySIG(SIG) {
+export async function getSubjectPending(id_student) {
   try {
     const response = await axios.get(
-      `${process.env.NEXT_PUBLIC_API_URL}/schools/${SIG}`,
+      `${process.env.NEXT_PUBLIC_API_URL}/students/${id_student}/subject-pending`,
       {
         withCredentials: true,
         headers: {
@@ -16,7 +15,6 @@ export async function getSchoolBySIG(SIG) {
         },
       },
     );
-
     return response.data;
   } catch (error) {
     console.error("Error de conexión con el servidor Flask:", error);

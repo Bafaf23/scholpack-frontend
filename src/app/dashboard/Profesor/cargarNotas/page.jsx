@@ -6,12 +6,13 @@ import Icon from "@/components/atom/Icon";
 import Selector from "@/components/atom/Selector";
 import AccessDenied from "@/components/molecules/AccessDenied";
 import FormCargaNotas from "@/components/molecules/FromCargaNotas";
+import { createGrade } from "@/services/grades/createGrade";
 import HeaderDashbord from "@/components/molecules/HeaderDashbord";
 import Modal from "@/components/organism/Modal";
 import TablaNotas from "@/components/organism/TablaNotas";
 import { useAuth } from "@/context/AuthContext";
 import { getEvaluation } from "@/services/evaluation/getEvaluation";
-import { getGrades } from "@/services/grades/getGrades";
+import { getGradeAcrivity } from "@/services/grades/getGradeActivity";
 import { getLapses } from "@/services/lapse/getLapse";
 import { getStudentSection } from "@/services/section/getStudentSection";
 import { getLoadAcademic } from "@/services/teachers/getLoadAcademic";
@@ -32,32 +33,35 @@ export default function CargarNotas() {
   const [activities, setActivities] = useState([]);
   const [refreshNotas, setRefreshNotas] = useState(false);
 
-  const activeLapse = lapses.find(
-    (lapse) =>
-      lapse.is_active === true ||
-      lapse.is_active === 1 ||
-      lapse.is_active === "1",
-  );
+  const activeLapse = lapses.find((lapse) => lapse.is_active === true);
 
-  // Carga inicial: Materias del Profesor
+  // 1. Carga inicial: Materias del Profesor
   useEffect(() => {
-    if (!user?.user?.id) return;
+    const userId = user?.user?.id ?? user?.id;
+    if (!userId) return;
 
     const loadPantallaInicial = async () => {
       try {
         setLoadingPantalla(true);
         const cargaResponse = await getLoadAcademic();
-        setSubjects(cargaResponse?.data ?? []);
+
+        const rawLoads =
+          cargaResponse?.data?.load_academics ??
+          cargaResponse?.data ??
+          (Array.isArray(cargaResponse) ? cargaResponse : []);
+
+        setSubjects(Array.isArray(rawLoads) ? rawLoads : []);
       } catch (error) {
         console.error("Error al cargar los datos de la pantalla:", error);
       } finally {
         setLoadingPantalla(false);
       }
     };
-    loadPantallaInicial();
-  }, [user?.user?.id]);
 
-  // Carga de Lapsos de la escuela (CORREGIDO)
+    loadPantallaInicial();
+  }, [user?.user?.id, user?.id]);
+
+  // 2. Carga de Lapsos de la escuela
   useEffect(() => {
     const fetchLapses = async () => {
       const response = await getLapses();
@@ -65,7 +69,6 @@ export default function CargarNotas() {
         toast.error(response.error);
         return;
       }
-      // Accedemos a response.data que contiene el arreglo real de Momentos de SIGACE
       const rawLapses = response?.data ?? response;
       setLapses(Array.isArray(rawLapses) ? rawLapses : []);
     };
@@ -73,9 +76,10 @@ export default function CargarNotas() {
     fetchLapses();
   }, []);
 
-  // Sincronización de datos de la materia en paralelo
+  // 3. Sincronización de datos de la materia en paralelo
   useEffect(() => {
-    const idLoadAcademic = selectedSubject?.id_load_academic;
+    const idLoadAcademic = selectedSubject?.id;
+    const idSection = selectedSubject?.section?.id;
 
     if (!idLoadAcademic) {
       // eslint-disable-next-line react-hooks/set-state-in-effect
@@ -90,20 +94,26 @@ export default function CargarNotas() {
     const fetchMateriaData = async () => {
       setLoadingNotes(true);
       try {
-        const idSection = selectedSubject?.id_section;
+        const currentLapses = Array.isArray(lapses) ? lapses : [];
 
-        const [gradesRes, studentsRes, activitiesRes] = await Promise.all([
-          getGrades(idLoadAcademic),
+        // Ejecutar estudiantes, evaluaciones y notas en paralelo
+        const [studentsRes, activitiesRes, gradesRes] = await Promise.all([
           idSection ? getStudentSection(idSection) : Promise.resolve([]),
-          lapses && lapses.length > 0
+          currentLapses.length > 0
             ? Promise.all(
-                lapses.map(async (lapso) => {
+                currentLapses.map(async (lapso) => {
                   const res = await getEvaluation(idLoadAcademic, lapso.id);
-                  const rawList = Array.isArray(res) ? res : (res?.data ?? []);
+                  const rawList = Array.isArray(res)
+                    ? res
+                    : Array.isArray(res?.data)
+                      ? res.data
+                      : [];
 
                   const uniqueList = rawList.filter(
                     (item, index, self) =>
-                      self.findIndex((t) => t.id === item.id) === index,
+                      item &&
+                      item.id &&
+                      self.findIndex((t) => t?.id === item.id) === index,
                   );
 
                   return {
@@ -113,12 +123,14 @@ export default function CargarNotas() {
                 }),
               )
             : Promise.resolve([]),
+
+          getGradeAcrivity(idLoadAcademic),
         ]);
 
         if (!isMounted) return;
 
-        // 1. Procesar notas
-        const emptyGradesByLapse = lapses.map((lapso) => ({
+        // Procesar notas
+        const emptyGradesByLapse = currentLapses.map((lapso) => ({
           id: lapso.id,
           id_lapse: lapso.id,
           name: lapso.name,
@@ -132,36 +144,25 @@ export default function CargarNotas() {
           }
           setNotesData(emptyGradesByLapse);
         } else {
-          const flatGrades = Array.isArray(gradesRes?.data)
-            ? gradesRes.data
-            : Array.isArray(gradesRes)
-              ? gradesRes
-              : [];
-
-          setNotesData(
-            lapses.map((lapso) => ({
-              id: lapso.id,
-              id_lapse: lapso.id,
-              name: lapso.name,
-              is_active: lapso.is_active,
-              students: flatGrades.filter((g) => g.lapse_name === lapso.name),
-            })),
-          );
+          setNotesData(gradesRes.data);
         }
 
-        // 2. Procesar Estudiantes
+        // Procesar Estudiantes
         if (studentsRes?.error) {
           toast.error(studentsRes.error);
+          setEstudiantesDisponibles([]);
         } else {
-          setEstudiantesDisponibles(
-            Array.isArray(studentsRes)
-              ? studentsRes
-              : (studentsRes?.data ?? []),
-          );
+          const studentList = Array.isArray(studentsRes)
+            ? studentsRes
+            : Array.isArray(studentsRes?.data?.students)
+              ? studentsRes.data.students
+              : [];
+
+          setEstudiantesDisponibles(studentList);
         }
 
-        // 3. Guardar Evaluaciones
-        setActivities(activitiesRes);
+        // Guardar Evaluaciones
+        setActivities(Array.isArray(activitiesRes) ? activitiesRes : []);
       } catch (error) {
         console.error("Error cargando datos de la sección:", error);
         if (isMounted)
@@ -177,58 +178,80 @@ export default function CargarNotas() {
       isMounted = false;
     };
   }, [
-    selectedSubject?.id_load_academic,
-    selectedSubject?.id_section,
+    selectedSubject?.id,
+    selectedSubject?.section?.id,
     refreshNotas,
+    lapses.length,
     lapses,
   ]);
+
+  // Handler para guardar o actualizar una nota individual desde la tabla
+  const handleSaveGrade = async ({ id_student, id_evaluation, grade }) => {
+    try {
+      const response = await createGrade({
+        id_student,
+        id_evaluation,
+        grade,
+      });
+
+      if (response?.error) {
+        toast.error(response.error);
+        throw new Error(response.error);
+      }
+
+      toast.success("Nota actualizada correctamente");
+      setRefreshNotas((prev) => !prev);
+    } catch (error) {
+      console.error("Error guardando calificación:", error);
+      throw error;
+    }
+  };
 
   if (loading || loadingPantalla) return <Loading />;
 
   const role = user?.user?.role ?? user?.role;
-  if (!user || role !== "Profesor") {
+  if (!user || role !== "profesor") {
     return <AccessDenied />;
   }
 
   return (
     <>
-      <div className="flex flex-col items-start justify-between md:flex-row">
-        <HeaderDashbord titelPage={"Cargar notas"} />
-      </div>
+      <HeaderDashbord titelPage={"Cargar notas"} />
 
-      <div className="mt-6 flex flex-col gap-5 p-3 font-bold text-gray-500/60">
-        <div className="flex flex-col justify-between md:flex-row md:items-center lg:flex-row">
+      <div className="flex flex-col gap-5 p-3 font-bold text-gray-500/60">
+        <div className="flex flex-col justify-between md:flex-row md:items-center lg:flex-row gap-4 w-full">
           {subjects.length > 0 && (
             <div className="max-w-xs">
               <Selector
-                options={subjects.map((subject) => ({
-                  value: subject.code_subject,
-                  label: `${subject.subject_name} - ${subject.year_name} "${subject.section_name}"`,
+                options={subjects.map((item) => ({
+                  value: item.id.toString(),
+                  label: `${item.subject?.name ?? ""} - ${item.section?.year?.name ?? ""} "${item.section?.name ?? ""}"`,
                 }))}
                 name="materia"
-                label="Materia"
-                value={selectedSubject?.code_subject ?? ""}
+                label="Asignatura"
+                value={selectedSubject?.id?.toString() ?? ""}
                 onChange={(e) => {
-                  const subject = subjects.find(
-                    (s) => s.code_subject === e.target.value,
-                  );
+                  const selectedId = Number(e.target.value);
+                  const subject = subjects.find((s) => s.id === selectedId);
                   if (subject) setSelectedSubject(subject);
                 }}
               />
             </div>
           )}
+
           {activeLapse && selectedSubject && (
             <div>
               <Button
                 classNameBtn={
-                  "bg-indigo-500 p-2 rounded-md text-slate-50 font-bold cursor-pointer flex items-center gap-1"
+                  "bg-indigo-500 p-3 rounded-lg text-slate-50 font-bold cursor-pointer flex items-center gap-1 w-full"
                 }
                 icon={faPlus}
                 disabled={!activeLapse || !selectedSubject}
                 onClick={() => setIsModalOpen(true)}
               >
-                {"Añadir Nueva Calificación"}
+                {"Nueva Calificacion"}
               </Button>
+
               <Modal
                 isOpen={isModalOpen}
                 onClose={() => setIsModalOpen(false)}
@@ -242,7 +265,7 @@ export default function CargarNotas() {
                   }
                   onSave={() => {
                     setRefreshNotas((prev) => !prev);
-                    setIsModalOpen(false); // Cierra automáticamente el modal tras guardar exitosamente
+                    setIsModalOpen(false);
                   }}
                   onCancel={() => setIsModalOpen(false)}
                 />
@@ -260,21 +283,20 @@ export default function CargarNotas() {
             Cargando notas...
           </div>
         ) : (
-          lapses.map((lapso) => (
-            <TablaNotas
-              data={lapso}
-              students={EstudiantesDisponibles}
-              activities={
-                activities.find((a) => a.id_lapse === lapso.id)?.list ?? []
-              }
-              notes={
-                notesData.find(
-                  (n) => n.id === lapso.id || n.id_lapse === lapso.id,
-                )?.students ?? []
-              }
-              key={lapso.id}
-            />
-          ))
+          lapses.map((lapso) => {
+            return (
+              <TablaNotas
+                key={lapso.id}
+                data={lapso}
+                students={EstudiantesDisponibles}
+                activities={
+                  activities.find((a) => a.id_lapse === lapso.id)?.list ?? []
+                }
+                notes={notesData}
+                onSaveGrade={handleSaveGrade}
+              />
+            );
+          })
         )}
       </div>
     </>

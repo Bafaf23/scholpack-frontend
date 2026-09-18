@@ -7,7 +7,7 @@ import axios from "axios";
 export async function getPeriodStudent(idStudent) {
   try {
     const response = await axios.get(
-      `${process.env.NEXT_PUBLIC_API_URL}/periods/periodStudent/${idStudent}`,
+      `${process.env.NEXT_PUBLIC_API_URL}/enrollments/${idStudent}/enrollments`,
       {
         withCredentials: true,
         headers: {

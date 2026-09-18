@@ -7,6 +7,7 @@ import AccessDenied from "@/components/molecules/AccessDenied";
 import HeaderDashbord from "@/components/molecules/HeaderDashbord";
 import { useAuth } from "@/context/AuthContext";
 import { getStudents } from "@/services/student/getStudents";
+import Banner from "@/components/atom/Banner";
 import { getTeachersAll } from "@/services/teachers/getTeachersAll";
 import { getSubjects } from "@/services/subject/getSujects";
 import { getSection } from "@/services/section/getSection";
@@ -126,19 +127,14 @@ export default function AdminPage() {
             description="Asignaturas base cargadas"
           />
 
-          {/* Banner Informativo Minimalista con efecto de cristal de la suite premium */}
-          <div className="col-span-1 sm:col-span-2 md:col-span-3 lg:col-span-4 mt-2">
-            <div className="flex items-center gap-3 p-4 border border-slate-200 bg-slate-50/50 dark:border-slate-800 dark:bg-slate-900/40 backdrop-blur-md rounded-2xl border-dashed">
-              <Icon
-                icon={faCircleInfo}
-                className="text-xl text-slate-400 dark:text-slate-500 shrink-0"
-              />
-              <span className="text-xs font-medium text-slate-500 dark:text-slate-400 tracking-wide">
-                Garantía de Resguardo: Cada alteración de notas, lapsos o cargas
-                académicas queda auditada en el expediente central de{" "}
-                <strong>SIGACE</strong>.
-              </span>
-            </div>
+          <div className="col-span-4">
+            <Banner
+              titel="La segurida es lo primero"
+              icon={faCircleInfo}
+              message="Cada alteración de notas, lapsos o cargas
+                académicas queda auditada en el expediente central de
+                ScholPack"
+            />
           </div>
         </section>
       </main>

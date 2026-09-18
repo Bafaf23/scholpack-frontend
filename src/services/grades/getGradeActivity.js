@@ -1,14 +1,14 @@
 import axios from "axios";
 
 /**
- * Obtiene las calificaciones agrupadas por lapso de una carga académica.
+ * Obtiene las notas de un estudiante segun la carga a cademica
  * @param {number} idLoadAcademic - ID de la carga académica
  * @returns {Promise<Array|{error: string}>}
  */
-export const getGrades = async (idLoadAcademic, id_lapse) => {
+export const getGradeAcrivity = async (idLoadAcademic, idEvaluation) => {
   try {
     const response = await axios.get(
-      `${process.env.NEXT_PUBLIC_API_URL}/grades/${idLoadAcademic}?id_lapse=${id_lapse}`,
+      `${process.env.NEXT_PUBLIC_API_URL}/grades/${idLoadAcademic}/activity`,
       {
         withCredentials: true,
         headers: {

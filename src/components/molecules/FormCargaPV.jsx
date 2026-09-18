@@ -41,7 +41,7 @@ export default function FormCargaPV({
       return;
     }
 
-    const newId = response?.result?.id;
+    const newId = response?.data?.id;
     if (onSuccess && newId) {
       const evaluation = {
         id: newId, // ID único para la clave (key) de React y borrados

@@ -3,7 +3,7 @@ import HeaderDashbord from "@/components/molecules/HeaderDashbord";
 import Icon from "@/components/atom/Icon";
 import { faCircleInfo } from "@fortawesome/free-solid-svg-icons";
 import RecordAcademico from "@/components/organism/AcademicRecord";
-import { getPeriodStudent } from "@/services/academicPeriod/getPeriodStudent";
+import { getPeriodStudent } from "@/services/enrollment/getPeriodStudent";
 import { useState, useEffect } from "react";
 import { useAuth } from "@/context/AuthContext";
 import Loading from "@/app/loading";
@@ -22,7 +22,7 @@ export default function RecordPega() {
   if (!user) return <Loading />;
 
   if (user?.user.role != "Estudiante") return <AccessDenied />;
-  
+
   return (
     <>
       <HeaderDashbord titelPage="Récord Académico" />

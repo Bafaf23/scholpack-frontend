@@ -48,14 +48,7 @@ export default function ListSubjects({ dataSubjects, onSubjectDeleted }) {
                   Abreviatura
                 </th>
                 <th className="px-6 py-4 text-[11px] font-bold tracking-widest text-slate-400 uppercase">
-                  Materia
-                </th>
-                <th className="px-6 py-4 text-[11px] font-bold tracking-widest text-slate-400 uppercase">
-                  Año / Grado
-                </th>
-
-                <th className="px-6 py-4 text-right text-[11px] font-bold tracking-widest text-slate-400 uppercase">
-                  Acciones
+                  Asignatura
                 </th>
               </tr>
             </thead>
@@ -83,18 +76,6 @@ export default function ListSubjects({ dataSubjects, onSubjectDeleted }) {
                       {subject.area || "Formación General"}
                     </div>
                   </td>
-                  <td className="px-6 py-4 text-sm text-slate-600 dark:text-slate-400">
-                    {subject.year?.name}
-                  </td>
-
-                  <td className="px-6 py-4">
-                    <div className="flex items-center justify-end gap-3">
-                      <SubjectActions
-                        subject={subject}
-                        onSubjectDeleted={onSubjectDeleted}
-                      />
-                    </div>
-                  </td>
                 </tr>
               ))}
             </tbody>
@@ -103,8 +84,7 @@ export default function ListSubjects({ dataSubjects, onSubjectDeleted }) {
           {/* Footer de la tabla para paginación o info extra */}
           <div className="border-t border-slate-100 bg-slate-50/30 px-6 py-3 dark:border-slate-800 dark:bg-slate-900/50">
             <p className="text-[10px] text-slate-400">
-              Mostrando {dataSubjects?.length} materias asignadas al periodo
-              actual.
+              Total de asignaturas {dataSubjects?.length}
             </p>
           </div>
         </div>

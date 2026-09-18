@@ -96,7 +96,7 @@ export default function FromLogin({ schoolName }) {
           {hasRememberedUser ? (
             <h1 className="mb-2 text-3xl font-extrabold uppercase text-transparent bg-clip-text bg-linear-to-r from-amber-600 via-orange-600 to-cyan-500 ">
               ¡{getGreeting()}!,{" "}
-              <span className="capitalize text-slate-900">
+              <span className="capitalize text-slate-900 dark:text-zinc-100">
                 {hasRememberedUser ? rememberUser.name : ""}
               </span>
             </h1>
@@ -106,9 +106,9 @@ export default function FromLogin({ schoolName }) {
             </h1>
           )}
 
-          <p className="text-sm font-medium text-slate-600 dark:text-slate-300 tracking-wide">
+          <p className="text-sm font-medium text-slate-600 dark:text-zinc-300 tracking-wide">
             Ingresa al sistema de{" "}
-            <span className="font-bold text-xl">
+            <span className="font-bold text-xl text-slate-800 dark:text-zinc-100">
               {schoolName ? schoolName : "ADMIN SUDO"}
             </span>{" "}
             para continuar.
@@ -149,7 +149,7 @@ export default function FromLogin({ schoolName }) {
           <div className="flex justify-between mt-8 items-center">
             {hasRememberedUser ? (
               <Button
-                classNameBtn="text-sm text-orange-400 underline cursor-pointer hover:text-orange-600"
+                classNameBtn="text-sm text-orange-400 hover:text-orange-500 dark:text-orange-400 dark:hover:text-orange-300 underline cursor-pointer"
                 onClick={forgetUser}
                 icon={faDeleteLeft}
               >
@@ -164,11 +164,11 @@ export default function FromLogin({ schoolName }) {
                     name="rememberMe"
                     checked={formData.rememberMe}
                     onChange={handleChange}
-                    className="w-4 h-4 rounded border-slate-300 text-orange-600 focus:ring-orange-500 cursor-pointer"
+                    className="w-4 h-4 rounded border-slate-300 dark:border-zinc-700 text-orange-600 focus:ring-orange-500 cursor-pointer bg-white dark:bg-zinc-800"
                   />
                   <label
                     htmlFor="remember"
-                    className="text-slate-600 dark:text-slate-300 cursor-pointer select-none font-medium"
+                    className="text-slate-600 dark:text-zinc-300 cursor-pointer select-none font-medium"
                   >
                     Recordar usuario
                   </label>
@@ -179,12 +179,12 @@ export default function FromLogin({ schoolName }) {
             <Links
               icon={faKey}
               direction="/resetpass"
-              className="text-sm font-semibold text-cyan-600 hover:text-cyan-700 text-center md:text-left gap-2"
+              className="text-sm font-semibold text-cyan-600 hover:text-cyan-700 dark:text-cyan-400 dark:hover:text-cyan-300 text-center md:text-left gap-2"
               label={"¿Olvidaste tu contraseña?"}
             ></Links>
           </div>
           <Button
-            classNameBtn="w-full mt-8 bg-orange-600 hover:bg-orange-700 text-white py-4 rounded-2xl font-bold transition-all flex justify-center items-center gap-2"
+            classNameBtn="w-full mt-8 bg-orange-600 hover:bg-orange-700 dark:bg-orange-600 dark:hover:bg-orange-500 text-white py-4 rounded-2xl font-bold transition-all flex justify-center items-center gap-2 shadow-md dark:shadow-none"
             icon={faKey}
             type="submit"
             disabled={loading}
