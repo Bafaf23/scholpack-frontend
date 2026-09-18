@@ -51,17 +51,17 @@ export const menuLink = {
     {
       icon: faHome,
       label: "Mi Inicio",
-      href: "/dashboard/Estudiante",
+      href: "/dashboard/estudiante",
     },
     {
       icon: faListCheck,
       label: "Mis Notas",
-      href: "/dashboard/Estudiante/notas",
+      href: "/dashboard/estudiante/notas",
     },
     {
       icon: faGraduationCap,
       label: "Mi record Academico",
-      href: "/dashboard/Estudiante/record",
+      href: "/dashboard/estudiante/record",
     },
   ],
   administrador: [

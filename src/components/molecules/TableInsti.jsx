@@ -1,12 +1,5 @@
 import Icon from "../atom/Icon";
-import {
-  faLocationDot,
-  faPhone,
-  faIdCard,
-  faBook,
-  faBuilding,
-  faBoxOpen,
-} from "@fortawesome/free-solid-svg-icons";
+import { faBook, faBoxOpen } from "@fortawesome/free-solid-svg-icons";
 
 /**
  *
@@ -20,9 +13,9 @@ import {
  * @expal
  * <TableInsti
  *  titelTable={[
- *    { label: "Nombre", key: "name" },
- *    { label: "Dirección", key: "address" },
- *    { label: "Teléfono", key: "phone" },
+ *    { name: "Nombre", icon: icon },
+ *    { name: "Dirección", icon: icon },
+ *    { name: "Teléfono", icon: icon },
  *  ]}
  *  data={data}
  * />
@@ -43,7 +36,7 @@ export default function TableInsti({
   }
 
   return (
-    <div className="p-2">
+    <div>
       {/* lista de instituciones mobile */}
       <div className="grid grid-cols-1 gap-4 md:hidden">
         {data.length === 0 ? (
@@ -77,9 +70,7 @@ export default function TableInsti({
                 {titelTable.map((titel, index) => (
                   <th
                     key={index}
-                    className={`${
-                      titel.className || "px-6 py-4"
-                    } text-sm font-semibold text-slate-600 dark:text-zinc-200`}
+                    className={`${titel.className} px-6 py-4 text-sm font-semibold text-slate-600 dark:text-zinc-200`}
                   >
                     {titel.icon && <Icon icon={titel.icon} className="mr-2" />}
                     {titel.name}

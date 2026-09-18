@@ -5,7 +5,7 @@ import InfoCard from "@/components/atom/InfoCard";
 import AccessDenied from "@/components/molecules/AccessDenied";
 import HeaderDashbord from "@/components/molecules/HeaderDashbord";
 import { useAuth } from "@/context/AuthContext";
-import { getGrade } from "@/services/student/getGrade";
+import { getPeriodStudent } from "@/services/enrollment/getPeriodStudent";
 import {
   faCalendarCheck,
   faLayerGroup,
@@ -14,7 +14,6 @@ import {
 import { useState, useEffect } from "react";
 
 export default function DashboardStudentPage() {
-  // Nota: Asegúrate de si tu contexto exporta 'loadingU' o 'loading'. Usaré 'loading' por consistencia.
   const { user, loading: authLoading } = useAuth();
 
   const [sectionData, setSectionData] = useState({});
@@ -26,8 +25,9 @@ export default function DashboardStudentPage() {
     const fetchSection = async () => {
       try {
         setDataLoading(true);
-        const result = await getGrade(user.user.id_user);
-        setSectionData(result.data);
+        const result = await getPeriodStudent(user.user.id_student);
+        const enrollmentActive = result.data.find((e) => e.status === "activo");
+        setSectionData(enrollmentActive);
       } catch (error) {
         console.error("Error al obtener el grado/sección:", error);
       } finally {
@@ -38,18 +38,16 @@ export default function DashboardStudentPage() {
     fetchSection();
   }, [user]);
 
-  // Primero esperamos a que el contexto de autenticación termine
   if (authLoading) return <Loading />;
 
-  // Extraemos el rol para validar accesos
   const role = user?.user?.role ?? user?.role;
-  if (!user || role !== "Estudiante") {
+
+  if (!user || role !== "estudiante") {
     return <AccessDenied />;
   }
 
-  // Si la autenticación ya pasó, pero aún estamos buscando los datos de la sección en la API
   if (dataLoading) return <Loading />;
-  console.log(sectionData);
+
   return (
     <div className="animate-in fade-in duration-500 h-full">
       <HeaderDashbord user={user} />
@@ -57,7 +55,7 @@ export default function DashboardStudentPage() {
       <section className="p-3 grid md:grid-cols-2 gap-3">
         <InfoCard
           label="Año"
-          value={sectionData?.year ?? "No asignado"}
+          value={sectionData?.section.year.name ?? "No asignado"}
           icon={faLayerGroup}
           colorClass="bg-orange-500/50 text-orange-600"
           description="Este es el año en el que estás cursando actualmente"
@@ -65,7 +63,7 @@ export default function DashboardStudentPage() {
 
         <InfoCard
           label="Sección"
-          value={sectionData?.section ?? "N/A"} // Asumo que el servicio también traerá la sección dinámica
+          value={sectionData?.section.name ?? "N/A"} // Asumo que el servicio también traerá la sección dinámica
           icon={faChalkboardUser}
           colorClass="bg-green-500/50 text-green-600"
           description="Esta es la sección a la que perteneces"

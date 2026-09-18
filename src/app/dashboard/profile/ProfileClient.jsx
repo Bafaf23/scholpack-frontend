@@ -46,35 +46,37 @@ export default function ProfileClient() {
     <div className="mx-auto w-full max-w-5xl p-4 md:p-6 animate-fade-in">
       {/* HEADER PRINCIPAL - ADAPTADO A ZINC / ORANGE */}
       <header className="mb-8 flex flex-col sm:flex-row sm:items-center justify-between gap-4 bg-slate-50 dark:bg-zinc-900/50 p-6 rounded-3xl border border-slate-200/80 dark:border-zinc-800">
-        <div className="flex items-center gap-4">
-          <div className="flex h-16 w-16 shrink-0 items-center justify-center rounded-2xl bg-linear-to-tr from-orange-500 to-orange-600 shadow-md shadow-orange-500/20">
-            <span className="text-2xl font-extrabold tracking-tight text-white uppercase">
-              {user?.name ? user.name.charAt(0) : ""}
-              {user?.lastName
-                ? user.lastName.charAt(0)
-                : user?.last_name
-                  ? user.last_name.charAt(0)
-                  : ""}
-            </span>
+        <div className="flex items-center justify-between gap-4 w-full">
+          <div className="flex items-center gap-5">
+            <div className="flex h-16 w-16 shrink-0 items-center justify-center rounded-2xl bg-linear-to-tr from-orange-500 to-orange-600 shadow-md shadow-orange-500/20">
+              <span className="text-2xl font-extrabold tracking-tight text-white uppercase">
+                {user?.name ? user.name.charAt(0) : ""}
+                {user?.lastName
+                  ? user.lastName.charAt(0)
+                  : user?.last_name
+                    ? user.last_name.charAt(0)
+                    : ""}
+              </span>
+            </div>
+            <div className="flex flex-col">
+              <h1 className="text-2xl md:text-3xl font-black tracking-tight text-slate-800 dark:text-zinc-100 capitalize">
+                {user?.name} {user?.last_name}
+              </h1>
+              <p className="text-sm font-medium text-cyan-600 dark:text-cyan-400 mt-0.5 flex items-center gap-2">
+                <span className="bg-cyan-50 dark:bg-cyan-950/40 px-2.5 py-0.5 rounded-full capitalize text-xs border border-cyan-200/60 dark:border-cyan-800/40">
+                  {user?.role || "Usuario"}
+                </span>
+                <span className="text-slate-300 dark:text-zinc-700 hidden md:block">
+                  •
+                </span>
+                <span className="text-slate-500 dark:text-zinc-400 text-xs hidden md:block">
+                  {user?.email}
+                </span>
+              </p>
+            </div>
           </div>
-          <div className="flex flex-col">
-            <h1 className="text-2xl md:text-3xl font-black tracking-tight text-slate-800 dark:text-zinc-100 capitalize">
-              {user?.name} {user?.last_name}
-            </h1>
-            <p className="text-sm font-medium text-cyan-600 dark:text-cyan-400 mt-0.5 flex items-center gap-2">
-              <span className="bg-cyan-50 dark:bg-cyan-950/40 px-2.5 py-0.5 rounded-full capitalize text-xs border border-cyan-200/60 dark:border-cyan-800/40">
-                {user?.role || "Usuario"}
-              </span>
-              <span className="text-slate-300 dark:text-zinc-700 hidden md:block">
-                •
-              </span>
-              <span className="text-slate-500 dark:text-zinc-400 text-xs hidden md:block">
-                {user?.email}
-              </span>
-            </p>
-          </div>
+          <ThemeToggle />
         </div>
-        <ThemeToggle />
       </header>
 
       {/* CUERPO CENTRAL ASIMÉTRICO */}

@@ -80,10 +80,11 @@ export default function GestionEstudiantesPage() {
 
   // Filtrado reactivo
   const filteredStudents = students.filter((student) => {
-    const cedulaStr = String(student?.user.id_card || "");
+    const tuitionNumber = String(student?.tuition_number || "");
     const nameStr = String(student?.user.name || "");
     const lastNameStr = String(student?.user.last_name || "");
-    const completeTerm = `${cedulaStr} ${nameStr} ${lastNameStr}`.toLowerCase();
+    const completeTerm =
+      `${tuitionNumber} ${nameStr} ${lastNameStr}`.toLowerCase();
 
     return completeTerm.includes(appliedFilter.toLowerCase().trim());
   });
@@ -140,7 +141,7 @@ export default function GestionEstudiantesPage() {
         <div className="p-4 flex flex-col sm:flex-row justify-between items-stretch sm:items-center gap-4 bg-white/70 dark:bg-zinc-900/60 backdrop-blur-md border border-slate-200/80 dark:border-zinc-700/50 rounded-2xl mb-4 shadow-sm">
           <div className="w-full sm:max-w-md">
             <Search
-              placeholder="Buscar por cédula o nombre..."
+              placeholder="J0289202626, V300000, Juan..."
               search={search}
               setSearch={setSearch}
               onSearch={handleSearch}
@@ -175,228 +176,230 @@ export default function GestionEstudiantesPage() {
           <SkeletonCard />
         </div>
       ) : (
-        <TableInsti
-          titelTable={[
-            { name: "Número de Matrícula", icon: faIdCard },
-            { name: "Nombre y Apellido", icon: faUser },
-            { name: "Nacimiento / Género", icon: faCalendar },
-            { name: "Contacto", icon: faUser },
-            { name: "Representante Legal", icon: faUserTie },
-            { name: "Grado y Sección", icon: faBook },
-            { name: "Acciones", icon: faClipboardList },
-          ]}
-          data={filteredStudents}
-          renderTableRows={(student) => (
-            <tr
-              key={student.id}
-              className="transition-colors hover:bg-slate-50/50 dark:hover:bg-slate-900/30 group border-b border-slate-100 dark:border-slate-800"
-            >
-              <td className="px-6 py-4">
-                <div className="flex flex-col gap-1.5">
-                  <Link
-                    href={`/dashboard/administrador/gestionEstudiantes/${student.id}`}
-                    className="font-bold text-cyan-700 dark:text-cyan-400 text-xs uppercase tracking-wide border border-cyan-500/20 rounded-lg px-2.5 py-1 inline-flex items-center bg-cyan-500/10 w-fit hover:bg-cyan-500/20 transition-colors"
-                  >
-                    {student.tuition_number}
-                  </Link>
+        <div className="p-2">
+          <TableInsti
+            titelTable={[
+              { name: "Número de Matrícula", icon: faIdCard },
+              { name: "Nombre y Apellido", icon: faUser },
+              { name: "Nacimiento / Género", icon: faCalendar },
+              { name: "Contacto", icon: faUser },
+              { name: "Representante Legal", icon: faUserTie },
+              { name: "Grado y Sección", icon: faBook },
+              { name: "Acciones", icon: faClipboardList },
+            ]}
+            data={filteredStudents}
+            renderTableRows={(student) => (
+              <tr
+                key={student.id}
+                className="transition-colors hover:bg-slate-50/50 dark:hover:bg-slate-900/30 group border-b border-slate-100 dark:border-slate-800"
+              >
+                <td className="px-6 py-4">
+                  <div className="flex flex-col gap-1.5">
+                    <Link
+                      href={`/dashboard/administrador/gestionEstudiantes/${student.id}`}
+                      className="font-bold text-cyan-700 dark:text-cyan-400 text-xs uppercase tracking-wide border border-cyan-500/20 rounded-lg px-2.5 py-1 inline-flex items-center bg-cyan-500/10 w-fit hover:bg-cyan-500/20 transition-colors"
+                    >
+                      {student.tuition_number}
+                    </Link>
+                    <span
+                      className={`text-[10px] uppercase tracking-wider font-extrabold px-2 py-0.5 rounded-full w-fit ${student.condition === "nuevo_ingreso" ? "bg-emerald-500/10 text-emerald-600" : "bg-orange-500/10 text-orange-600"}`}
+                    >
+                      {student.condition}
+                    </span>
+                  </div>
+                </td>
+                <td className="px-6 py-4">
+                  <div className="flex flex-col">
+                    <span className="text-sm font-bold text-slate-900 dark:text-slate-100 group-hover:text-cyan-600 dark:group-hover:text-indigo-400 transition-colors">
+                      {student.user.name} {student.user.last_name}
+                    </span>
+                    <span className="text-xs text-slate-400 font-mono mt-0.5">
+                      {student.user.id_card}
+                    </span>
+                  </div>
+                </td>
+                <td className="px-6 py-4 text-slate-600 dark:text-slate-400 text-sm">
+                  <div className="flex flex-col">
+                    <span>
+                      {student.birth_date
+                        ? new Date(student.birth_date).toLocaleDateString(
+                            "es-ES",
+                            {
+                              day: "2-digit",
+                              month: "2-digit",
+                              year: "numeric",
+                              timeZone: "UTC",
+                            },
+                          )
+                        : "N/A"}
+                    </span>
+                    <span className="text-xs text-slate-400 mt-0.5">
+                      {student.gender || "No registrado"}
+                    </span>
+                  </div>
+                </td>
+                <td className="px-6 py-4 text-slate-600 dark:text-slate-400 text-sm">
+                  <div className="flex flex-col">
+                    <span className="font-medium">
+                      {student.user.phone || "Sin tlf"}
+                    </span>
+                    <span className="text-xs text-slate-400 max-w-35 truncate">
+                      {student.user.email}
+                    </span>
+                  </div>
+                </td>
+                <td className="px-6 py-4">
+                  <div className="flex flex-col">
+                    <span className="text-sm font-bold text-slate-800 dark:text-slate-200">
+                      {student.representative.name}{" "}
+                      {student.representative.last_name}
+                    </span>
+                    <span className="text-xs text-slate-400">
+                      {student.representative.phone}
+                    </span>
+                    <span className="text-[10px] text-indigo-500 dark:text-indigo-400 font-semibold mt-0.5">
+                      ({student.representative.relationship || "Tutor"})
+                    </span>
+                  </div>
+                </td>
+                <td className="px-6 py-4">
+                  {student.enrollments && student.enrollments.length > 0 ? (
+                    <div className="flex flex-col gap-1">
+                      {student.enrollments.map((en, index) => {
+                        const yearName = en.section?.year?.id;
+                        const sectionName = en.section?.name
+                          ? `"${en.section?.name}"`
+                          : "";
+
+                        return (
+                          <span
+                            key={en.id || index}
+                            className="w-fit rounded border border-slate-200 bg-slate-100 px-2 py-0.5 text-xs font-medium text-slate-700 dark:border-slate-700 dark:bg-slate-800 dark:text-slate-300"
+                          >
+                            {en.year?.name} - Sección &quot;{en.section?.name}
+                            &quot;
+                          </span>
+                        );
+                      })}
+                    </div>
+                  ) : (
+                    <span className="text-xs text-slate-400 italic">
+                      Sin inscripción
+                    </span>
+                  )}
+                </td>
+                <td className="px-6 py-4">
+                  <div className="flex items-center gap-2">
+                    {/* Comprobante de inscripción directo a la API del Back */}
+                    {student.enrollments && student.enrollments.length > 0 && (
+                      <Link
+                        href={`${process.env.NEXT_PUBLIC_API_URL}/reports/${student.id}/enrollment`}
+                        target="_blank"
+                      >
+                        <Button
+                          icon={faClipboardList}
+                          title="Descargar Planilla de Inscripscion"
+                          classNameBtn="p-1.5 rounded-lg bg-cyan-600 text-white hover:bg-cyan-700 transition-colors"
+                        ></Button>
+                      </Link>
+                    )}
+                    {/* Notas Certificadas */}
+                    <Button
+                      icon={faAward}
+                      onClick={() =>
+                        alert("Esta opción no está disponible por el momento")
+                      }
+                      title="Descargar Notas Certificadas"
+                      classNameBtn="p-1.5 rounded-lg bg-orange-500 text-white hover:bg-orange-600 transition-colors"
+                    ></Button>
+                  </div>
+                </td>
+              </tr>
+            )}
+            // 📱 Vista Móvil (Limpiada de lógicas pesadas de PDF)
+            renderMovilCard={(student) => (
+              <div
+                key={`movil-${student.id}`}
+                className="flex flex-col gap-3 p-5 bg-white dark:bg-slate-900 rounded-2xl shadow-sm border border-slate-100 dark:border-slate-800 mb-3 border-dashed"
+              >
+                <div className="flex justify-between items-start border-b border-slate-100 dark:border-slate-800 pb-2">
+                  <div>
+                    <span className="text-[10px] font-mono font-bold text-indigo-500 tracking-wider block">
+                      {student.tuition_number || "SIN MATRÍCULA"}
+                    </span>
+                    <h3 className="text-sm font-bold text-slate-800 dark:text-slate-200 capitalize mt-0.5">
+                      {student.user.name?.toLowerCase()}{" "}
+                      {student.user.last_name?.toLowerCase()}
+                    </h3>
+                  </div>
+
+                  {/* En mobile ahora también dispara la descarga limpia directo de tu Back endpoint */}
+                  {/* Comprobante de inscripción directo a la API del Back */}
+                  {student.year && student.section && (
+                    <Link
+                      href={`${process.env.NEXT_PUBLIC_API_URL}/reports/planillaIns/${student.id}/${student.representative_id}`}
+                      target="_blank"
+                    >
+                      <Button
+                        title="Descargar Planilla"
+                        classNameBtn="text-cyan-600 p-1.5 hover:bg-cyan-500/10 rounded-xl border border-cyan-500/10"
+                      >
+                        <Icon icon={faClipboardList} className="w-3.5 h-3.5" />
+                      </Button>
+                    </Link>
+                  )}
+                </div>
+
+                <div className="grid grid-cols-2 gap-2 text-[11px] text-slate-600 dark:text-slate-400">
+                  <p>
+                    <span className="text-slate-400">C.I:</span>{" "}
+                    {student.user.id_card}
+                  </p>
+                  <p>
+                    <span className="text-slate-400">Género:</span>{" "}
+                    {student.gender || "N/A"}
+                  </p>
+                  <p className="col-span-2 truncate">
+                    <span className="text-slate-400">Email:</span>{" "}
+                    {student.user.email || "N/A"}
+                  </p>
+                </div>
+
+                <div className="pt-2 border-t border-slate-100 dark:border-slate-800/60 bg-slate-500/5 p-2 rounded-xl text-xs">
+                  <p className="font-semibold text-slate-700 dark:text-slate-300 mb-0.5">
+                    Representante Legal:
+                  </p>
+                  <p className="capitalize font-medium text-slate-800 dark:text-slate-200">
+                    {student.representative.name.toLowerCase()}{" "}
+                    {student.representative.last_name.toLowerCase()}{" "}
+                    <span className="text-slate-400 font-normal">
+                      ({student.representative_relationship || "Tutor"})
+                    </span>
+                  </p>
+                  <p className="text-slate-500 text-[11px] mt-0.5">
+                    {student.representative.relationship}
+                  </p>
+                </div>
+
+                <div className="pt-1 flex justify-between items-center text-[11px]">
+                  <div className="flex gap-1">
+                    <span className="px-2 py-0.5 font-bold bg-indigo-500/10 text-indigo-600 rounded-md border border-indigo-500/10">
+                      {student.year || `?`}
+                    </span>
+                    <span className="px-2 py-0.5 font-bold bg-slate-500/10 text-slate-700 dark:text-slate-300 rounded-md">
+                      Sección {student.section || "?"}
+                    </span>
+                  </div>
                   <span
-                    className={`text-[10px] uppercase tracking-wider font-extrabold px-2 py-0.5 rounded-full w-fit ${student.condition === "nuevo_ingreso" ? "bg-emerald-500/10 text-emerald-600" : "bg-orange-500/10 text-orange-600"}`}
+                    className={`px-2 py-0.5 rounded-full font-bold text-[10px] ${student.condition === "nuevo_ingreso" ? "bg-emerald-500/10 text-emerald-600" : "bg-orange-500/10 text-orange-600"}`}
                   >
                     {student.condition}
                   </span>
                 </div>
-              </td>
-              <td className="px-6 py-4">
-                <div className="flex flex-col">
-                  <span className="text-sm font-bold text-slate-900 dark:text-slate-100 group-hover:text-cyan-600 dark:group-hover:text-indigo-400 transition-colors">
-                    {student.user.name} {student.user.last_name}
-                  </span>
-                  <span className="text-xs text-slate-400 font-mono mt-0.5">
-                    {student.user.id_card}
-                  </span>
-                </div>
-              </td>
-              <td className="px-6 py-4 text-slate-600 dark:text-slate-400 text-sm">
-                <div className="flex flex-col">
-                  <span>
-                    {student.birth_date
-                      ? new Date(student.birth_date).toLocaleDateString(
-                          "es-ES",
-                          {
-                            day: "2-digit",
-                            month: "2-digit",
-                            year: "numeric",
-                            timeZone: "UTC",
-                          },
-                        )
-                      : "N/A"}
-                  </span>
-                  <span className="text-xs text-slate-400 mt-0.5">
-                    {student.gender || "No registrado"}
-                  </span>
-                </div>
-              </td>
-              <td className="px-6 py-4 text-slate-600 dark:text-slate-400 text-sm">
-                <div className="flex flex-col">
-                  <span className="font-medium">
-                    {student.user.phone || "Sin tlf"}
-                  </span>
-                  <span className="text-xs text-slate-400 max-w-35 truncate">
-                    {student.user.email}
-                  </span>
-                </div>
-              </td>
-              <td className="px-6 py-4">
-                <div className="flex flex-col">
-                  <span className="text-sm font-bold text-slate-800 dark:text-slate-200">
-                    {student.representative.name}{" "}
-                    {student.representative.last_name}
-                  </span>
-                  <span className="text-xs text-slate-400">
-                    {student.representative.phone}
-                  </span>
-                  <span className="text-[10px] text-indigo-500 dark:text-indigo-400 font-semibold mt-0.5">
-                    ({student.representative.relationship || "Tutor"})
-                  </span>
-                </div>
-              </td>
-              <td className="px-6 py-4">
-                {student.enrollments && student.enrollments.length > 0 ? (
-                  <div className="flex flex-col gap-1">
-                    {student.enrollments.map((en, index) => {
-                      const yearName = en.section?.year?.id;
-                      const sectionName = en.section?.name
-                        ? `"${en.section?.name}"`
-                        : "";
-
-                      return (
-                        <span
-                          key={en.id || index}
-                          className="w-fit rounded border border-slate-200 bg-slate-100 px-2 py-0.5 text-xs font-medium text-slate-700 dark:border-slate-700 dark:bg-slate-800 dark:text-slate-300"
-                        >
-                          {en.year?.name} - Sección &quot;{en.section?.name}
-                          &quot;
-                        </span>
-                      );
-                    })}
-                  </div>
-                ) : (
-                  <span className="text-xs text-slate-400 italic">
-                    Sin inscripción
-                  </span>
-                )}
-              </td>
-              <td className="px-6 py-4">
-                <div className="flex items-center gap-2">
-                  {/* Comprobante de inscripción directo a la API del Back */}
-                  {student.enrollments && student.enrollments.length > 0 && (
-                    <Link
-                      href={`${process.env.NEXT_PUBLIC_API_URL}/reports/${student.id}/enrollment`}
-                      target="_blank"
-                    >
-                      <Button
-                        icon={faClipboardList}
-                        title="Descargar Planilla de Inscripscion"
-                        classNameBtn="p-1.5 rounded-lg bg-cyan-600 text-white hover:bg-cyan-700 transition-colors"
-                      ></Button>
-                    </Link>
-                  )}
-                  {/* Notas Certificadas */}
-                  <Button
-                    icon={faAward}
-                    onClick={() =>
-                      alert("Esta opción no está disponible por el momento")
-                    }
-                    title="Descargar Notas Certificadas"
-                    classNameBtn="p-1.5 rounded-lg bg-orange-500 text-white hover:bg-orange-600 transition-colors"
-                  ></Button>
-                </div>
-              </td>
-            </tr>
-          )}
-          // 📱 Vista Móvil (Limpiada de lógicas pesadas de PDF)
-          renderMovilCard={(student) => (
-            <div
-              key={`movil-${student.id}`}
-              className="flex flex-col gap-3 p-5 bg-white dark:bg-slate-900 rounded-2xl shadow-sm border border-slate-100 dark:border-slate-800 mb-3 border-dashed"
-            >
-              <div className="flex justify-between items-start border-b border-slate-100 dark:border-slate-800 pb-2">
-                <div>
-                  <span className="text-[10px] font-mono font-bold text-indigo-500 tracking-wider block">
-                    {student.tuition_number || "SIN MATRÍCULA"}
-                  </span>
-                  <h3 className="text-sm font-bold text-slate-800 dark:text-slate-200 capitalize mt-0.5">
-                    {student.user.name?.toLowerCase()}{" "}
-                    {student.user.last_name?.toLowerCase()}
-                  </h3>
-                </div>
-
-                {/* En mobile ahora también dispara la descarga limpia directo de tu Back endpoint */}
-                {/* Comprobante de inscripción directo a la API del Back */}
-                {student.year && student.section && (
-                  <Link
-                    href={`${process.env.NEXT_PUBLIC_API_URL}/reports/planillaIns/${student.id}/${student.representative_id}`}
-                    target="_blank"
-                  >
-                    <Button
-                      title="Descargar Planilla"
-                      classNameBtn="text-cyan-600 p-1.5 hover:bg-cyan-500/10 rounded-xl border border-cyan-500/10"
-                    >
-                      <Icon icon={faClipboardList} className="w-3.5 h-3.5" />
-                    </Button>
-                  </Link>
-                )}
               </div>
-
-              <div className="grid grid-cols-2 gap-2 text-[11px] text-slate-600 dark:text-slate-400">
-                <p>
-                  <span className="text-slate-400">C.I:</span>{" "}
-                  {student.user.id_card}
-                </p>
-                <p>
-                  <span className="text-slate-400">Género:</span>{" "}
-                  {student.gender || "N/A"}
-                </p>
-                <p className="col-span-2 truncate">
-                  <span className="text-slate-400">Email:</span>{" "}
-                  {student.user.email || "N/A"}
-                </p>
-              </div>
-
-              <div className="pt-2 border-t border-slate-100 dark:border-slate-800/60 bg-slate-500/5 p-2 rounded-xl text-xs">
-                <p className="font-semibold text-slate-700 dark:text-slate-300 mb-0.5">
-                  Representante Legal:
-                </p>
-                <p className="capitalize font-medium text-slate-800 dark:text-slate-200">
-                  {student.representative.name.toLowerCase()}{" "}
-                  {student.representative.last_name.toLowerCase()}{" "}
-                  <span className="text-slate-400 font-normal">
-                    ({student.representative_relationship || "Tutor"})
-                  </span>
-                </p>
-                <p className="text-slate-500 text-[11px] mt-0.5">
-                  {student.representative.relationship}
-                </p>
-              </div>
-
-              <div className="pt-1 flex justify-between items-center text-[11px]">
-                <div className="flex gap-1">
-                  <span className="px-2 py-0.5 font-bold bg-indigo-500/10 text-indigo-600 rounded-md border border-indigo-500/10">
-                    {student.year || `?`}
-                  </span>
-                  <span className="px-2 py-0.5 font-bold bg-slate-500/10 text-slate-700 dark:text-slate-300 rounded-md">
-                    Sección {student.section || "?"}
-                  </span>
-                </div>
-                <span
-                  className={`px-2 py-0.5 rounded-full font-bold text-[10px] ${student.condition === "nuevo_ingreso" ? "bg-emerald-500/10 text-emerald-600" : "bg-orange-500/10 text-orange-600"}`}
-                >
-                  {student.condition}
-                </span>
-              </div>
-            </div>
-          )}
-        />
+            )}
+          />
+        </div>
       )}
     </div>
   );

@@ -43,7 +43,7 @@ export default function CardGridSetion({
     );
 
   return (
-    <div className="grid gap-5 p-3 md:grid-cols-1 lg:grid-cols-2">
+    <div className="grid gap-5 p-4 md:grid-cols-1 lg:grid-cols-2">
       {validDataSet.map((section, index) => {
         const teacherName = section?.guide
           ? `${section.guide?.name || ""} ${section.guide?.last_name || ""}`.trim()
