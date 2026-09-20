@@ -5,10 +5,9 @@ import axios from "axios";
  * @returns {Promise<Array>} - Array de lapsos.
  */
 export const getLapseActive = async () => {
-
   try {
     const response = await axios.get(
-      `${process.env.NEXT_PUBLIC_API_URL}/lapses/getLapseActive`,
+      `${process.env.NEXT_PUBLIC_API_URL}/lapses/lapse-a`,
       {
         withCredentials: true,
         headers: {

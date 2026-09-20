@@ -58,11 +58,11 @@ export const menuLink = {
       label: "Mis Notas",
       href: "/dashboard/estudiante/notas",
     },
-    {
+    /* {
       icon: faGraduationCap,
       label: "Mi record Academico",
       href: "/dashboard/estudiante/record",
-    },
+    }, */
   ],
   administrador: [
     {

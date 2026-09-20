@@ -286,7 +286,7 @@ export default function StudentRecords() {
               <label className="text-[10px] font-bold text-slate-400 dark:text-zinc-400 block uppercase">
                 Matrícula Escolar
               </label>
-              <span className="text-xs font-bold text-slate-700 dark:text-zinc-200 block mt-0.5">
+              <span className="text-md font-bold text-slate-700 dark:text-zinc-200 block mt-0.5">
                 {student.tuitionNumber || "No asignado"}
               </span>
             </div>
@@ -294,7 +294,7 @@ export default function StudentRecords() {
               <label className="text-[10px] font-bold text-slate-400 dark:text-zinc-400 block uppercase">
                 SIG del Plantel
               </label>
-              <span className="text-xs font-bold text-cyan-600 dark:text-cyan-400 block mt-0.5">
+              <span className="text-md font-bold text-cyan-600 dark:text-cyan-400 block mt-0.5">
                 {student.school?.SIG || "N/A"}
               </span>
             </div>

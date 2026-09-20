@@ -8,6 +8,7 @@ import TarjetaMateriaNotas from "@/components/molecules/TarjetaMateriaNotas";
 import { useAuth } from "@/context/AuthContext";
 import { getLapseActive } from "@/services/lapse/getLapseActive";
 import { getGrade } from "@/services/student/getGrade";
+import Banner from "@/components/atom/Banner";
 import {
   faClock,
   faGraduationCap,
@@ -19,7 +20,7 @@ import { useEffect, useState } from "react";
 import toast from "react-hot-toast";
 
 export default function NotasPage() {
-  const [subjects, setSubjects] = useState([]);
+  const [lapses, setLapses] = useState([]);
   const [loading, setLoading] = useState(true);
   const [loadingType, setLoadingType] = useState(null);
   const [section, setSection] = useState({
@@ -27,44 +28,47 @@ export default function NotasPage() {
     sectionName: "",
     sectionId: null,
   });
-  const [lapse, setLapse] = useState({});
-  const [generalAverage, setGeneralAverage] = useState("0.00");
+  const [lapseAc, setLapseAc] = useState({});
+  const [generalAverage, setGeneralAverage] = useState("0");
 
   const { user } = useAuth();
-  const idPeiod = user?.user?.id_period;
-  const id = user?.user?.id;
+  const id = user?.user?.id_student;
 
   useEffect(() => {
     const fetchGrades = async () => {
       try {
         setLoading(true);
 
-        const idStudent = user?.user?.id_user;
-        if (!idStudent) return; // Evitar llamadas si el usuario no ha cargado
+        const idStudent = user?.user?.id_student;
+        if (!idStudent) return;
 
         const response = await getGrade(idStudent);
         const lapseActive = await getLapseActive();
 
-        const listaMaterias = response?.data.subjects || [];
+        const filterLapse = response.data.find((l) => l.is_active === true);
+
+        const listaMaterias = filterLapse.subjects || [];
         const yearName = response?.data.year || "";
         const sectionName = response?.data.section || "";
         const sectionId = response?.data.section_id || null;
 
-        setSubjects(listaMaterias);
-        setLapse(lapseActive.data || {});
+        setLapses(filterLapse);
+        setLapseAc(lapseActive.data || {});
         setSection({
           yearName: yearName,
           sectionName: sectionName,
           sectionId: sectionId,
         });
 
+        console.log(listaMaterias);
+
         if (listaMaterias.length > 0) {
           const sumaDefinitivas = listaMaterias.reduce(
-            (acc, sub) => acc + parseFloat(sub.final_grade || 0),
+            (acc, sub) => acc + sub.score,
             0,
           );
           const promedio = sumaDefinitivas / listaMaterias.length;
-          setGeneralAverage(promedio.toFixed(2));
+          setGeneralAverage(promedio);
         }
       } catch (error) {
         console.error("❌ Error al cargar notas en el frontend:", error);
@@ -133,30 +137,21 @@ export default function NotasPage() {
   if (user?.user.role != "estudiante") return <AccessDenied />;
 
   return (
-    <main>
+    <>
       <HeaderDashbord titelPage="Panel de Notas" />
 
-      <section className="p-3 mt-5">
+      <section className="p-3 mt-2">
         {/* Banner Informativo Premium */}
-        <div className="flex items-start gap-3 p-4 bg-cyan-50/80 dark:bg-cyan-950/30 border border-cyan-200/60 dark:border-cyan-900/50 mb-5 rounded-xl backdrop-blur-sm shadow-sm">
-          <div className="p-1.5 bg-cyan-100 text-cyan-600 rounded-lg dark:bg-cyan-900/50 dark:text-cyan-400 mt-0.5 flex items-center justify-center shrink-0">
-            <Icon icon={faClipboardList} className="text-sm" />
-          </div>
-
-          <div className="flex flex-col gap-0.5">
-            <span className="text-xs font-bold text-cyan-700 dark:text-cyan-400 uppercase tracking-wider">
-              Nota Informativa
-            </span>
-            <p className="text-sm text-cyan-800 dark:text-slate-300 leading-relaxed font-medium">
-              Las notas se muestran según el <strong>periodo</strong> y el lapso
-              en tiempo real. Si quieres ver tus notas de <strong>años</strong>{" "}
-              anteriores, consulta al departamento de control de estudios.
-            </p>
-          </div>
-        </div>
+        <Banner
+          titel="Nota Informativa"
+          icon={faClipboardList}
+          message=" Las notas se muestran según el periodo y el lapso
+              en tiempo real. Si quieres ver tus notas de años
+              anteriores, consulta al departamento de control de estudios."
+        />
 
         {/* Tarjetas Superiores Informativas */}
-        <div className="mb-4 grid grid-cols-1 gap-3 sm:grid-cols-2 md:grid-cols-3">
+        <div className="mt-4 grid grid-cols-1 gap-3 sm:grid-cols-2 md:grid-cols-3">
           {/* Tarjeta: Periodo */}
           <div className="flex items-center gap-3 rounded-xl border border-slate-200/80 bg-white p-3 shadow-sm transition-all dark:border-slate-700/50 dark:bg-slate-800/60">
             <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-lg bg-cyan-50 text-cyan-600 dark:bg-cyan-950/40 dark:text-cyan-400">
@@ -164,13 +159,13 @@ export default function NotasPage() {
             </div>
             <div className="flex flex-col min-w-0">
               <span className="text-[10px] font-bold uppercase tracking-wider text-slate-400 dark:text-slate-500">
-                Período y Lapso
+                Período y Momento
               </span>
               <div className="flex items-center gap-2 truncate text-sm font-semibold text-slate-700 dark:text-slate-200">
                 <span>{user?.user?.period || "2025 - 2026"}</span>
                 <span className="text-slate-300 dark:text-slate-600">•</span>
                 <span className="text-cyan-600 dark:text-cyan-400 font-medium">
-                  {lapse?.name || "Cargando..."}
+                  {lapseAc?.name || "Cargando..."}
                 </span>
               </div>
             </div>
@@ -201,11 +196,11 @@ export default function NotasPage() {
           <div className="flex items-center justify-start sm:col-span-2 md:col-span-1 md:justify-end">
             <Button
               icon={faPrint}
-              disabled={loadingType !== null || !section.sectionId}
+              disabled={lapses.subjects?.length == 0}
               type="button"
               onClick={() =>
                 handleDownload(
-                  `${process.env.NEXT_PUBLIC_API_URL}/reports/boleta/${id}/${section.sectionId}/${idPeiod}`,
+                  `${process.env.NEXT_PUBLIC_API_URL}/reports/${id}/boleta`,
                   "Boleta",
                 )
               }
@@ -217,16 +212,16 @@ export default function NotasPage() {
         </div>
 
         {/* Mapeo de Materias */}
-        {subjects && subjects.length > 0 ? (
-          subjects.map((subject) => (
-            <TarjetaMateriaNotas key={subject.id} subject={subject} />
+        {lapses && lapses.subjects?.length > 0 ? (
+          lapses?.subjects?.map((subject) => (
+            <TarjetaMateriaNotas key={subject.name} subject={subject} />
           ))
         ) : (
-          <div className="rounded-2xl border border-dashed border-slate-300 bg-slate-100 p-6 text-center text-slate-600 transition-colors dark:border-slate-800 dark:bg-slate-900/50 dark:text-slate-400">
+          <div className="rounded-2xl border border-dashed border-slate-300 bg-slate-100 p-6 text-center text-slate-600 transition-colors dark:border-slate-800 dark:bg-slate-900/50 dark:text-slate-400 mt-4">
             Aún no hay materias registradas en tu sección.
           </div>
         )}
       </section>
-    </main>
+    </>
   );
 }

@@ -80,13 +80,21 @@ export default function GestionEstudiantesPage() {
 
   // Filtrado reactivo
   const filteredStudents = students.filter((student) => {
-    const tuitionNumber = String(student?.tuition_number || "");
-    const nameStr = String(student?.user.name || "");
-    const lastNameStr = String(student?.user.last_name || "");
-    const completeTerm =
-      `${tuitionNumber} ${nameStr} ${lastNameStr}`.toLowerCase();
+    const searchTerm = appliedFilter.toLowerCase().trim();
+    if (!searchTerm) return true;
 
-    return completeTerm.includes(appliedFilter.toLowerCase().trim());
+    const tuitionNumber = String(student?.tuition_number || "").toLowerCase();
+    const nameStr = String(student?.user?.name || "").toLowerCase();
+    const lastNameStr = String(student?.user?.last_name || "").toLowerCase();
+    const idCardStr = String(student?.user?.id_card || "").toLowerCase();
+
+    // Opción A: Concatenar con espacios para búsquedas compuestas
+    return (
+      tuitionNumber.includes(searchTerm) ||
+      nameStr.includes(searchTerm) ||
+      lastNameStr.includes(searchTerm) ||
+      idCardStr.includes(searchTerm)
+    );
   });
 
   if (authLoading) return <Loading />;

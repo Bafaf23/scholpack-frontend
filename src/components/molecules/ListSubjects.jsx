@@ -21,7 +21,7 @@ const getSubjectKey = (subject, index) =>
 export default function ListSubjects({ dataSubjects, onSubjectDeleted }) {
   if (!dataSubjects || dataSubjects?.length === 0) {
     return (
-      <div className="flex flex-col items-center justify-center rounded-2xl border-2 border-dashed border-zinc-200 bg-slate-50/50 p-12 text-center dark:border-zinc-800 dark:bg-zinc-900/50">
+      <div className="p-3 flex flex-col items-center justify-center rounded-2xl border-2 border-dashed border-zinc-200 bg-slate-50/50 p-12 text-center dark:border-zinc-800 dark:bg-zinc-900/50">
         <div className="mb-4 flex h-14 w-14 items-center justify-center rounded-2xl bg-slate-100 dark:bg-zinc-800">
           <Icon
             icon={faBook}
