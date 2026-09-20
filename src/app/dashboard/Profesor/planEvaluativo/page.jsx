@@ -192,15 +192,20 @@ export default function PlanEvaluativo() {
             <div className="p-2">
               <Selector
                 options={subjects.map((subject) => ({
-                  value: subject.code_subject,
+                  value: `${subject.code_subject}${subject.section_name}`,
                   label: `${subject.name} (${subject.year_name} "${subject.section_name}")`,
                 }))}
                 name="materia"
                 label="Asignatura"
-                value={selectedSubject?.code_subject ?? ""}
+                value={
+                  selectedSubject
+                    ? `${selectedSubject.code_subject}${selectedSubject.section_name}`
+                    : ""
+                }
                 onChange={(e) => {
                   const subject = subjects.find(
-                    (s) => s.code_subject === e.target.value,
+                    (s) =>
+                      `${s.code_subject}${s.section_name}` === e.target.value,
                   );
                   if (subject) setSelectedSubject(subject);
                 }}

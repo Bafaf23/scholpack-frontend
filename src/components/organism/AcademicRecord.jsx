@@ -1,7 +1,8 @@
 import { useState, useEffect } from "react";
 import { getRecordStudent } from "@/services/student/getRecordStudent";
-import TableInsti from "../molecules/TableInsti";
+import TarjetaMateriaNotas from "../molecules/TarjetaMateriaNotas";
 import Label from "../atom/Label";
+import Selector from "../atom/Selector";
 import {
   faBook,
   faBookBookmark,
@@ -14,6 +15,7 @@ export default function RecordAcademico({ periodStudent, idStudent }) {
   const [selectedPeriod, setSelectedPeriod] = useState(0);
   const [loading, setLoading] = useState(false);
   const [subjectsList, setSubjectsList] = useState([]);
+  const [lapses, setLapse] = useState([]);
   const [openLapso, setOpenLapso] = useState(null);
 
   const period = periodStudent?.[selectedPeriod];
@@ -27,7 +29,11 @@ export default function RecordAcademico({ periodStudent, idStudent }) {
     getRecordStudent(idStudent, period.period.id)
       .then((data) => {
         const periodData = data?.data;
-        setSubjectsList(periodData || []);
+
+        const newData = periodData.find((n) => n.is_active === true);
+
+        setLapse(periodData);
+        setSubjectsList(newData || []);
       })
       .catch((err) => {
         console.error("❌ Error al traer el récord de SIGACE:", err);
@@ -37,6 +43,8 @@ export default function RecordAcademico({ periodStudent, idStudent }) {
         setLoading(false);
       });
   }, [period, idStudent]);
+
+  console.log(subjectsList);
 
   if (!periodStudent || periodStudent.length === 0) {
     return (
@@ -60,8 +68,8 @@ export default function RecordAcademico({ periodStudent, idStudent }) {
   ];
 
   // Renderizado dinámico de las columnas de lapsos
-  const lapsesColumns = Array.isArray(subjectsList)
-    ? subjectsList.map((lapse) => ({
+  const lapsesColumns = Array.isArray(lapses)
+    ? lapses.map((lapse) => ({
         name: lapse?.lapse_name || "Lapso",
         icon: faBookBookmark,
       }))
@@ -112,7 +120,7 @@ export default function RecordAcademico({ periodStudent, idStudent }) {
             Sincronizando calificaciones...
           </p>
         </div>
-      ) : subjectsList.length === 0 ? (
+      ) : subjectsList.subjects?.length === 0 ? (
         <div className="w-full text-center p-8 bg-white dark:bg-zinc-800 rounded-2xl border border-slate-200 dark:border-zinc-800 shadow-sm transition-colors">
           <p className="text-sm text-slate-500 dark:text-zinc-400">
             El alumno seleccionado no cuenta con calificaciones o evaluaciones
@@ -121,79 +129,41 @@ export default function RecordAcademico({ periodStudent, idStudent }) {
         </div>
       ) : (
         /* Lista de Materias */
-        <TableInsti
-          titelTable={[...staticStart, ...lapsesColumns, ...staticEnd]}
-          data={subjectsList[0]?.subjects || []}
-          renderTableRows={(subject) => {
-            // Recopilamos las notas de esta asignatura específica a lo largo de todos los lapsos
-            const subjectScores = subjectsList.map((lapse) => {
-              const matchedSubject = lapse?.subjects?.find(
-                (s) => s.code_subject === subject.code_subject,
-              );
-              return Number(matchedSubject?.score) || 0;
-            });
 
-            // Promedio de la asignatura
-            const totalScore = subjectScores.reduce(
-              (acc, score) => acc + score,
-              0,
-            );
-            const totalLapses = subjectsList.length || 1;
-            const scoreFinal = Math.round(totalScore / totalLapses);
-
-            return (
-              <tr
-                key={subject.code_subject}
-                className="transition-colors hover:bg-slate-50/50 dark:hover:bg-zinc-800/30 group border-b border-slate-100 dark:border-slate-800"
-              >
-                <td className="px-6 py-4">
-                  <span className="text-sm font-bold text-slate-900 dark:text-slate-100 group-hover:text-cyan-600 dark:group-hover:text-orange-400 transition-colors">
-                    {subject.code_subject}
-                  </span>
-                </td>
-                <td className="px-6 py-4">
-                  <span className="text-sm font-bold text-slate-900 dark:text-slate-100 group-hover:text-slate-600 dark:group-hover:text-zinc-200 transition-colors">
-                    {subject.name}
-                  </span>
-                </td>
-                <td className="px-6 py-4">
-                  <span className="text-sm font-bold text-slate-900 dark:text-slate-100 group-hover:text-slate-600 dark:group-hover:text-zinc-200 transition-colors">
-                    {subject.abbreviation}
-                  </span>
-                </td>
-
-                {/* Notas por cada lapso */}
-                {subjectsList.map((lapse, lapseIdx) => {
-                  const currentSubject = lapse?.subjects?.find(
-                    (s) => s.code_subject === subject.code_subject,
-                  );
-
-                  return (
-                    <td className="px-6 py-4" key={lapseIdx}>
-                      <span className="text-sm font-bold text-slate-900 dark:text-slate-100 group-hover:text-cyan-600 dark:group-hover:text-orange-400 transition-colors">
-                        {currentSubject?.score ?? "0"}
-                      </span>
-                    </td>
-                  );
-                })}
-
-                {/* Definitiva */}
-                <td className="px-6 py-4">
-                  <span className="text-sm font-bold text-slate-900 dark:text-slate-100 group-hover:text-cyan-600 dark:group-hover:text-cyan-400 transition-colors">
-                    {scoreFinal}
-                  </span>
-                </td>
-                <td className="px-6 py-4">
-                  <span
-                    className={`text-sm font-bold transition-colors ${scoreFinal >= 10 ? "text-emerald-500" : "text-red-500"}`}
-                  >
-                    {scoreFinal >= 10 ? "Aprobado" : "Reprobado"}
-                  </span>
-                </td>
-              </tr>
-            );
-          }}
-        />
+        lapses.map((lapse) => {
+          const gradeFinal = lapse.subjects.reduce(
+            (acc, s) => Math.round(acc + s.score / lapse.subjects.length),
+            0,
+          );
+          const isApproved = gradeFinal > 10;
+          return (
+            <div
+              key={lapse.lapse_name}
+              className="bg-withe shadow border border-slate-200 p-3 dark:border-zinc-700 rounded-xl"
+            >
+              <div className="flex justify-between">
+                <h1 className="text-xl dark:text-zinc-300 font-bold">
+                  {lapse.lapse_name}
+                </h1>
+                <span
+                  className={`font-bold text-xl ${
+                    isApproved
+                      ? "text-emerald-600 dark:text-emerald-400"
+                      : "text-rose-600 dark:text-rose-400"
+                  }`}
+                >
+                  {gradeFinal} pts
+                </span>
+              </div>
+              {lapse.subjects?.map((subject) => (
+                <TarjetaMateriaNotas
+                  key={subject.code_subject}
+                  subject={subject}
+                />
+              ))}
+            </div>
+          );
+        })
       )}
     </div>
   );

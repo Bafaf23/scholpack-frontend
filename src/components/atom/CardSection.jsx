@@ -235,7 +235,7 @@ export default function CardSection({
               )}
             </Button>
 
-            <Button
+            {/*  <Button
               icon={faDashboard}
               type="button"
               disabled={studentCount === 0 || loadingType !== null}
@@ -252,7 +252,8 @@ export default function CardSection({
               ) : (
                 <span>Rendimiento</span>
               )}
-            </Button>
+            </Button> */}
+
             <Button
               icon={faGraduationCap}
               type="button"
@@ -263,12 +264,12 @@ export default function CardSection({
                   "RFRE",
                 )
               }
-              classNameBtn="flex items-center justify-center gap-1.5 rounded-xl bg-green-600 px-3 py-2 text-md font-semibold text-white shadow-sm transition-all hover:bg-green-700 active:scale-95 disabled:cursor-not-allowed disabled:opacity-50 col-span-2"
+              classNameBtn="flex items-center justify-center gap-1.5 rounded-xl bg-green-600 px-3 py-2 text-md font-semibold text-white shadow-sm transition-all hover:bg-green-700 active:scale-95 disabled:cursor-not-allowed disabled:opacity-50"
             >
               {loadingType === "RFRE" ? (
                 <span>Cargando...</span>
               ) : (
-                <span>Resumen Final del Rendimiento Estudiantil (MPPE)</span>
+                <span>Resumen EMG (MPPE)</span>
               )}
             </Button>
           </div>

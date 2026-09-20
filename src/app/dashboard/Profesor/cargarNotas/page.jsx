@@ -213,7 +213,7 @@ export default function CargarNotas() {
   if (!user || role !== "profesor") {
     return <AccessDenied />;
   }
-
+  console.log(subjects);
   return (
     <>
       <HeaderDashbord titelPage={"Cargar notas"} />
