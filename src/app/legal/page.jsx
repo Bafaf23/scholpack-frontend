@@ -1,13 +1,14 @@
 import Banner from "@/components/atom/Banner";
 import { faInfo } from "@fortawesome/free-solid-svg-icons";
 
+const systemName = process.env.NEXT_PUBLIC_SISTEM || "SIGACE";
+
 export const metadata = {
-  title: "SIGACE - Términos y Condiciones",
-  description: "Términos y Condiciones de uso del sistema SIGACE",
+  title: `${systemName} - Términos y Condiciones`,
+  description: `Términos y Condiciones de uso del sistema ${systemName}`,
 };
 
 export default function LegalPage() {
-  const systemName = process.env.NEXT_PUBLIC_SISTEM || "SIGACE";
 
   return (
     <article className="m-auto max-w-3xl space-y-6 p-5 text-justify leading-relaxed">
@@ -19,7 +20,7 @@ export default function LegalPage() {
       />
 
       <header className="space-y-2">
-        <h1 className="text-3xl font-bold tracking-tight text-slate-800">
+        <h1 className="text-3xl font-bold tracking-tight text-slate-800 dark:text-zinc-200">
           Términos y Condiciones de Uso del Sistema{" "}
           <span className="bg-linear-to-r from-amber-500 via-orange-500 to-cyan-500 bg-clip-text text-transparent">
             {systemName}
@@ -30,8 +31,8 @@ export default function LegalPage() {
         </p>
       </header>
 
-      <p className="text-sm text-slate-600">
-        Bienvenido a <span className="font-bold">{systemName}</span> (Sistema de
+      <p className="text-sm text-slate-600 dark:text-zinc-300">
+        Bienvenido a <span className="font-bold">{systemName}</span> {" "} (Sistema de
         Control de Estudios). Al acceder, registrarse o utilizar nuestra
         plataforma web y servicios asociados, la institución educativa o usuario
         individual (&quot;Usted&quot; o &quot;la Institución&quot;) acepta
@@ -40,10 +41,10 @@ export default function LegalPage() {
 
       {/* 1. Definición del Servicio */}
       <section className="space-y-3">
-        <h2 className="text-xl font-bold text-slate-800">
+        <h2 className="text-xl font-bold text-slate-800 dark:text-zinc-200">
           1. Definición del Servicio
         </h2>
-        <p className="text-sm text-slate-600">
+        <p className="text-sm text-slate-600 dark:text-zinc-300">
           <span className="font-bold">{systemName}</span> es una solución de
           software como servicio (SaaS) desarrollada para la gestión académica,
           control de estudios, registro de calificaciones, planes de evaluación
@@ -54,10 +55,10 @@ export default function LegalPage() {
 
       {/* 2. Veracidad de la Información */}
       <section className="space-y-3">
-        <h2 className="text-xl font-bold text-slate-800">
+        <h2 className="text-xl font-bold text-slate-800 dark:text-zinc-200">
           2. Veracidad de la Información y Fe Pública
         </h2>
-        <p className="text-sm text-slate-600">
+        <p className="text-sm text-slate-600 dark:text-zinc-300">
           El Usuario y la Institución son los únicos responsables de la
           veracidad, exactitud y actualización de los datos ingresados.{" "}
           <span className="font-bold">{systemName}</span> opera como una
@@ -73,15 +74,15 @@ export default function LegalPage() {
 
       {/* 3. Cuentas de Usuario */}
       <section className="space-y-3">
-        <h2 className="text-xl font-bold text-slate-800">
+        <h2 className="text-xl font-bold text-slate-800 dark:text-zinc-200">
           3. Cuentas de Usuario y Acceso Institucional
         </h2>
-        <ul className="ml-5 list-outside list-disc space-y-2 text-sm text-slate-600">
+        <ul className="ml-5 list-outside list-disc space-y-2 text-sm text-slate-600 dark:text-zinc-300">
           <li>
             <span className="font-bold">Responsabilidad Operativa:</span> La
             Institución designará formalmente a sus administradores para el
             manejo de roles (directivos, docentes y personal de control de
-            estudios).
+            estudio y estudiantes.).
           </li>
           <li>
             <span className="font-bold">Custodia de Credenciales:</span> La
@@ -95,16 +96,16 @@ export default function LegalPage() {
 
       {/* 4. LOPNNA */}
       <section className="space-y-3">
-        <h2 className="text-xl font-bold text-slate-800">
+        <h2 className="text-xl font-bold text-slate-800 dark:text-zinc-200">
           4. Protección de Datos de Menores (LOPNNA)
         </h2>
-        <p className="text-sm text-slate-600">
+        <p className="text-sm text-slate-600 dark:text-zinc-300">
           En cumplimiento con la normativa legal de protección al menor (LOPNNA,
           Art. 65),{" "}
           <span className="font-bold text-cyan-600">{systemName}</span>{" "}
           establece que:
         </p>
-        <ul className="ml-5 list-outside list-disc space-y-2 text-sm text-slate-600">
+        <ul className="ml-5 list-outside list-disc space-y-2 text-sm text-slate-600 dark:text-zinc-300">
           <li>
             Los expedientes digitales de los estudiantes tienen carácter
             estrictamente confidencial.
@@ -122,10 +123,10 @@ export default function LegalPage() {
 
       {/* 5. Propiedad de los Datos */}
       <section className="space-y-3">
-        <h2 className="text-xl font-bold text-slate-800">
+        <h2 className="text-xl font-bold text-slate-800 dark:text-zinc-200">
           5. Propiedad de los Datos y Bajas del Servicio
         </h2>
-        <p className="text-sm text-slate-600">
+        <p className="text-sm text-slate-600 dark:text-zinc-300">
           Los datos académicos e identificativos cargados pertenecen a la
           Institución. En caso de culminación o cancelación del contrato SaaS,
           la Institución dispondrá de un lapso de{" "}
@@ -137,10 +138,10 @@ export default function LegalPage() {
 
       {/* 6. Mantenimiento y Exoneración de Fuerza Mayor */}
       <section className="space-y-3">
-        <h2 className="text-xl font-bold text-slate-800">
+        <h2 className="text-xl font-bold text-slate-800 dark:text-zinc-200">
           6. Disponibilidad (SLA) y Casos Fortuitos
         </h2>
-        <p className="text-sm text-slate-600">
+        <p className="text-sm text-slate-600 dark:text-zinc-300">
           Se procurará un nivel óptimo de disponibilidad. No obstante,{" "}
           <span className="font-bold">{systemName}</span> queda exonerada de
           responsabilidades operativas o legales ante interrupciones generadas
@@ -150,11 +151,11 @@ export default function LegalPage() {
       </section>
 
       {/* 7. Delitos Informáticos */}
-      <section className="space-y-2 rounded-lg border-l-4 border-red-500 bg-red-50 p-4">
-        <h2 className="text-xl font-bold text-red-800">
+      <section className="space-y-2 rounded-lg border-l-4 border-red-500 bg-red-50 p-4 dark:border-red-400 dark:bg-red-900/20">
+        <h2 className="text-xl font-bold text-red-800 dark:text-red-300">
           7. Delitos Informáticos
         </h2>
-        <p className="text-sm text-red-900">
+        <p className="text-sm text-red-900 dark:text-red-200">
           Cualquier vulneración técnica, intento de ataque por fuerza bruta,
           inyección SQL o modificación no autorizada de la base de datos será
           denunciada ante el{" "}
