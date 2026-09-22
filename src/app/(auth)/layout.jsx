@@ -12,8 +12,9 @@ export default function RootLayout({ children }) {
   const router = useRouter();
   return (
     <RememberProvider>
-      <main className="min-h-dvh w-full flex overflow-hidden bg-white dark:bg-zinc-900 transition-colors">
-        <div className="hidden md:block w-1/2 lg:w-3/5 relative z-10 [clip-path:polygon(0_0,100%_0,85%_100%,0_100%)]">
+      <main className="min-h-dvh w-full flex overflow-hidden bg-zinc-100 dark:bg-zinc-950 transition-colors ">
+        
+        <div className="hidden md:block w-2/1 relative z-10 ">
           {/* Fotografía de fondo: Reducimos su brillo y opacidad en modo oscuro */}
           <Image
             src="https://media.istockphoto.com/id/1335969806/es/foto/chica-adolescente-usando-computadora-port%C3%A1til-en-la-cama-usar-las-redes-sociales-o-estudiar.jpg?s=612x612&w=0&k=20&c=c9TQT94oGL3gcvD88ctwN28FGKxJVM4LAtP88Pp8SxU="
@@ -23,13 +24,13 @@ export default function RootLayout({ children }) {
           />
 
           {/* Superposición de color (Overlay): Más tenue/oscura en modo oscuro */}
-          <div className="absolute inset-0 bg-gradient-to-tr from-orange-600/90 via-amber-500/80 to-cyan-500/60 dark:from-zinc-950/90 dark:via-orange-950/70 dark:to-cyan-950/50 transition-colors" />
+          <div className="absolute inset-0 bg-black/30 dark:bg-black/40 transition-colors" />
 
           {/* Contenido sobre la foto */}
-          <div className="relative z-10 flex flex-col justify-between h-full p-12 text-white">
+          <div className="relative z-10 flex flex-col justify-between h-full p-5 text-white">
             <div className="flex items-center gap-2">
               <Button
-                classNameIcon="text-xl text-gray-100/40 mr-1"
+                classNameIcon="text-xl text-gray-200 mr-1"
                 icon={faArrowLeft}
                 classNameBtn="font-bold text-2xl tracking-wider"
                 onClick={() => router.back()}
@@ -42,21 +43,21 @@ export default function RootLayout({ children }) {
               <h1 className="text-3xl font-extrabold leading-tight">
                 Gestión académica simple y al alcance de todos
               </h1>
-              <p className="text-orange-100 text-sm leading-relaxed dark:text-zinc-300">
+              <p className="text-white text-sm leading-relaxed dark:text-zinc-300">
                 Consulta calificaciones y más desde un solo lugar.
               </p>
             </div>
 
-            <p className="text-xs text-orange-200/80 dark:text-zinc-400">
+            <p className="text-xs text-white/80 dark:text-zinc-400">
               © {new Date().getFullYear()} SchoPack. Todos los derechos
               reservados.
             </p>
           </div>
         </div>
 
-        <div className="w-full md:w-1/2 lg:w-2/5 flex flex-col items-center justify-between p-6 md:p-12">
+        <div className="w-full flex flex-col items-center justify-between p-6 md:p-12">
           {/* Espaciador superior */}
-          <div className="w-full h-4" />
+          <div className="w-full" />
 
           {/* Tarjeta del Formulario centrada */}
           <section className="w-full">{children}</section>
@@ -83,7 +84,7 @@ export default function RootLayout({ children }) {
 
         <Toaster
           position="top-right"
-          reverseOrder={false}
+          reverseOrder={true}
           toastOptions={{
             className:
               "rounded-xl border border-slate-200 dark:border-zinc-800 bg-white dark:bg-zinc-900 text-slate-800 dark:text-zinc-100 shadow-lg font-medium transition-colors",

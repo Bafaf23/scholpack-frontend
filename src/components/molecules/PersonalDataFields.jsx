@@ -1,7 +1,9 @@
 import Input from "../atom/Input";
 import Selector from "../atom/Selector";
 import ToggleSimple from "../atom/ToggleSimple";
+import Banner from "../atom/Banner";
 import SelectorInput from "./SelectorInput";
+import { faIdCard } from "@fortawesome/free-solid-svg-icons";
 
 /**
  * Page de fromulario de inscripcion de estudiantes.
@@ -16,8 +18,8 @@ import SelectorInput from "./SelectorInput";
 
 const PersonalDataFields = ({ datos, manejarCambio, mode }) => {
   const documentType = [
-    { value: "V", label: "Venezolano" },
-    { value: "CE", label: "Cedula Estudiantil" },
+    { value: "V", label: "V" },
+    { value: "CE", label: "CE" },
   ];
 
   const genderSel = [
@@ -31,20 +33,24 @@ const PersonalDataFields = ({ datos, manejarCambio, mode }) => {
   };
 
   return (
-    <div className="space-y-4">
-      <h4 className="border-b pb-2 font-bold text-blue-700">
-        Datos Personales
-      </h4>
+    <div className="space-y-3">
+      <div className="flex items-center justify-between">
+        <h4 className="text-2xl font-extrabold text-amber-500 uppercase">
+          Tus datos personales
+        </h4>
+      </div>
+      {/* Toggle para estudiantes de procedencia de otras escuelas */}
       <div>
-        {mode !== "edit" && (
+        {/*  {mode !== "edit" && (
           <ToggleSimple
             label={"¿Vienes de otra institución academica?"}
             name={"isNewEntry"}
             value={datos.isNewEntry}
             onChange={handleToggle}
           />
-        )}
+        )} */}
       </div>
+      <Banner icon={faIdCard} titel="¿Sin Cedula de Identidad?" message="Si aun no tienes cedula de identidad, puedes seleccionar 'CE' (Cédula de estudiantil) como tipo de documento y completar el campo con la cedula de tu representante." />
       <div className="grid md:grid-cols-3 items-end gap-4">
         {mode !== "edit" ? (
           <div className="col-span-2">
@@ -52,7 +58,7 @@ const PersonalDataFields = ({ datos, manejarCambio, mode }) => {
               id={"dni"}
               name={"documentType"}
               nameInput={"document"}
-              placeholder={"323233"}
+              placeholder={"32876354"}
               label={"Selecciona tipo de documento"}
               options={documentType}
               onChange={manejarCambio}
@@ -62,11 +68,11 @@ const PersonalDataFields = ({ datos, manejarCambio, mode }) => {
           </div>
         ) : (
           <>
-            <div className="col-span-3 md:col-span-2">
+            <div className="col-span-2 md:col-span-2">
               <Input
                 name={"document"}
                 label={"Numero de documento"}
-                placeholder={"323233"}
+                placeholder={"32876354"}
                 onChange={manejarCambio}
                 value={datos.document}
               />

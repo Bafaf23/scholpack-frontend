@@ -1,5 +1,7 @@
 import Input from "../atom/Input";
 import Selector from "../atom/Selector";
+import Banner from "../atom/Banner";
+import { faHeadSideCough } from "@fortawesome/free-solid-svg-icons";
 
 /**
  * Page de fromulario de inscripcion de estudiantes.
@@ -13,28 +15,24 @@ import Selector from "../atom/Selector";
  */
 
 const HealthPhysicalFields = ({ datos, manejarCambio }) => {
-  const lateralidad = [
-    { value: "diestro", label: "Diestro" },
-    { value: "zurdo", label: "Zurdo" },
-    { value: "ambidiestro", label: "Ambidiestro" },
-  ];
 
   return (
     <div className="space-y-6">
-      <h4 className="border-b pb-2 font-bold text-blue-700">
-        Información Médica y Tallas
+      <h4 className="font-extrabold text-amber-500 text-2xl uppercase">
+        Tus datos medicos y fisicos
       </h4>
+      <Banner icon={faHeadSideCough} titel="¿No padecesde alguna condición médica?" message="Si no padeces ninguna condición o alergia médica, deja los campos en blanco." />
       <div className="grid grid-cols-2 gap-2">
         <Input
           name={"allergies"}
           label={"Alegias"}
-          placeholder="Alergias (Ninguna si no aplica)"
+          placeholder="Asma, Rinitis, etc."
           onChange={manejarCambio}
           value={datos.allergies}
         />
         <Input
           label="Condicion Medica"
-          placeholder="Ej: visual, auditiva, fisica, etc"
+          placeholder="Otitis, Diabetes, etc."
           onChange={manejarCambio}
           value={datos.discapacidad}
         />
@@ -44,21 +42,21 @@ const HealthPhysicalFields = ({ datos, manejarCambio }) => {
         <Input
           name={"shirtSize"}
           label={"Talla de camisa"}
-          placeholder="Ej: S,M,XL"
+          placeholder="S,M,XL"
           onChange={manejarCambio}
           value={datos.shirtSize}
         />
         <Input
           name={"pantSize"}
           label={"Talla de pantalon"}
-          placeholder="Ej: 34"
+          placeholder="34"
           onChange={manejarCambio}
           value={datos.pantSize}
         />
         <Input
           name={"shoeSize"}
           label={"Talla de zapatos"}
-          placeholder="Ej: 45"
+          placeholder="45"
           onChange={manejarCambio}
           value={datos.shoeSize}
         />
@@ -67,14 +65,14 @@ const HealthPhysicalFields = ({ datos, manejarCambio }) => {
         <Input
           name={"height"}
           label={"¿Cuanto mides?"}
-          placeholder="Ej: 1.34"
+          placeholder="1,34"
           onChange={manejarCambio}
           value={datos.height}
         />
         <Input
           name={"weight"}
           label={"¿Cuanto pesas?"}
-          placeholder="Ej: 87"
+          placeholder="87"
           onChange={manejarCambio}
           value={datos.weight}
         />

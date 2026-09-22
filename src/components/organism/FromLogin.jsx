@@ -170,7 +170,7 @@ export default function FromLogin({ schoolName }) {
                     htmlFor="remember"
                     className="text-slate-600 dark:text-zinc-300 cursor-pointer select-none font-medium"
                   >
-                    Recordar usuario
+                    Recordarme
                   </label>
                 </div>
               </>
