@@ -4,7 +4,6 @@ import Icon from "@/components/atom/Icon";
 import {
   faCheckCircle,
   faHome,
-  faFilePdf,
   faSave,
 } from "@fortawesome/free-solid-svg-icons";
 import Link from "next/link";

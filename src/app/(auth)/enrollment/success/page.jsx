@@ -8,7 +8,7 @@ export const metadata = {
 };
 
 export default function EnrollmentSuccessPage({ data }) {
-  /*   if (!data) return <Loading />; */
+  if (!data) return <Loading />;
 
   const dataSuccess = {
     id: data?.user_id || data?.document || "N/A",
