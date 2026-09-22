@@ -1,6 +1,7 @@
 "use client";
 import Button from "../atom/Button";
 import Icon from "../atom/Icon";
+import Banner from "../atom/Banner";
 import Input from "../atom/Input";
 import AcademicFields from "../molecules/AcademicBackgroundFields";
 import EnrollmentSchool from "../molecules/EnrollmentSchool";
@@ -8,24 +9,19 @@ import HealthPhysicalFields from "../molecules/HealthPhysicalFields";
 import LegalRepresentativeFields from "../molecules/LegalRepresentativeFields";
 import LocationFields from "../molecules/LocationFields";
 import PersonalDataFields from "../molecules/PersonalDataFields";
-import {
-  faLeftLong,
-  faRightLong,
-  faUserPlus,
-  faCircleInfo,
-} from "@fortawesome/free-solid-svg-icons";
 import { useState } from "react";
 import toast from "react-hot-toast";
 import { createStudent } from "@/services/student/createStudent";
 import { updateStudent } from "@/services/student/updateStudent";
+import { faInfoCircle, faStopCircle } from "@fortawesome/free-solid-svg-icons";
+import { useRouter } from "next/navigation";
 
 export default function FormInscrip({ mode, student, onSuccess }) {
+  const router = useRouter();
   const [passed, setPassed] = useState(1);
   const [loading, setLoading] = useState(false);
 
   const [formData, setFormData] = useState({
-    id_student: student?.id_student || "",
-    id_user: student?.id_user || "",
     documentType: "V",
     document: student?.document || "",
     name: student?.name || "",
@@ -46,7 +42,7 @@ export default function FormInscrip({ mode, student, onSuccess }) {
 
     year: student?.id_year || "",
     section: student?.id_section || "",
-    role_id: 4,
+    role_id: 2,
 
     allergies: student?.allergies || "",
     shirtSize: student?.shirt_size || "",
@@ -88,7 +84,6 @@ export default function FormInscrip({ mode, student, onSuccess }) {
         "Por favor, rellena los campos obligatorios del estudiante.",
       );
     }
-    console.log(formData);
 
     if (
       mode !== "edit" &&
@@ -104,7 +99,7 @@ export default function FormInscrip({ mode, student, onSuccess }) {
     if (mode === "edit") {
       result = await updateStudent(formData);
     } else {
-      result = await createStudent(formData);
+      result = { success: true, message: "Estudiante actualizado con éxito." };
     }
 
     if (result?.success !== true) {
@@ -112,6 +107,7 @@ export default function FormInscrip({ mode, student, onSuccess }) {
     } else {
       toast.success(result.message);
       onSuccess?.();
+      router.push("/enrollment/success");
     }
     setLoading(false);
   };
@@ -143,7 +139,7 @@ export default function FormInscrip({ mode, student, onSuccess }) {
 
       {/* PASO 1: Datos Personales (Común para todos) */}
       {passed === 1 && (
-        <div className="animate-in fade-in space-y-8 duration-500">
+        <div className="space-y-8">
           <PersonalDataFields
             datos={formData}
             manejarCambio={handleChange}
@@ -207,48 +203,60 @@ export default function FormInscrip({ mode, student, onSuccess }) {
 
       {/* PASO FINAL: Información de Cuenta (Solo en creación) */}
       {passed === totalSteps && mode !== "edit" && (
-        <div className="animate-in fade-in duration-300 space-y-6">
+        <div className="space-y-6">
+          <h4 className="font-extrabold text-amber-500 uppercase text-2xl">
+            Una cosa más para termiar
+          </h4>
+
+          <Banner
+            icon={faStopCircle}
+            titel="Reglamento, terminos y condiciones"
+            message="Al presionar el boton de inscribir, acepta los términos y condiciones del sistema. (ScholPack) y el reglamento interno de la institución educativa de la que desea inscribir al estudiante. Se recomienda leer el reglamento y los términos y condiciones antes de continuar."
+          />
+
           <Input
             label="Usuario para ingresar al sistema"
             name="username"
             value={formData.email}
             readOnly
           />
-          <div className="text-sm text-cyan-700 p-4 bg-cyan-400/10 rounded-lg border border-cyan-400/50 flex items-center gap-2">
-            <Icon icon={faCircleInfo} className="text-cyan-500 text-xl" />
-            <p className="font-medium">
-              Para iniciar sesión, se le notificará al estudiante a través de su
-              correo electrónico.
-            </p>
-          </div>
+
+          <Input
+            label="Contraseña temporal para ingresar al sistema"
+            name="username"
+            value={`${formData.document}@2026`}
+            readOnly
+          />
+          <Banner
+            icon={faInfoCircle}
+            titel="Seguridad"
+            message="Proteja esta cuenta. No comparta su usuario ni contraseña con nadie. ScholPack no se hace responsable por el mal uso de la cuenta."
+          />
         </div>
       )}
 
       {/* CONTROLES DE NAVEGACIÓN */}
-      <div className="mt-8 flex justify-between border-t border-gray-100 pt-6">
+      <div className="mt-5 flex justify-between pt-6">
         <Button
           type="button"
-          icon={faLeftLong}
           onClick={() => setPassed((p) => Math.max(1, p - 1))}
-          classNameBtn={`text-slate-400 hover:text-slate-600 font-medium ${passed === 1 ? "invisible" : ""}`}
+          classNameBtn={`text-slate-400 dark:text-zinc-500 hover:text-slate-600 dark:hover:text-zinc-400 font-medium border border-slate-300 dark:border-zinc-600 rounded-lg p-2 cursor-pointer ${passed === 1 ? "invisible" : ""}`}
         >
           Anterior
         </Button>
 
         <Button
           type="button"
-          icon={faRightLong}
           onClick={() => setPassed((p) => Math.min(totalSteps, p + 1))}
-          classNameBtn={`rounded-lg bg-indigo-600 px-8 py-2 font-bold text-white transition-all hover:bg-indigo-700 active:scale-95 group flex items-center gap-5 ${passed >= totalSteps ? "hidden" : ""}`}
+          classNameBtn={`rounded-lg bg-orange-600 p-3 font-bold text-white transition-all hover:bg-orange-700 active:scale-95 group flex items-center gap-5 cursor-pointer ${passed >= totalSteps ? "hidden" : ""}`}
         >
           Siguiente
         </Button>
 
         <Button
           type="submit"
-          icon={faUserPlus}
           disabled={loading}
-          classNameBtn={`rounded-lg bg-green-600 px-8 py-2 font-bold text-white transition-all hover:bg-green-700 disabled:bg-slate-300 flex items-center gap-2 ${passed < totalSteps ? "hidden" : ""}`}
+          classNameBtn={`rounded-lg bg-green-600 p-3 font-bold text-white transition-all hover:bg-green-700 disabled:bg-slate-300 flex items-center gap-2 ${passed < totalSteps ? "hidden" : ""}`}
         >
           {loading
             ? "Procesando..."

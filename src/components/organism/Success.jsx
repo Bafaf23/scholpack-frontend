@@ -4,7 +4,7 @@ import Icon from "@/components/atom/Icon";
 import {
   faCheckCircle,
   faHome,
-  faFilePdf,
+  faSave,
 } from "@fortawesome/free-solid-svg-icons";
 import Link from "next/link";
 import { useState, useEffect } from "react";
@@ -25,39 +25,52 @@ export default function Success({ data }) {
 
   return (
     <div className="p-4">
-      <div className="w-full max-w-md rounded-3xl border border-slate-100 bg-white p-8 text-center shadow-xl">
+      <div className="w-full max-w-md rounded-3xl p-8 text-center">
         {/* Icono de Éxito Animado */}
         <div className="mb-6 flex justify-center">
-          <div className="rounded-full bg-green-100 p-4">
-            <Icon icon={faCheckCircle} className="text-5xl text-green-600" />
+          <div className="rounded-full bg-green-100 dark:bg-green-900/40 p-4">
+            <Icon
+              icon={faCheckCircle}
+              className="text-5xl text-green-600 dark:text-green-400"
+            />
           </div>
         </div>
 
-        <h1 className="mb-2 text-3xl font-extrabold text-slate-800">
+        <h1 className="mb-2 text-3xl font-extrabold text-slate-800 dark:text-zinc-200">
           ¡Registro Exitoso!
         </h1>
-        <p className="mb-8 text-slate-500">
-          Tu inscripción ha sido procesada correctamente. Ya puedes gestionar su
-          ficha académica.
+        <p className="mb-8 text-slate-500 dark:text-zinc-300">
+          Tu inscripción ha sido procesada correctamente.
+        </p>
+
+        <p className="mb-3 text-slate-500 dark:text-zinc-300">
+          Numero de matricula:{" "}
+          <span className="font-bold text-cyan-500">
+            {data?.tituon_number || "N/A"}
+          </span>
         </p>
 
         {/* Card de Resumen Rápido */}
-        <div className="mb-8 rounded-2xl border border-dashed border-slate-300 bg-slate-50 p-4">
+        <div className="mb-8 rounded-2xl border border-dashed border-slate-300 dark:border-zinc-500 dark:bg-zinc-800 p-4">
           <div className="mb-2 flex justify-between text-sm">
-            <span className="text-slate-400">Estudiante:</span>
-            <span className="font-bold text-indigo-600 uppercase">
-              {data?.user?.name} {data?.user?.lastName}
+            <span className="text-slate-400 dark:text-zinc-200">
+              Estudiante:
+            </span>
+            <span className="font-extrabold dark:text-zinc-200 uppercase">
+              {data?.user?.name || "N/A"} {data?.user?.lastName || "N/A"}
             </span>
           </div>
           <div className="mb-2 flex justify-between text-sm">
-            <span className="text-slate-400">Estado:</span>
+            <span className="text-slate-400 dark:text-zinc-200">
+              Condicion:
+            </span>
             <span className="font-bold text-orange-600 uppercase">
               Pendiente
             </span>
           </div>
           <div className="flex justify-between text-sm">
-            <span className="text-slate-400">Liceo:</span>
-            <span className="font-semibold text-slate-700">
+            <span className="text-slate-400 dark:text-zinc-200">Liceo:</span>
+            <span className="font-semibold text-slate-700 dark:text-zinc-300">
               {data?.institution?.name || "Esperando..."}
             </span>
           </div>
@@ -69,10 +82,11 @@ export default function Success({ data }) {
             /* Botón de PDF o acción cliente (coloca aquí tu componente cuando esté listo) */
             <button
               type="button"
-              className="w-full flex items-center justify-center gap-2 rounded-xl bg-indigo-600 py-3 font-semibold text-white transition-all hover:bg-indigo-700"
+              className="w-full flex items-center justify-center gap-2 rounded-xl bg-orange-600 py-3 font-semibold text-white transition-all hover:bg-orange-700 cursor-pointer
+              "
             >
-              <Icon icon={faFilePdf} />
-              Descargar Planilla PDF
+              <Icon icon={faSave} />
+              Guardar comprobante
             </button>
           ) : (
             <div className="w-full animate-pulse border border-dashed border-slate-400 rounded-xl py-4 bg-slate-100" />
@@ -81,7 +95,7 @@ export default function Success({ data }) {
           <div className="grid grid-cols-2 gap-3">
             <Link
               href="/"
-              className="flex items-center justify-center gap-2 rounded-xl bg-slate-100 py-3 font-semibold text-slate-700 transition-all hover:bg-slate-200"
+              className="flex items-center justify-center gap-2 rounded-xl bg-zinc-200 dark:bg-zinc-100 py-3 font-semibold text-zinc-800 dark:text-zinc-700 transition-all hover:bg-zinc-300 dark:hover:bg-zinc-200"
             >
               <Icon icon={faHome} />
               Inicia sesión
@@ -89,15 +103,16 @@ export default function Success({ data }) {
             <Link
               href="/enrollment"
               onClick={handleNewRegistration}
-              className="flex items-center justify-center gap-2 rounded-xl border border-slate-200 py-3 font-semibold text-slate-600 transition-all hover:bg-slate-50"
+              className="flex items-center justify-center gap-2 rounded-xl border border-zinc-300 dark:border-zinc-600 py-3 font-semibold text-slate-600 dark:text-zinc-300 transition-all hover:bg-zinc-200 dark:hover:bg-zinc-900"
             >
-              Nuevo Registro
+              Nueva inscripción
             </Link>
           </div>
         </div>
 
-        <p className="mt-8 text-xs text-slate-400">
-          Se ha enviado un correo de confirmación a la dirección registrada.
+        <p className="mt-8 text-xs text-slate-400 dark:text-zinc-500">
+          Guarda el comprobante para formalizar la inscripción en la institución
+          educativa.
         </p>
       </div>
     </div>

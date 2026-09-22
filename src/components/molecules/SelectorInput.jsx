@@ -35,10 +35,10 @@ export default function SelectorInput({
   const inputId = `${selectId || "selector"}-input`;
 
   return (
-    <div>
+    <div className="flex w-full flex-col gap-2">
       <label
         htmlFor={selectId}
-        className="ml-1 text-sm font-semibold text-slate-600"
+        className="ml-1 text-sm font-semibold text-slate-600 dark:text-zinc-300"
       >
         {label}
       </label>
@@ -48,12 +48,9 @@ export default function SelectorInput({
           value={valueSel || ""}
           id={selectId}
           onChange={onChange}
-          className="w-fit rounded-xl border border-slate-200 bg-slate-50 px-4 py-3 text-slate-700 transition-all placeholder:text-slate-400 focus:border-cyan-500 focus:ring-2 focus:ring-cyan-500/50 focus:outline-none"
+          className="w-fit rounded-xl border border-slate-200 bg-white px-4 py-3 text-slate-700 transition-all placeholder:text-slate-400 focus:border-orange-500 focus:ring-2 focus:ring-orange-500/50 focus:outline-none dark:border-zinc-600 dark:bg-zinc-800 dark:text-zinc-200 dark:placeholder:text-zinc-400 dark:focus:border-orange-500 dark:focus:ring-orange-500/50"
           required
         >
-          <option value="" disabled>
-            Selecciona...
-          </option>
           {options.map((option) => (
             <option key={option.value} value={option.value}>
               {option.label}

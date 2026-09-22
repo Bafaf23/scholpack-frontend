@@ -6,12 +6,12 @@ import Plans from "@/components/organism/Plans";
 
 export default function Home() {
   return (
-    <main>
+    <>
       <Header />
       <Hero />
       <About />
       <Plans />
       <Footer />
-    </main>
+    </>
   );
 }

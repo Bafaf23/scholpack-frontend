@@ -1,88 +1,62 @@
-"use client";
-
-import { useEffect, useState } from "react";
 import Success from "@/components/organism/Success";
 import Loading from "@/app/loading";
 
-function buildDni(type, number) {
-  if (!number) return "";
-  return `${type || ""}${number}`.trim();
-}
-
-function parseSigCode(sig) {
-  if (!sig) return "";
-  return String(sig).split(" - ")[0]?.trim() || String(sig);
-}
-
-function parseInstitutionName(data) {
-  if (!data) return "";
-  if (data.nameInstitution) return data.nameInstitution;
-  if (data.institutionName) return data.institutionName;
-  const sig = data.sig;
-  if (!sig) return "";
-  const parts = String(sig).split(" - ");
-  return parts.length > 1 ? parts.slice(1).join(" - ").trim() : "";
-}
+export const metadata = {
+  title: "ScholPack - pre-inscripción exitosa",
+  description:
+    "¡Felicidades! Tu pre-inscripción en ScholPack ha sido exitosa. Revisa los detalles de tu inscripción y sigue los próximos pasos para asegurar tu lugar en nuestra institución educativa.",
+};
 
 export default function EnrollmentSuccessPage({ data }) {
-  const [isMounted, setIsMounted] = useState(false);
-
-  // Asegura que la renderización dependiente de fechas/APIs del navegador solo ocurra en el cliente
-  useEffect(() => {
-    // eslint-disable-next-line react-hooks/set-state-in-effect
-    setIsMounted(true);
-  }, []);
-
-  // Si no hay datos o aún no se ha montado en el cliente, mostramos el estado de carga
-  if (!isMounted || !data) return <Loading />;
+  if (!data) return <Loading />;
 
   const dataSuccess = {
-    id: data.user_id || data.document,
-    sig: parseSigCode(data.sig),
+    id: data?.user_id || data?.document || "N/A",
+    SIG: data?.SIG || "N/A",
     user: {
-      id: data.user_id || "N/A",
-      dni: buildDni(data.documentType, data.document),
-      documentType: data.documentType,
-      document: data.document,
-      name: data.name,
-      lastName: data.lastName,
-      email: data.email,
-      phone: data.phone,
-      gender: data.gender,
-      birthDate: data.birthDate,
-      nationality: data.birthCountry,
-      address: data.addressDetail,
-      state: data.state,
-      municipality: data.municipality,
-      parish: data.parish,
-      lateralidad: data.lateralidad,
-      condition: data.isNewEntry ? "regular" : "nuevo ingreso",
-      bloodType: data.bloodType,
-      allergies: data.allergies,
-      shirtSize: data.shirtSize,
-      pantSize: data.pantSize,
-      shoeSize: data.shoeSize,
-      weight: data.weight,
-      height: data.height,
-      medicalCondition: data.medicalCondition,
+      id: data?.user_id || "N/A",
+      dni: data?.document || "N/A",
+      documentType: data?.documentType,
+      document: data?.document,
+      name: data?.name || "N/A",
+      lastName: data?.lastName || "N/A",
+      email: data?.email || "N/A",
+      phone: data?.phone || "N/A",
+      gender: data?.gender || "N/A",
+      birthDate: data?.birthDate || "N/A",
+      nationality: data?.birthCountry || "N/A",
+      address: data?.addressDetail || "N/A",
+      state: data?.state || "N/A",
+      municipality: data?.municipality || "N/A",
+      parish: data?.parish || "N/A",
+      lateralidad: data?.lateralidad || "N/A",
+      condition: data?.isNewEntry ? "regular" : "nuevo ingreso",
+      bloodType: data?.bloodType || "N/A",
+      allergies: data?.allergies || "N/A",
+      shirtSize: data?.shirtSize || "N/A",
+      pantSize: data?.pantSize || "N/A",
+      shoeSize: data?.shoeSize || "N/A",
+      weight: data?.weight || "N/A",
+      height: data?.height || "N/A",
+      medicalCondition: data?.medicalCondition || "N/A",
     },
     representative: {
-      dni: buildDni(data.repdniType, data.repdni),
-      documentType: data.repdniType,
-      document: data.repdni,
-      name: data.repName,
-      lastName: data.repLastName,
-      email: data.repEmail,
-      phone: data.repPhone,
-      relationship: data.relationship,
-      birthCertificate: data.birthCertificate,
+      dni: data?.repdni || "N/A",
+      documentType: data?.repdniType || "N/A",
+      document: data?.repdni || "N/A",
+      name: data?.repName || "N/A",
+      lastName: data?.repLastName || "N/A",
+      email: data?.repEmail || "N/A",
+      phone: data?.repPhone || "N/A",
+      relationship: data?.relationship || "N/A",
+      birthCertificate: data?.birthCertificate || "N/A",
     },
     institution: {
-      name: parseInstitutionName(data) || "Liceo seleccionado",
-      sig: parseSigCode(data.sig),
+      name: data || "Liceo seleccionado",
+      SIG: data?.SIG || "N/A",
     },
-    createdAt: data.createdAt || new Date().toISOString().split("T")[0],
-    updatedAt: data.updatedAt,
+    createdAt: data?.createdAt || new Date().toISOString().split("T")[0],
+    updatedAt: data?.updatedAt || "N/A",
   };
 
   return <Success data={dataSuccess} />;

@@ -1,12 +1,12 @@
 import Icon from "./Icon";
 /**
- * Banner Informativo, soporta iconos dinamicos
- * @param {object} param0
- * @param {string} param0.titel
- * @param {string} param0.message
- * @param {string} param0.icon
- * @returns
- */
+  * Banner Informativo, soporta iconos dinamicos
+  * @param {object} param0
+  * @param {string} param0.titel
+  * @param {string} param0.message
+  * @param {string} param0.icon
+  * @returns
+*/
 export default function Banner({ titel, message, icon }) {
   return (
     <div className="p-4 bg-cyan-50 dark:bg-cyan-950/30 rounded-2xl border border-cyan-200 dark:border-cyan-800/50 flex items-start gap-3  shadow-sm">

@@ -3,7 +3,7 @@ import { headers } from "next/headers";
 
 export const metadata = {
   title: "Iniciar Sesión",
-  description: "Inicia sesión en SIGACE para acceder a la plataforma",
+  description: "Inicia sesión para acceder a la plataforma",
 };
 
 async function getSchoolName(subdomain) {
