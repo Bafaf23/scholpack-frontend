@@ -9,7 +9,7 @@ import {
 import Link from "next/link";
 import { useState, useEffect } from "react";
 
-export default function Success({ data }) {
+export default function Success({ data, school }) {
   const [isClient, setIsClient] = useState(false);
 
   useEffect(() => {
@@ -46,7 +46,7 @@ export default function Success({ data }) {
         <p className="mb-3 text-slate-500 dark:text-zinc-300">
           Numero de matricula:{" "}
           <span className="font-bold text-cyan-500">
-            {data?.tituon_number || "N/A"}
+            {data?.tuition_number || "N/A"}
           </span>
         </p>
 
@@ -57,7 +57,7 @@ export default function Success({ data }) {
               Estudiante:
             </span>
             <span className="font-extrabold dark:text-zinc-200 uppercase">
-              {data?.user?.name || "N/A"} {data?.user?.lastName || "N/A"}
+              {data?.user.name || "N/A"} {data?.user.last_name || "N/A"}
             </span>
           </div>
           <div className="mb-2 flex justify-between text-sm">
@@ -65,13 +65,13 @@ export default function Success({ data }) {
               Condicion:
             </span>
             <span className="font-bold text-orange-600 uppercase">
-              Pendiente
+              {data?.condition || "N/A"}
             </span>
           </div>
           <div className="flex justify-between text-sm">
             <span className="text-slate-400 dark:text-zinc-200">Liceo:</span>
             <span className="font-semibold text-slate-700 dark:text-zinc-300">
-              {data?.institution?.name || "Esperando..."}
+              {school.name || "Esperando..."} (SIG: {school.SIG})
             </span>
           </div>
         </div>

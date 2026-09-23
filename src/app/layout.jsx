@@ -16,7 +16,7 @@ export default function RootLayout({ children }) {
     <html lang="es">
       <body>
         <ThemeProvider>
-          <main className="flex min-h-full flex-col font-sans antialiased text-slate-800 bg-zinc-100 dark:bg-zinc-900 dark:text-slate-200">
+          <main className="flex min-h-dvh flex-col font-sans antialiased text-slate-800 bg-zinc-100 dark:bg-zinc-900 dark:text-slate-200">
             {children}
           </main>
         </ThemeProvider>

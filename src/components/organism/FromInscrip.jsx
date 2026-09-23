@@ -14,12 +14,20 @@ import toast from "react-hot-toast";
 import { createStudent } from "@/services/student/createStudent";
 import { updateStudent } from "@/services/student/updateStudent";
 import { faInfoCircle, faStopCircle } from "@fortawesome/free-solid-svg-icons";
+import Success from "./Success";
 import { useRouter } from "next/navigation";
 
-export default function FormInscrip({ mode, student, onSuccess }) {
+export default function FormInscrip({
+  mode,
+  student,
+  onSuccess,
+  nameSchool,
+  SIG,
+}) {
   const router = useRouter();
   const [passed, setPassed] = useState(1);
   const [loading, setLoading] = useState(false);
+  const [successData, setSuccessData] = useState(null);
 
   const [formData, setFormData] = useState({
     documentType: "V",
@@ -40,8 +48,7 @@ export default function FormInscrip({ mode, student, onSuccess }) {
     previousYear: student?.previous_year || "",
     previousSection: student?.previous_section || "",
 
-    year: student?.id_year || "",
-    section: student?.id_section || "",
+    SIG: SIG,
     role_id: 2,
 
     allergies: student?.allergies || "",
@@ -52,7 +59,7 @@ export default function FormInscrip({ mode, student, onSuccess }) {
     medicalCondition: student?.medical_condition || "",
     height: student?.height || "",
 
-    repdniType: student?.repdniType || "V-",
+    repdniType: student?.repdniType || "V",
     repdni: student?.repdni || "",
     repName: student?.rep_name || "",
     repLastName: student?.rep_last_name || "",
@@ -99,21 +106,30 @@ export default function FormInscrip({ mode, student, onSuccess }) {
     if (mode === "edit") {
       result = await updateStudent(formData);
     } else {
-      result = { success: true, message: "Estudiante actualizado con éxito." };
+      result = await createStudent(formData);
     }
 
     if (result?.success !== true) {
       toast.error(result?.message || "Ocurrió un error.");
     } else {
       toast.success(result.message);
+      setSuccessData(result.data);
+      console.log("Resultado de la inscripción:", result);
       onSuccess?.();
-      router.push("/enrollment/success");
     }
     setLoading(false);
   };
 
+  if (successData)
+    return (
+      <Success data={successData} school={{ name: nameSchool, SIG: SIG }} />
+    );
+
   return (
     <form onSubmit={handleSubmit} className="space-y-2">
+      <h2 className="text-lg text-right font-bold uppercase dark:text-zinc-600 text-gray-800">
+        {nameSchool}
+      </h2>
       {/* Banner modo edit*/}
       {mode === "edit" && (
         <div className="bg-cyan-50/50 border border-cyan-200 p-4 rounded-xl backdrop-blur-sm">

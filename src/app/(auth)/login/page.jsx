@@ -16,7 +16,7 @@ async function getSchoolName(subdomain) {
 
     if (!res.ok) return null;
     const data = await res.json();
-    return data.school_name;
+    return data.school_name.slice(5);
   } catch (error) {
     return null;
   }

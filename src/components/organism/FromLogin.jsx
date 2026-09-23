@@ -108,7 +108,7 @@ export default function FromLogin({ schoolName }) {
 
           <p className="text-sm font-medium text-slate-600 dark:text-zinc-300 tracking-wide">
             Ingresa al sistema de{" "}
-            <span className="font-bold text-xl text-slate-800 dark:text-zinc-100">
+            <span className="font-bold text-lg text-slate-800 dark:text-zinc-100 uppercase">
               {schoolName ? schoolName : "ADMIN SUDO"}
             </span>{" "}
             para continuar.
