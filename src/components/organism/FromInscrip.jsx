@@ -24,7 +24,6 @@ export default function FormInscrip({
   nameSchool,
   SIG,
 }) {
-  const router = useRouter();
   const [passed, setPassed] = useState(1);
   const [loading, setLoading] = useState(false);
   const [successData, setSuccessData] = useState(null);

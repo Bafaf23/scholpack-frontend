@@ -41,7 +41,7 @@ const HealthPhysicalFields = ({ datos, manejarCambio }) => {
         />
       </div>
 
-      <div className="grid grid-cols-2 md:grid-cols-3 gap-2">
+      <div className="grid grid-cols-2 md:grid-cols-1 gap-2">
         <Input
           name={"shirtSize"}
           label={"Talla de camisa"}

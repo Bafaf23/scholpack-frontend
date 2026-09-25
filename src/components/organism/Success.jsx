@@ -7,9 +7,12 @@ import {
   faSave,
 } from "@fortawesome/free-solid-svg-icons";
 import Link from "next/link";
-import { useState, useEffect } from "react";
+import { toPng } from "html-to-image";
+import { useState, useEffect, useRef } from "react";
 
 export default function Success({ data, school }) {
+  const comprobanteRef = useRef(null);
+  const [downloading, setDownloading] = useState(false);
   const [isClient, setIsClient] = useState(false);
 
   useEffect(() => {
@@ -23,9 +26,40 @@ export default function Success({ data, school }) {
     }
   };
 
+  const handleDownloading = async () => {
+    if (!comprobanteRef.current || downloading) return;
+
+    setDownloading(true);
+
+    try {
+      const dataUrl = await toPng(comprobanteRef.current, {
+        quality: 0.95,
+        pixelRatio: 2,
+        backgroundColor: "#ffffff",
+        cacheBust: true,
+      });
+
+      const link = document.createElement("a");
+      const tuitionNumber = data?.tuition_number || "J000000000";
+      link.download = `${tuitionNumber}-comprobante.png`;
+      link.href = dataUrl;
+
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
+    } catch (e) {
+      console.error("Error al generar el comprobante:", e);
+    } finally {
+      setDownloading(false);
+    }
+  };
+
   return (
     <div className="p-4">
-      <div className="w-full max-w-md rounded-3xl p-8 text-center">
+      <div
+        ref={comprobanteRef}
+        className="w-full max-w-md rounded-3xl p-8 text-center"
+      >
         {/* Icono de Éxito Animado */}
         <div className="mb-6 flex justify-center">
           <div className="rounded-full bg-green-100 dark:bg-green-900/40 p-4">
@@ -82,30 +116,25 @@ export default function Success({ data, school }) {
             /* Botón de PDF o acción cliente (coloca aquí tu componente cuando esté listo) */
             <button
               type="button"
+              onClick={handleDownloading}
               className="w-full flex items-center justify-center gap-2 rounded-xl bg-orange-600 py-3 font-semibold text-white transition-all hover:bg-orange-700 cursor-pointer
               "
+              disabled={downloading}
             >
               <Icon icon={faSave} />
-              Guardar comprobante
+              {downloading ? "Generando comprobante..." : "Guardar comprobante"}
             </button>
           ) : (
             <div className="w-full animate-pulse border border-dashed border-slate-400 rounded-xl py-4 bg-slate-100" />
           )}
 
-          <div className="grid grid-cols-2 gap-3">
+          <div className="grid grid-cols-1 gap-3">
             <Link
-              href="/"
+              href="/login"
               className="flex items-center justify-center gap-2 rounded-xl bg-zinc-200 dark:bg-zinc-100 py-3 font-semibold text-zinc-800 dark:text-zinc-700 transition-all hover:bg-zinc-300 dark:hover:bg-zinc-200"
             >
               <Icon icon={faHome} />
               Inicia sesión
-            </Link>
-            <Link
-              href="/enrollment"
-              onClick={handleNewRegistration}
-              className="flex items-center justify-center gap-2 rounded-xl border border-zinc-300 dark:border-zinc-600 py-3 font-semibold text-slate-600 dark:text-zinc-300 transition-all hover:bg-zinc-200 dark:hover:bg-zinc-900"
-            >
-              Nueva inscripción
             </Link>
           </div>
         </div>
