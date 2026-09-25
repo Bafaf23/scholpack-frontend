@@ -16,7 +16,7 @@ const nextConfig = {
     remotePatterns: [
       {
         protocol: "https",
-        hostname: "media.istockphoto.com",
+        hostname: "www.provenzapro.com",
       },
     ],
   },

@@ -7,18 +7,20 @@ import { faArrowLeft } from "@fortawesome/free-solid-svg-icons";
 import Link from "next/link";
 import VersionTag from "@/components/atom/VersionTag";
 import { RememberProvider } from "@/context/RememberContext";
+import { useTheme } from "@/context/ThemeProvider";
 
 export default function RootLayout({ children }) {
   const router = useRouter();
+  const { theme } = useTheme();
+
   return (
     <RememberProvider>
-      <main className="min-h-dvh w-full flex overflow-hidden bg-zinc-100 dark:bg-zinc-950 transition-colors ">
-        
-        <div className="hidden md:block w-2/1 relative z-10 ">
+      <main className="min-h-dvh w-full flex overflow-hidden bg-zinc-100 dark:bg-zinc-950 transition-colors">
+        <div className="hidden md:block w-2/1 relative z-10">
           {/* Fotografía de fondo: Reducimos su brillo y opacidad en modo oscuro */}
           <Image
-            src="https://media.istockphoto.com/id/1335969806/es/foto/chica-adolescente-usando-computadora-port%C3%A1til-en-la-cama-usar-las-redes-sociales-o-estudiar.jpg?s=612x612&w=0&k=20&c=c9TQT94oGL3gcvD88ctwN28FGKxJVM4LAtP88Pp8SxU="
-            alt="Estudiantes y profesores"
+            src={`${theme === "dark" ? "/bg-dark5.jpg" : "/bg-light.jpeg"}`}
+            alt="fondo de pantalla"
             className="absolute inset-0 w-full h-full object-cover transition-all duration-300 dark:brightness-50 dark:opacity-80"
             fill
           />
@@ -27,7 +29,7 @@ export default function RootLayout({ children }) {
           <div className="absolute inset-0 bg-black/30 dark:bg-black/40 transition-colors" />
 
           {/* Contenido sobre la foto */}
-          <div className="relative z-10 flex flex-col justify-between h-full p-5 text-white">
+          <div className="relative z-10 flex flex-col justify-between h-full p-12 text-white">
             <div className="flex items-center gap-2">
               <Button
                 classNameIcon="text-xl text-gray-200 mr-1"
@@ -41,7 +43,7 @@ export default function RootLayout({ children }) {
 
             <div className="max-w-md space-y-3">
               <h1 className="text-3xl font-extrabold leading-tight">
-                Gestión académica simple y al alcance de todos
+                Gestión académica simple en un solo lugar
               </h1>
               <p className="text-white text-sm leading-relaxed dark:text-zinc-300">
                 Consulta calificaciones y más desde un solo lugar.

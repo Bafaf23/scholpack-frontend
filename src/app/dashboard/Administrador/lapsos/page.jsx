@@ -10,13 +10,19 @@ import FormCreateLapse from "@/components/organism/FromCreateLapse";
 import Modal from "@/components/organism/Modal";
 import { useAuth } from "@/context/AuthContext";
 import { createPeriod } from "@/services/academicPeriod/createPeriod";
+import { enrollmentState } from "@/services/academicPeriod/enrollmentState";
 import { endAcademicPeriod } from "@/services/academicPeriod/endAcademicPeriod";
 import { getPeriod } from "@/services/academicPeriod/getPeriod";
 import { createLapse } from "@/services/lapse/createLapse";
 import { endLapse } from "@/services/lapse/endLapse";
 import { getLapses } from "@/services/lapse/getLapse";
 import { startLapse } from "@/services/lapse/stardLapse";
-import { faCalendar, faCheck, faBook } from "@fortawesome/free-solid-svg-icons";
+import {
+  faCalendar,
+  faUserPlus,
+  faCheck,
+  faBook,
+} from "@fortawesome/free-solid-svg-icons";
 import { useState, useEffect, useCallback, startTransition } from "react";
 import toast from "react-hot-toast";
 import { Calendar } from "lucide-react";
@@ -99,9 +105,11 @@ export default function LapsoPage() {
             <span className="text-xs font-bold text-slate-400 dark:text-slate-500 uppercase tracking-wider">
               Año Escolar:
             </span>
-            <div className="flex items-center gap-2 text-xs font-bold text-indigo-600 dark:text-indigo-400 bg-indigo-500/10 border border-indigo-500/20 rounded-xl p-2 px-3 shadow-sm">
-              <Calendar className="w-3.5 h-3.5 text-indigo-500" />
-              <span>{period?.name || "Sin Periodo Activo"}</span>
+            <div className="flex items-center gap-2 text-xs font-bold text-indigo-600 dark:text-cyan-400 bg-cyan-500/10 border border-indigo-500/20 rounded-xl p-2 px-3 shadow-sm">
+              <Calendar className="w-3.5 h-3.5 text-cyan-500" />
+              <span className="text-lg">
+                {period?.name || "Sin Periodo Activo"}
+              </span>
             </div>
           </div>
 
@@ -110,7 +118,7 @@ export default function LapsoPage() {
             {period?.is_active ? (
               <Button
                 icon={faCheck}
-                classNameBtn="bg-rose-600 hover:bg-rose-700 text-slate-50 text-xs font-semibold p-2.5 rounded-xl transition-all cursor-pointer flex items-center gap-1.5 shadow-md shadow-rose-500/10"
+                classNameBtn="bg-rose-600 hover:bg-rose-700 text-slate-50 font-semibold p-2.5 rounded-xl transition-all cursor-pointer flex items-center gap-1.5 shadow-md shadow-rose-500/10"
                 onClick={() => setIsModalEndPeriodOpen(true)}
               >
                 Finalizar periodo
@@ -118,7 +126,7 @@ export default function LapsoPage() {
             ) : (
               <Button
                 icon={faCalendar}
-                classNameBtn="bg-indigo-600 hover:bg-indigo-700 text-slate-50 text-xs font-semibold p-2.5 rounded-xl transition-all cursor-pointer flex items-center gap-1.5 shadow-md shadow-indigo-500/10"
+                classNameBtn="bg-indigo-600 hover:bg-indigo-700 text-slate-50 font-semibold p-2.5 rounded-xl transition-all cursor-pointer flex items-center gap-1.5 shadow-md shadow-indigo-500/10"
                 onClick={() => setIsModalOpen(true)}
               >
                 Iniciar periodo
@@ -129,10 +137,20 @@ export default function LapsoPage() {
             {period?.is_active && canCreateMoreLapses && (
               <Button
                 icon={faCalendar}
-                classNameBtn="bg-indigo-600 hover:bg-indigo-700 text-slate-50 text-xs font-semibold p-2.5 rounded-xl transition-all cursor-pointer flex items-center gap-1.5 shadow-md shadow-indigo-500/10"
+                classNameBtn="bg-indigo-600 hover:bg-indigo-700 text-slate-50 font-semibold p-2.5 rounded-xl transition-all cursor-pointer flex items-center gap-1.5 shadow-md shadow-indigo-500/10"
                 onClick={() => setIsModalCreateLapseOpen(true)}
               >
                 Crear Lapso
+              </Button>
+            )}
+
+            {period?.school && (
+              <Button
+                icon={faUserPlus}
+                classNameBtn={`text-slate-50  font-semibold p-2.5 rounded-xl transition-all cursor-pointer flex items-center gap-1.5 shadow-md  ${period?.school?.is_enrollment_open ? "bg-rose-600 hover:bg-rose-700" : "bg-green-600 hover:bg-green-700 shadow-green-500/10"}`}
+                onClick={async () => await enrollmentState()}
+              >
+                {`${period?.school?.is_enrollment_open ? "Cerrar Inscripciones" : "Abrir Inscripciones"}`}
               </Button>
             )}
           </div>

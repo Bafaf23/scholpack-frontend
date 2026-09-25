@@ -27,13 +27,8 @@ const PersonalDataFields = ({ datos, manejarCambio, mode }) => {
     { label: "Masculino", value: "M" },
   ];
 
-  const handleToggle = (e) => {
-    const { name, checked } = e.target;
-    manejarCambio({ target: { name, value: checked } });
-  };
-
   return (
-    <div className="space-y-3">
+    <div className="space-y-4">
       <div className="flex items-center justify-between">
         <h4 className="text-2xl font-extrabold text-amber-500 uppercase">
           Tus datos personales
@@ -50,35 +45,25 @@ const PersonalDataFields = ({ datos, manejarCambio, mode }) => {
           />
         )} */}
       </div>
-      <Banner icon={faIdCard} titel="¿Sin Cedula de Identidad?" message="Si aun no tienes cedula de identidad, puedes seleccionar 'CE' (Cédula de estudiantil) como tipo de documento y completar el campo con la cedula de tu representante." />
+      <Banner
+        icon={faIdCard}
+        titel="¿Sin Cedula de Identidad?"
+        message="Si aun no tienes cedula de identidad, puedes seleccionar 'CE' (Cédula de estudiantil) como tipo de documento y completar el campo con la cedula de tu representante."
+      />
       <div className="grid md:grid-cols-3 items-end gap-4">
-        {mode !== "edit" ? (
-          <div className="col-span-2">
-            <SelectorInput
-              id={"dni"}
-              name={"documentType"}
-              nameInput={"document"}
-              placeholder={"32876354"}
-              label={"Selecciona tipo de documento"}
-              options={documentType}
-              onChange={manejarCambio}
-              valueSel={datos.documentType}
-              valueInput={datos.document}
-            />
-          </div>
-        ) : (
-          <>
-            <div className="col-span-2 md:col-span-2">
-              <Input
-                name={"document"}
-                label={"Numero de documento"}
-                placeholder={"32876354"}
-                onChange={manejarCambio}
-                value={datos.document}
-              />
-            </div>
-          </>
-        )}
+        <div className="col-span-2 md:col-span-2">
+          <SelectorInput
+            id={"dni"}
+            name={"documentType"}
+            nameInput={"document"}
+            placeholder={"32876354"}
+            label={"Selecciona tipo de documento"}
+            options={documentType}
+            onChange={manejarCambio}
+            valueSel={datos.documentType}
+            valueInput={datos.document}
+          />
+        </div>
         <div className="col-span-2 md:col-span-1">
           <Input
             name={"birthDate"}

@@ -15,17 +15,20 @@ import { faHeadSideCough } from "@fortawesome/free-solid-svg-icons";
  */
 
 const HealthPhysicalFields = ({ datos, manejarCambio }) => {
-
   return (
     <div className="space-y-6">
       <h4 className="font-extrabold text-amber-500 text-2xl uppercase">
         Tus datos medicos y fisicos
       </h4>
-      <Banner icon={faHeadSideCough} titel="¿No padecesde alguna condición médica?" message="Si no padeces ninguna condición o alergia médica, deja los campos en blanco." />
+      <Banner
+        icon={faHeadSideCough}
+        titel="¿No padecesde alguna condición médica?"
+        message="Si no padeces ninguna condición o alergia médica, deja los campos en blanco."
+      />
       <div className="grid grid-cols-2 gap-2">
         <Input
           name={"allergies"}
-          label={"Alegias"}
+          label={"Allergies"}
           placeholder="Asma, Rinitis, etc."
           onChange={manejarCambio}
           value={datos.allergies}
@@ -38,7 +41,7 @@ const HealthPhysicalFields = ({ datos, manejarCambio }) => {
         />
       </div>
 
-      <div className="grid md:grid-cols-3 gap-2">
+      <div className="grid grid-cols-2 md:grid-cols-3 gap-2">
         <Input
           name={"shirtSize"}
           label={"Talla de camisa"}
@@ -53,13 +56,15 @@ const HealthPhysicalFields = ({ datos, manejarCambio }) => {
           onChange={manejarCambio}
           value={datos.pantSize}
         />
-        <Input
-          name={"shoeSize"}
-          label={"Talla de zapatos"}
-          placeholder="45"
-          onChange={manejarCambio}
-          value={datos.shoeSize}
-        />
+        <div className="col-span-2">
+          <Input
+            name={"shoeSize"}
+            label={"Talla de zapatos"}
+            placeholder="45"
+            onChange={manejarCambio}
+            value={datos.shoeSize}
+          />
+        </div>
       </div>
       <div className="grid md:grid-cols-2 grid-cols-2 place-items-end gap-2">
         <Input

@@ -14,12 +14,20 @@ import toast from "react-hot-toast";
 import { createStudent } from "@/services/student/createStudent";
 import { updateStudent } from "@/services/student/updateStudent";
 import { faInfoCircle, faStopCircle } from "@fortawesome/free-solid-svg-icons";
+import Success from "./Success";
 import { useRouter } from "next/navigation";
 
-export default function FormInscrip({ mode, student, onSuccess }) {
+export default function FormInscrip({
+  mode,
+  student,
+  onSuccess,
+  nameSchool,
+  SIG,
+}) {
   const router = useRouter();
   const [passed, setPassed] = useState(1);
   const [loading, setLoading] = useState(false);
+  const [successData, setSuccessData] = useState(null);
 
   const [formData, setFormData] = useState({
     documentType: "V",
@@ -40,8 +48,7 @@ export default function FormInscrip({ mode, student, onSuccess }) {
     previousYear: student?.previous_year || "",
     previousSection: student?.previous_section || "",
 
-    year: student?.id_year || "",
-    section: student?.id_section || "",
+    SIG: SIG,
     role_id: 2,
 
     allergies: student?.allergies || "",
@@ -52,7 +59,7 @@ export default function FormInscrip({ mode, student, onSuccess }) {
     medicalCondition: student?.medical_condition || "",
     height: student?.height || "",
 
-    repdniType: student?.repdniType || "V-",
+    repdniType: student?.repdniType || "V",
     repdni: student?.repdni || "",
     repName: student?.rep_name || "",
     repLastName: student?.rep_last_name || "",
@@ -99,18 +106,24 @@ export default function FormInscrip({ mode, student, onSuccess }) {
     if (mode === "edit") {
       result = await updateStudent(formData);
     } else {
-      result = { success: true, message: "Estudiante actualizado con éxito." };
+      result = await createStudent(formData);
     }
 
     if (result?.success !== true) {
       toast.error(result?.message || "Ocurrió un error.");
     } else {
       toast.success(result.message);
+      setSuccessData(result.data);
+      console.log("Resultado de la inscripción:", result);
       onSuccess?.();
-      router.push("/enrollment/success");
     }
     setLoading(false);
   };
+
+  if (successData)
+    return (
+      <Success data={successData} school={{ name: nameSchool, SIG: SIG }} />
+    );
 
   return (
     <form onSubmit={handleSubmit} className="space-y-2">
@@ -214,19 +227,30 @@ export default function FormInscrip({ mode, student, onSuccess }) {
             message="Al presionar el boton de inscribir, acepta los términos y condiciones del sistema. (ScholPack) y el reglamento interno de la institución educativa de la que desea inscribir al estudiante. Se recomienda leer el reglamento y los términos y condiciones antes de continuar."
           />
 
-          <Input
-            label="Usuario para ingresar al sistema"
-            name="username"
-            value={formData.email}
-            readOnly
-          />
+          <div className="grid grid-cols-2 gap-3 items-end">
+            <div className="col-span-2">
+              <Input
+                label="Escuela que procesa el registro"
+                name="school"
+                value={`${nameSchool} (${SIG})`}
+                readOnly
+              />
+            </div>
 
-          <Input
-            label="Contraseña temporal para ingresar al sistema"
-            name="username"
-            value={`${formData.document}@2026`}
-            readOnly
-          />
+            <Input
+              label="Usuario para ingresar al sistema"
+              name="email"
+              value={formData.email}
+              readOnly
+            />
+
+            <Input
+              label="Contraseña temporal para ingresar al sistema"
+              name="document"
+              value={`${formData.document}@2026`}
+              readOnly
+            />
+          </div>
           <Banner
             icon={faInfoCircle}
             titel="Seguridad"
@@ -262,7 +286,7 @@ export default function FormInscrip({ mode, student, onSuccess }) {
             ? "Procesando..."
             : mode === "edit"
               ? "Actualizar"
-              : "Inscribir"}
+              : "Finalizar"}
         </Button>
       </div>
     </form>
