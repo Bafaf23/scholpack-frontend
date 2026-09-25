@@ -32,7 +32,7 @@ export default async function EnrolelmentPage() {
   const headerList = await headers();
   const subdomain = headerList.get("x-school-subdomain");
   const enrollmentStatus = await enrollmentOpen(subdomain);
-  console.log(enrollmentStatus);
+
   if (!enrollmentStatus?.is_enrollment_open) {
     return (
       <div className="flex flex-col items-center gap-2">
