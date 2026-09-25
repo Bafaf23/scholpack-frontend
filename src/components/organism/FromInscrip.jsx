@@ -127,9 +127,6 @@ export default function FormInscrip({
 
   return (
     <form onSubmit={handleSubmit} className="space-y-2">
-      <h2 className="text-lg text-right font-bold uppercase dark:text-zinc-600 text-gray-800">
-        {nameSchool}
-      </h2>
       {/* Banner modo edit*/}
       {mode === "edit" && (
         <div className="bg-cyan-50/50 border border-cyan-200 p-4 rounded-xl backdrop-blur-sm">
@@ -230,19 +227,30 @@ export default function FormInscrip({
             message="Al presionar el boton de inscribir, acepta los términos y condiciones del sistema. (ScholPack) y el reglamento interno de la institución educativa de la que desea inscribir al estudiante. Se recomienda leer el reglamento y los términos y condiciones antes de continuar."
           />
 
-          <Input
-            label="Usuario para ingresar al sistema"
-            name="username"
-            value={formData.email}
-            readOnly
-          />
+          <div className="grid grid-cols-2 gap-3 items-end">
+            <div className="col-span-2">
+              <Input
+                label="Escuela que procesa el registro"
+                name="school"
+                value={`${nameSchool} (${SIG})`}
+                readOnly
+              />
+            </div>
 
-          <Input
-            label="Contraseña temporal para ingresar al sistema"
-            name="username"
-            value={`${formData.document}@2026`}
-            readOnly
-          />
+            <Input
+              label="Usuario para ingresar al sistema"
+              name="email"
+              value={formData.email}
+              readOnly
+            />
+
+            <Input
+              label="Contraseña temporal para ingresar al sistema"
+              name="document"
+              value={`${formData.document}@2026`}
+              readOnly
+            />
+          </div>
           <Banner
             icon={faInfoCircle}
             titel="Seguridad"
@@ -278,7 +286,7 @@ export default function FormInscrip({
             ? "Procesando..."
             : mode === "edit"
               ? "Actualizar"
-              : "Inscribir"}
+              : "Finalizar"}
         </Button>
       </div>
     </form>
