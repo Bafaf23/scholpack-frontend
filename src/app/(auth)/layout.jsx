@@ -19,14 +19,14 @@ export default function RootLayout({ children }) {
         <div className="hidden md:block w-2/1 relative z-10">
           {/* Fotografía de fondo: Reducimos su brillo y opacidad en modo oscuro */}
           <Image
-            src={`${theme === "dark" ? "/bg-dark5.jpg" : "/bg-light.jpeg"}`}
+            src={`${theme === "dark" ? "/bg-dark.jpg" : "/bg-light.jpeg"}`}
             alt="fondo de pantalla"
             className="absolute inset-0 w-full h-full object-cover transition-all duration-300 dark:brightness-50 dark:opacity-80"
             fill
           />
 
           {/* Superposición de color (Overlay): Más tenue/oscura en modo oscuro */}
-          <div className="absolute inset-0 bg-black/30 dark:bg-black/40 transition-colors" />
+          <div className="absolute inset-0 bg-black/30 dark:bg-transparent transition-colors" />
 
           {/* Contenido sobre la foto */}
           <div className="relative z-10 flex flex-col justify-between h-full p-12 text-white">
