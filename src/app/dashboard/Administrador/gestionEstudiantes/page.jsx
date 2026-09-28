@@ -13,96 +13,85 @@ import Modal from "@/components/organism/Modal";
 import { useAuth } from "@/context/AuthContext";
 import { getStudents } from "@/services/student/getStudents";
 import Banner from "@/components/atom/Banner";
+import Pagination from "@/components/molecules/Pagination";
 import {
   faAdd,
   faBook,
   faIdCard,
   faUser,
   faClipboardList,
-  faCalendar,
-  faUserTie,
   faAward,
   faInfo,
+  faFile,
+  faFileCircleCheck,
 } from "@fortawesome/free-solid-svg-icons";
 import Link from "next/link";
-import { useState, useEffect, useCallback, startTransition } from "react";
+import { useState, useEffect, useCallback } from "react";
 
 export default function GestionEstudiantesPage() {
   const { user, loading: authLoading } = useAuth();
 
   const [isOpent, setIsOpent] = useState(false);
+  const [page, setPage] = useState(1);
   const [isOpenModal, setIsOpenModal] = useState(false);
   const [selectedStudent, setSelectedStudent] = useState(null);
-
   const [students, setStudents] = useState([]);
+  const [pagination, setPagination] = useState(null);
   const [dataLoading, setDataLoading] = useState(true);
   const [search, setSearch] = useState("");
   const [appliedFilter, setAppliedFilter] = useState("");
 
-  // Carga de catálogo de alumnos
-  const loadStudents = useCallback((silent = false) => {
-    if (!silent) setDataLoading(true);
+  // Definición centralizada y memorizada para cargar estudiantes
+  const fetchStudentsData = useCallback(
+    async (targetPage = page) => {},
+    [page],
+  );
 
-    getStudents()
-      .then((res) => {
-        const studentsList = res?.data ?? res ?? [];
-        startTransition(() => {
-          setStudents(studentsList);
-        });
-      })
-      .catch((error) => {
-        console.error(
-          "❌ [SIGACE UI]: Error crítico al recuperar matrícula escolar:",
-          error,
-        );
-      })
-      .finally(() => {
+  useEffect(() => {
+    const fetchStudents = async () => {
+      try {
+        setDataLoading(true);
+        const res = await getStudents(page);
+        setStudents(res?.data ?? []);
+        setPagination(res?.pagination ?? null);
+      } catch (error) {
+        console.error("Error al cargar estudiantes:", error);
+      } finally {
         setDataLoading(false);
-      });
-  }, []);
+      }
+    };
 
-  useEffect(() => {
-    // eslint-disable-next-line react-hooks/set-state-in-effect
-    if (user) loadStudents();
-  }, [user, loadStudents]);
-
-  // Limpieza del input de búsqueda
-  useEffect(() => {
-    if (search.trim() === "") {
-      // eslint-disable-next-line react-hooks/set-state-in-effect
-      setAppliedFilter("");
+    if (user) {
+      fetchStudents();
     }
-  }, [search]);
+  }, [user, page]);
+  // Carga inicial y por cambio de página
+  useEffect(() => {
+    if (user) {
+      // eslint-disable-next-line react-hooks/set-state-in-effect
+      fetchStudentsData(page);
+    }
+  }, [user, page, fetchStudentsData]);
 
-  const handleSearch = () => {
-    setAppliedFilter(search);
+  const handlePageChange = (newPage) => {
+    if (newPage && newPage !== page) {
+      setPage(newPage);
+    }
   };
 
-  // Filtrado reactivo
-  const filteredStudents = students.filter((student) => {
-    const searchTerm = appliedFilter.toLowerCase().trim();
-    if (!searchTerm) return true;
-
-    const tuitionNumber = String(student?.tuition_number || "").toLowerCase();
-    const nameStr = String(student?.user?.name || "").toLowerCase();
-    const lastNameStr = String(student?.user?.last_name || "").toLowerCase();
-    const idCardStr = String(student?.user?.id_card || "").toLowerCase();
-
-    // Opción A: Concatenar con espacios para búsquedas compuestas
-    return (
-      tuitionNumber.includes(searchTerm) ||
-      nameStr.includes(searchTerm) ||
-      lastNameStr.includes(searchTerm) ||
-      idCardStr.includes(searchTerm)
-    );
-  });
-
+  // Limpieza del filtro al vaciar el input
   if (authLoading) return <Loading />;
-  if (!user || user.user.role == "estudiante" || user.user.role == "profesor")
+  if (
+    !user ||
+    user.user.role === "estudiante" ||
+    user.user.role === "profesor"
+  ) {
     return <AccessDenied />;
+  }
+
   return (
     <div className="animate-in fade-in zoom-in-95 duration-500 ease-out">
-      {/* Sección Superior: Header y Botón Crear */}
+      {/* Header */}
       <div className="flex flex-col sm:flex-row justify-between items-center gap-4 mb-4 p-1">
         <HeaderDashbord titelPage="Gestión de Estudiantes" />
       </div>
@@ -114,9 +103,9 @@ export default function GestionEstudiantesPage() {
         onClose={() => setIsOpent(false)}
       >
         <FormInscrip
-          mode={"insc"}
+          mode="insc"
           onSuccess={() => {
-            loadStudents(true);
+            fetchStudentsData(1);
             setIsOpent(false);
           }}
         />
@@ -131,7 +120,7 @@ export default function GestionEstudiantesPage() {
           mode="edit"
           student={selectedStudent}
           onSuccess={() => {
-            loadStudents(true);
+            fetchStudentsData(page);
             setIsOpenModal(false);
           }}
         />
@@ -140,31 +129,29 @@ export default function GestionEstudiantesPage() {
       <div className="p-2">
         <Banner
           icon={faInfo}
-          titel="Más informacion"
-          message="Para saber más informacion de los estudiantes haz clik sobre el numero de la matricula"
+          titel="Más información"
+          message="Para conocer la ficha detallada del estudiante, haz clic sobre el número de matrícula."
         />
       </div>
+
       {/* Filtros y Métricas Rápidas */}
       <section className="p-2">
         <div className="p-4 flex flex-col sm:flex-row justify-between items-stretch sm:items-center gap-4 bg-white/70 dark:bg-zinc-900/60 backdrop-blur-md border border-slate-200/80 dark:border-zinc-700/50 rounded-2xl mb-4 shadow-sm">
           <div className="w-full sm:max-w-md">
             <Search
-              placeholder="J0289202626, V300000, Juan..."
+              placeholder="Cédula, Matrícula o Nombre..."
               search={search}
-              setSearch={setSearch}
-              onSearch={handleSearch}
             />
           </div>
 
           <div className="flex flex-col sm:flex-row gap-3 justify-end items-stretch sm:items-center w-full sm:w-auto">
-            <p className="text-xs font-semibold text-slate-600 dark:text-zinc-300 bg-slate-100 dark:bg-zinc-800/80 p-3 rounded-xl border border-slate-200 dark:border-zinc-700/60 whitespace-nowrap text-center sm:text-left">
-              Matrícula:{" "}
-              <span className="text-slate-900 dark:text-zinc-100 font-bold">
-                {filteredStudents.length}
-              </span>{" "}
-              de {students.length}
-            </p>
-
+            {pagination && (
+              <Pagination
+                pagination={pagination}
+                onPageChange={handlePageChange}
+                loading={dataLoading}
+              />
+            )}
             <div className="w-full sm:w-auto">
               <Button
                 onClick={() => setIsOpent(true)}
@@ -178,7 +165,7 @@ export default function GestionEstudiantesPage() {
         </div>
       </section>
 
-      {/* Renderizado de Estructura de Datos */}
+      {/* Tabla y Renderizado de Datos */}
       {dataLoading ? (
         <div className="p-3">
           <SkeletonCard />
@@ -189,17 +176,14 @@ export default function GestionEstudiantesPage() {
             titelTable={[
               { name: "Número de Matrícula", icon: faIdCard },
               { name: "Nombre y Apellido", icon: faUser },
-              { name: "Nacimiento / Género", icon: faCalendar },
-              { name: "Contacto", icon: faUser },
-              { name: "Representante Legal", icon: faUserTie },
               { name: "Grado y Sección", icon: faBook },
               { name: "Acciones", icon: faClipboardList },
             ]}
-            data={filteredStudents}
+            data={students}
             renderTableRows={(student) => (
               <tr
                 key={student.id}
-                className="transition-colors hover:bg-slate-50/50 dark:hover:bg-slate-900/30 group border-b border-slate-100 dark:border-slate-800"
+                className="transition-colors hover:bg-slate-50/50 dark:hover:bg-zinc-800/30 group border-b border-slate-100 dark:border-zinc-800"
               >
                 <td className="px-6 py-4">
                   <div className="flex flex-col gap-1.5">
@@ -210,85 +194,34 @@ export default function GestionEstudiantesPage() {
                       {student.tuition_number}
                     </Link>
                     <span
-                      className={`text-[10px] uppercase tracking-wider font-extrabold px-2 py-0.5 rounded-full w-fit ${student.condition === "nuevo_ingreso" ? "bg-emerald-500/10 text-emerald-600" : "bg-orange-500/10 text-orange-600"}`}
+                      className={`text-[10px] uppercase tracking-wider font-extrabold px-2 py-0.5 rounded-full w-fit ${
+                        student.condition === "nuevo_ingreso"
+                          ? "bg-emerald-500/10 text-emerald-600"
+                          : "bg-orange-500/10 text-orange-600"
+                      }`}
                     >
-                      {student.condition}
+                      {student.condition?.replace("_", " ")}
                     </span>
                   </div>
                 </td>
                 <td className="px-6 py-4">
                   <div className="flex flex-col">
-                    <span className="text-sm font-bold text-slate-900 dark:text-slate-100 group-hover:text-cyan-600 dark:group-hover:text-indigo-400 transition-colors">
-                      {student.user.name} {student.user.last_name}
+                    <span className="text-md font-bold text-slate-900 dark:text-slate-100 group-hover:text-cyan-600 dark:group-hover:text-orange-400 transition-colors">
+                      {student.user?.name} {student.user?.last_name}
                     </span>
-                    <span className="text-xs text-slate-400 font-mono mt-0.5">
-                      {student.user.id_card}
-                    </span>
-                  </div>
-                </td>
-                <td className="px-6 py-4 text-slate-600 dark:text-slate-400 text-sm">
-                  <div className="flex flex-col">
-                    <span>
-                      {student.birth_date
-                        ? new Date(student.birth_date).toLocaleDateString(
-                            "es-ES",
-                            {
-                              day: "2-digit",
-                              month: "2-digit",
-                              year: "numeric",
-                              timeZone: "UTC",
-                            },
-                          )
-                        : "N/A"}
-                    </span>
-                    <span className="text-xs text-slate-400 mt-0.5">
-                      {student.gender || "No registrado"}
+                    <span className="text-sm text-slate-400 mt-0.5">
+                      {student.user?.id_card}
                     </span>
                   </div>
                 </td>
-                <td className="px-6 py-4 text-slate-600 dark:text-slate-400 text-sm">
-                  <div className="flex flex-col">
-                    <span className="font-medium">
-                      {student.user.phone || "Sin tlf"}
-                    </span>
-                    <span className="text-xs text-slate-400 max-w-35 truncate">
-                      {student.user.email}
-                    </span>
-                  </div>
-                </td>
-                <td className="px-6 py-4">
-                  <div className="flex flex-col">
-                    <span className="text-sm font-bold text-slate-800 dark:text-slate-200">
-                      {student.representative.name}{" "}
-                      {student.representative.last_name}
-                    </span>
-                    <span className="text-xs text-slate-400">
-                      {student.representative.phone}
-                    </span>
-                    <span className="text-[10px] text-indigo-500 dark:text-indigo-400 font-semibold mt-0.5">
-                      ({student.representative.relationship || "Tutor"})
-                    </span>
-                  </div>
-                </td>
-                <td className="px-6 py-4">
-                  {student.enrollments && student.enrollments.length > 0 ? (
-                    <div className="flex flex-col gap-1">
-                      {student.enrollments.map((en, index) => {
-                        const yearName = en.section?.year?.id;
-                        const sectionName = en.section?.name
-                          ? `"${en.section?.name}"`
-                          : "";
 
-                        return (
-                          <span
-                            key={en.id || index}
-                            className="w-fit rounded border border-slate-200 bg-slate-100 px-2 py-0.5 text-xs font-medium text-slate-700 dark:border-slate-700 dark:bg-slate-800 dark:text-slate-300"
-                          >
-                            {en.year?.name} - Sección &quot;{en.section?.name}
-                            &quot;
-                          </span>
-                        );
-                      })}
+                <td className="px-6 py-4">
+                  {student.enrollment ? (
+                    <div className="flex flex-col gap-1">
+                      <span className="w-fit rounded border border-slate-200 bg-slate-100 px-2 py-0.5 text-xs font-medium text-slate-700 dark:border-slate-700 dark:bg-slate-800 dark:text-slate-300">
+                        {student.enrollment.year?.name} - Sección &quot;
+                        {student.enrollment.section?.name}&quot;
+                      </span>
                     </div>
                   ) : (
                     <span className="text-xs text-slate-400 italic">
@@ -298,33 +231,32 @@ export default function GestionEstudiantesPage() {
                 </td>
                 <td className="px-6 py-4">
                   <div className="flex items-center gap-2">
-                    {/* Comprobante de inscripción directo a la API del Back */}
-                    {student.enrollments && student.enrollments.length > 0 && (
+                    {student.enrollment && (
                       <Link
                         href={`${process.env.NEXT_PUBLIC_API_URL}/reports/${student.id}/enrollment`}
                         target="_blank"
                       >
                         <Button
                           icon={faClipboardList}
-                          title="Descargar Planilla de Inscripscion"
+                          title="Descargar Planilla de Inscripción"
                           classNameBtn="p-1.5 rounded-lg bg-cyan-600 text-white hover:bg-cyan-700 transition-colors"
-                        ></Button>
+                        />
                       </Link>
                     )}
-                    {/* Notas Certificadas */}
                     <Button
-                      icon={faAward}
+                      icon={faFileCircleCheck}
                       onClick={() =>
-                        alert("Esta opción no está disponible por el momento")
+                        alert(
+                          "Este reporte sigue en desarrollo, en la proxima version podras disfrutar de el",
+                        )
                       }
-                      title="Descargar Notas Certificadas"
+                      title="Constacia de Estudio"
                       classNameBtn="p-1.5 rounded-lg bg-orange-500 text-white hover:bg-orange-600 transition-colors"
-                    ></Button>
+                    />
                   </div>
                 </td>
               </tr>
             )}
-            // 📱 Vista Móvil (Limpiada de lógicas pesadas de PDF)
             renderMovilCard={(student) => (
               <div
                 key={`movil-${student.id}`}
@@ -333,23 +265,20 @@ export default function GestionEstudiantesPage() {
                 <div className="flex justify-between items-start border-b border-slate-100 dark:border-slate-800 pb-2">
                   <div>
                     <span className="text-[10px] font-mono font-bold text-indigo-500 tracking-wider block">
-                      {student.tuition_number || "SIN MATRÍCULA"}
+                      {student.tuition_number || "?"}
                     </span>
                     <h3 className="text-sm font-bold text-slate-800 dark:text-slate-200 capitalize mt-0.5">
-                      {student.user.name?.toLowerCase()}{" "}
-                      {student.user.last_name?.toLowerCase()}
+                      {student.user?.name} {student.user?.last_name}
                     </h3>
                   </div>
 
-                  {/* En mobile ahora también dispara la descarga limpia directo de tu Back endpoint */}
-                  {/* Comprobante de inscripción directo a la API del Back */}
-                  {student.year && student.section && (
+                  {student.enrollment && (
                     <Link
-                      href={`${process.env.NEXT_PUBLIC_API_URL}/reports/planillaIns/${student.id}/${student.representative_id}`}
+                      href={`${process.env.NEXT_PUBLIC_API_URL}/reports/${student.id}/enrollment`}
                       target="_blank"
                     >
                       <Button
-                        title="Descargar Planilla"
+                        title="Descargar Planilla de inscripcion"
                         classNameBtn="text-cyan-600 p-1.5 hover:bg-cyan-500/10 rounded-xl border border-cyan-500/10"
                       >
                         <Icon icon={faClipboardList} className="w-3.5 h-3.5" />
@@ -361,47 +290,32 @@ export default function GestionEstudiantesPage() {
                 <div className="grid grid-cols-2 gap-2 text-[11px] text-slate-600 dark:text-slate-400">
                   <p>
                     <span className="text-slate-400">C.I:</span>{" "}
-                    {student.user.id_card}
+                    {student.user?.id_card}
                   </p>
-                  <p>
-                    <span className="text-slate-400">Género:</span>{" "}
-                    {student.gender || "N/A"}
-                  </p>
+
                   <p className="col-span-2 truncate">
                     <span className="text-slate-400">Email:</span>{" "}
-                    {student.user.email || "N/A"}
-                  </p>
-                </div>
-
-                <div className="pt-2 border-t border-slate-100 dark:border-slate-800/60 bg-slate-500/5 p-2 rounded-xl text-xs">
-                  <p className="font-semibold text-slate-700 dark:text-slate-300 mb-0.5">
-                    Representante Legal:
-                  </p>
-                  <p className="capitalize font-medium text-slate-800 dark:text-slate-200">
-                    {student.representative.name.toLowerCase()}{" "}
-                    {student.representative.last_name.toLowerCase()}{" "}
-                    <span className="text-slate-400 font-normal">
-                      ({student.representative_relationship || "Tutor"})
-                    </span>
-                  </p>
-                  <p className="text-slate-500 text-[11px] mt-0.5">
-                    {student.representative.relationship}
+                    {student.user?.email || "N/A"}
                   </p>
                 </div>
 
                 <div className="pt-1 flex justify-between items-center text-[11px]">
                   <div className="flex gap-1">
                     <span className="px-2 py-0.5 font-bold bg-indigo-500/10 text-indigo-600 rounded-md border border-indigo-500/10">
-                      {student.year || `?`}
+                      {student.enrollment?.year?.name || `Sin año`}
                     </span>
                     <span className="px-2 py-0.5 font-bold bg-slate-500/10 text-slate-700 dark:text-slate-300 rounded-md">
-                      Sección {student.section || "?"}
+                      Sección {student.enrollment?.section?.name || "N/A"}
                     </span>
                   </div>
                   <span
-                    className={`px-2 py-0.5 rounded-full font-bold text-[10px] ${student.condition === "nuevo_ingreso" ? "bg-emerald-500/10 text-emerald-600" : "bg-orange-500/10 text-orange-600"}`}
+                    className={`px-2 py-0.5 rounded-full font-bold text-[10px] ${
+                      student.condition === "nuevo_ingreso"
+                        ? "bg-emerald-500/10 text-emerald-600"
+                        : "bg-orange-500/10 text-orange-600"
+                    }`}
                   >
-                    {student.condition}
+                    {student.condition?.replace("_", " ")}
                   </span>
                 </div>
               </div>
