@@ -1,6 +1,6 @@
+import Banner from "../atom/Banner";
 import Input from "../atom/Input";
 import Selector from "../atom/Selector";
-import Banner from "../atom/Banner";
 import { faHeadSideCough } from "@fortawesome/free-solid-svg-icons";
 
 /**
@@ -16,7 +16,7 @@ import { faHeadSideCough } from "@fortawesome/free-solid-svg-icons";
 
 const HealthPhysicalFields = ({ datos, manejarCambio }) => {
   return (
-    <div className="space-y-6">
+    <div className="space-y-6 w-full">
       <h4 className="font-extrabold text-amber-500 text-2xl uppercase">
         Tus datos medicos y fisicos
       </h4>

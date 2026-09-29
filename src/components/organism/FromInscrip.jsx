@@ -1,7 +1,7 @@
 "use client";
+import Banner from "../atom/Banner";
 import Button from "../atom/Button";
 import Icon from "../atom/Icon";
-import Banner from "../atom/Banner";
 import Input from "../atom/Input";
 import AcademicFields from "../molecules/AcademicBackgroundFields";
 import EnrollmentSchool from "../molecules/EnrollmentSchool";
@@ -9,13 +9,14 @@ import HealthPhysicalFields from "../molecules/HealthPhysicalFields";
 import LegalRepresentativeFields from "../molecules/LegalRepresentativeFields";
 import LocationFields from "../molecules/LocationFields";
 import PersonalDataFields from "../molecules/PersonalDataFields";
-import { useState } from "react";
-import toast from "react-hot-toast";
+import Success from "./Success";
 import { createStudent } from "@/services/student/createStudent";
 import { updateStudent } from "@/services/student/updateStudent";
 import { faInfoCircle, faStopCircle } from "@fortawesome/free-solid-svg-icons";
-import Success from "./Success";
+import Link from "next/link";
 import { useRouter } from "next/navigation";
+import { useState } from "react";
+import toast from "react-hot-toast";
 
 export default function FormInscrip({
   mode,
@@ -70,8 +71,35 @@ export default function FormInscrip({
   const totalSteps = mode === "edit" ? 2 : formData.isNewEntry ? 5 : 4;
 
   const handleChange = (e) => {
-    const { name, value } = e.target;
-    setFormData((prev) => ({ ...prev, [name]: value }));
+    const { name, value, type, checked } = e.target;
+    setFormData((prev) => ({
+      ...prev,
+      [name]: type === "checkbox" ? checked : value,
+    }));
+  };
+
+  const handleNextStep = () => {
+    if (passed === 1) {
+      if (
+        !formData.documentType ||
+        !formData.document ||
+        !formData.name ||
+        !formData.lastName
+      ) {
+        return toast.error(
+          "Por favor, completa los campos obligatorios del estudiante.",
+        );
+      }
+    }
+    setPassed((p) => Math.min(totalSteps, p + 1));
+  };
+
+  const handleKeyDown = (e) => {
+    // Evitar que enviar el formulario con 'Enter' salte pasos
+    if (e.key === "Enter" && passed < totalSteps) {
+      e.preventDefault();
+      handleNextStep();
+    }
   };
 
   const handleSubmit = async (e) => {
@@ -113,7 +141,6 @@ export default function FormInscrip({
     } else {
       toast.success(result.message);
       setSuccessData(result.data);
-      console.log("Resultado de la inscripción:", result);
       onSuccess?.();
     }
     setLoading(false);
@@ -125,8 +152,12 @@ export default function FormInscrip({
     );
 
   return (
-    <form onSubmit={handleSubmit} className="space-y-2">
-      {/* Banner modo edit*/}
+    <form
+      onSubmit={handleSubmit}
+      onKeyDown={handleKeyDown}
+      className="space-y-4 w-full max-w-2xl mx-auto"
+    >
+      {/* Banner modo edit */}
       {mode === "edit" && (
         <div className="bg-cyan-50/50 border border-cyan-200 p-4 rounded-xl backdrop-blur-sm">
           <p className="text-sm text-cyan-800 font-medium leading-relaxed">
@@ -151,22 +182,18 @@ export default function FormInscrip({
 
       {/* PASO 1: Datos Personales (Común para todos) */}
       {passed === 1 && (
-        <div className="space-y-8">
-          <PersonalDataFields
-            datos={formData}
-            manejarCambio={handleChange}
-            mode={mode}
-          />
-        </div>
+        <PersonalDataFields
+          datos={formData}
+          manejarCambio={handleChange}
+          mode={mode}
+        />
       )}
 
-      {/* 🚀 FLUJO: NUEVO INGRESO (isNewEntry: true) */}
+      {/* FLUJO: NUEVO INGRESO (isNewEntry: true) */}
       {mode !== "edit" && formData.isNewEntry && (
         <>
           {passed === 2 && (
-            <div className="animate-in slide-in-from-right-4 duration-300">
-              <AcademicFields datos={formData} manejarCambio={handleChange} />
-            </div>
+            <AcademicFields datos={formData} manejarCambio={handleChange} />
           )}
           {passed === 3 && (
             <HealthPhysicalFields
@@ -183,7 +210,7 @@ export default function FormInscrip({
         </>
       )}
 
-      {/* 🚀 FLUJO: INGRESO REGULAR (isNewEntry: false) */}
+      {/* FLUJO: INGRESO REGULAR (isNewEntry: false) */}
       {mode !== "edit" && !formData.isNewEntry && (
         <>
           {passed === 2 && (
@@ -201,7 +228,7 @@ export default function FormInscrip({
         </>
       )}
 
-      {/* 🚀 FLUJO: EDICIÓN (mode === "edit") */}
+      {/* FLUJO: EDICIÓN (mode === "edit") */}
       {mode === "edit" && (
         <>
           {passed === 2 && (
@@ -216,14 +243,20 @@ export default function FormInscrip({
       {/* PASO FINAL: Información de Cuenta (Solo en creación) */}
       {passed === totalSteps && mode !== "edit" && (
         <div className="space-y-6">
-          <h4 className="font-extrabold text-amber-500 uppercase text-2xl">
-            Una cosa más para termiar
-          </h4>
+          <div>
+            <h4 className="font-extrabold text-amber-500 uppercase text-2xl">
+              Una cosa más para terminar
+            </h4>
+            <p className="text-slate-600 dark:text-zinc-300 font-medium leading-relaxed">
+              Verifica la información suministrada. Si ves algún error, regresa
+              y corrígelo.
+            </p>
+          </div>
 
           <Banner
             icon={faStopCircle}
-            titel="Reglamento, terminos y condiciones"
-            message="Al presionar el boton de inscribir, acepta los términos y condiciones del sistema. (ScholPack) y el reglamento interno de la institución educativa de la que desea inscribir al estudiante. Se recomienda leer el reglamento y los términos y condiciones antes de continuar."
+            titel="Reglamento, términos y condiciones"
+            message="Al presionar el botón de inscribir, acepta los términos y condiciones del sistema (ScholPack) y el reglamento interno de la institución educativa en la que desea inscribir al estudiante. Se recomienda leer el reglamento y los términos y condiciones antes de continuar."
           />
 
           <div className="grid grid-cols-2 gap-3 items-end">
@@ -231,7 +264,7 @@ export default function FormInscrip({
               <Input
                 label="Escuela que procesa el registro"
                 name="school"
-                value={`${nameSchool} (${SIG})`}
+                value={`${nameSchool || ""} (${SIG || ""})`}
                 readOnly
               />
             </div>
@@ -246,10 +279,11 @@ export default function FormInscrip({
             <Input
               label="Contraseña temporal para ingresar al sistema"
               name="document"
-              value={`${formData.document}@2026`}
+              value={formData.document ? `${formData.document}@2026` : ""}
               readOnly
             />
           </div>
+
           <Banner
             icon={faInfoCircle}
             titel="Seguridad"
@@ -263,30 +297,36 @@ export default function FormInscrip({
         <Button
           type="button"
           onClick={() => setPassed((p) => Math.max(1, p - 1))}
-          classNameBtn={`text-slate-400 dark:text-zinc-500 hover:text-slate-600 dark:hover:text-zinc-400 font-medium border border-slate-300 dark:border-zinc-600 rounded-lg p-2 cursor-pointer ${passed === 1 ? "invisible" : ""}`}
+          classNameBtn={`text-slate-400 dark:text-zinc-500 hover:text-slate-600 dark:hover:text-zinc-400 font-medium border border-slate-300 dark:border-zinc-600 rounded-lg px-5 py-2 cursor-pointer ${
+            passed === 1 ? "invisible" : ""
+          }`}
         >
           Anterior
         </Button>
 
-        <Button
-          type="button"
-          onClick={() => setPassed((p) => Math.min(totalSteps, p + 1))}
-          classNameBtn={`rounded-lg bg-orange-600 p-3 font-bold text-white transition-all hover:bg-orange-700 active:scale-95 group flex items-center gap-5 cursor-pointer ${passed >= totalSteps ? "hidden" : ""}`}
-        >
-          Siguiente
-        </Button>
+        {passed < totalSteps && (
+          <Button
+            type="button"
+            onClick={handleNextStep}
+            classNameBtn="rounded-lg bg-orange-600 px-5 py-2 font-bold text-white transition-all hover:bg-orange-700 active:scale-95 group flex items-center gap-5 cursor-pointer"
+          >
+            Siguiente
+          </Button>
+        )}
 
-        <Button
-          type="submit"
-          disabled={loading}
-          classNameBtn={`rounded-lg bg-green-600 p-3 font-bold text-white transition-all hover:bg-green-700 disabled:bg-slate-300 flex items-center gap-2 ${passed < totalSteps ? "hidden" : ""}`}
-        >
-          {loading
-            ? "Procesando..."
-            : mode === "edit"
-              ? "Actualizar"
-              : "Finalizar"}
-        </Button>
+        {passed === totalSteps && (
+          <Button
+            type="submit"
+            disabled={loading}
+            classNameBtn="rounded-lg bg-green-600 px-5 py-2 font-bold text-white transition-all hover:bg-green-700 disabled:bg-slate-300 flex items-center gap-2 cursor-pointer"
+          >
+            {loading
+              ? "Procesando..."
+              : mode === "edit"
+                ? "Actualizar"
+                : "Finalizar"}
+          </Button>
+        )}
       </div>
     </form>
   );
