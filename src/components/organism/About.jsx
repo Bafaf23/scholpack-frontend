@@ -29,14 +29,14 @@ export default function About() {
   ];
 
   return (
-    <section id="nosotros" className="px-5 py-25 min-h-screen">
+    <section id="nosotros" className="px-5 py-25 min-h-dvh">
       <div className="mx-auto max-w-7xl">
         <div className="flex flex-col items-center gap-16 lg:flex-row">
           {/* Lado Derecho: Contenido */}
           <div className="flex-1">
             <Label
               label="Sobre el Proyecto"
-              className="bg-[#EDAB1F]/70 text-orange-300"
+              className="bg-[#EDAB1F]/70 dark:text-orange-300 text-orange-600"
             />
             <h3 className="mb-6 text-3xl font-black text-[#ED781F] md:text-4xl">
               Un sueño, las bases del mañana.

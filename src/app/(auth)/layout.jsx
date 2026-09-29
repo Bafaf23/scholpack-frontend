@@ -1,43 +1,51 @@
 "use client";
-import { Toaster } from "react-hot-toast";
-import Image from "next/image";
 import Button from "@/components/atom/Button";
-import { useRouter } from "next/navigation";
-import { faArrowLeft } from "@fortawesome/free-solid-svg-icons";
-import Link from "next/link";
 import VersionTag from "@/components/atom/VersionTag";
 import { RememberProvider } from "@/context/RememberContext";
-import { useTheme } from "@/context/ThemeProvider";
+import { faArrowLeft } from "@fortawesome/free-solid-svg-icons";
+import Image from "next/image";
+import Link from "next/link";
+import { useRouter } from "next/navigation";
+import { Toaster } from "react-hot-toast";
 
-export default function RootLayout({ children }) {
+export default function AuthLayout({ children }) {
   const router = useRouter();
-  const { theme } = useTheme();
 
   return (
     <RememberProvider>
-      <main className="min-h-dvh w-full flex overflow-hidden bg-zinc-100 dark:bg-zinc-950 transition-colors">
-        <div className="hidden md:block w-2/1 relative z-10">
-          {/* Fotografía de fondo: Reducimos su brillo y opacidad en modo oscuro */}
+      <section className="min-h-dvh w-full flex overflow-hidden bg-zinc-100 dark:bg-zinc-950 transition-colors">
+        <div className="hidden md:block w-1/1 relative z-10">
+          {/* Fondo para Modo Claro */}
           <Image
-            src={`${theme === "dark" ? "/bg-dark.jpg" : "/bg-light.jpeg"}`}
-            alt="fondo de pantalla"
-            className="absolute inset-0 w-full h-full object-cover transition-all duration-300 dark:brightness-50 dark:opacity-80"
+            src="/bg-light.jpeg"
+            alt="Fondo Sigace"
+            className="absolute inset-0 w-full h-full object-cover transition-all duration-300 dark:hidden"
             fill
+            priority
           />
 
-          {/* Superposición de color (Overlay): Más tenue/oscura en modo oscuro */}
+          {/* Fondo para Modo Oscuro */}
+          <Image
+            src="/bg-dark.jpg"
+            alt="Fondo Sigace Oscuro"
+            className="absolute inset-0 w-full h-full object-cover transition-all duration-300 hidden dark:block dark:brightness-50 dark:opacity-80"
+            fill
+            priority
+          />
+
+          {/* Superposición de color */}
           <div className="absolute inset-0 bg-black/30 dark:bg-transparent transition-colors" />
 
-          {/* Contenido sobre la foto */}
+          {/* Contenido sobre la imagen */}
           <div className="relative z-10 flex flex-col justify-between h-full p-12 text-white">
             <div className="flex items-center gap-2">
               <Button
                 classNameIcon="text-xl text-gray-200 mr-1"
                 icon={faArrowLeft}
-                classNameBtn="font-bold text-2xl tracking-wider"
+                classNameBtn="font-bold text-2xl tracking-wider cursor-pointer"
                 onClick={() => router.back()}
               >
-                SchoPack
+                SIGACE
               </Button>
             </div>
 
@@ -51,18 +59,19 @@ export default function RootLayout({ children }) {
             </div>
 
             <p className="text-xs text-white/80 dark:text-zinc-400">
-              © {new Date().getFullYear()} SchoPack. Todos los derechos
+              © {new Date().getFullYear()} SIGACE. Todos los derechos
               reservados.
             </p>
           </div>
         </div>
 
-        <div className="w-full flex flex-col items-center justify-between p-6 md:p-12">
+        {/* Panel Derecho: Formulario */}
+        <div className="w-full md:w-1/2 flex flex-col items-center justify-between p-6 md:p-12">
           {/* Espaciador superior */}
           <div className="w-full" />
 
           {/* Tarjeta del Formulario centrada */}
-          <section className="w-full">{children}</section>
+          <section className="w-full max-w-md">{children}</section>
 
           {/* Footer al final del panel derecho */}
           <section className="w-full max-w-md flex items-center justify-between gap-2 text-xs text-slate-400 dark:text-zinc-500 pt-4">
@@ -93,7 +102,7 @@ export default function RootLayout({ children }) {
             duration: 4000,
           }}
         />
-      </main>
+      </section>
     </RememberProvider>
   );
 }

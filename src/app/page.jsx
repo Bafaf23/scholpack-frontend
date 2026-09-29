@@ -10,7 +10,7 @@ export default function Home() {
     <>
       <Header />
       <Hero />
-      <div className="absolute z-50 bottom-3 flex gap-4 justify-evenly px-20 w-full">
+      <div className="absolute z-50 bottom-3 hidden md:flex gap-4 justify-evenly px-20 w-full">
         <CardState
           title="Ellos confian"
           info={40}

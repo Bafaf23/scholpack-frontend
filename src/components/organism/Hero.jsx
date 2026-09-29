@@ -10,7 +10,7 @@ export default function Hero() {
   return (
     <section
       id="hero"
-      className="relative flex min-h-[calc(100dvh-73px)] w-full items-center justify-center overflow-hidden px-4 py-12 flex-col"
+      className="relative flex min-h-dvh md:min-h-[calc(100dvh-73px)] w-full items-center justify-center overflow-hidden px-4 py-12 flex-col"
     >
       <div className="bg-black absolute w-full h-full z-10 opacity-50 dark:opacity-70" />
 
@@ -24,7 +24,7 @@ export default function Hero() {
               className="bg-cyan-600/90 text-cyan-300"
             ></Label>
             <Label
-              label={"Un ecosistema completo para tu institución"}
+              label={"La comodidad de trabajar en equipo"}
               className="bg-[#1FED92]/90 text-[#0f6e43]"
             ></Label>
           </div>
@@ -48,7 +48,7 @@ export default function Hero() {
             </a>
             <Link
               href="#planes"
-              className="flex items-center gap-2 rounded-xl border border-zinc-200  px-8 py-3 font-bold text-zinc-200 shadow-sm transition-all hover:border-zinc-300 hover:bg-zinc-300/50"
+              className="flex items-center gap-2 rounded-xl border border-zinc-200  px-8 py-3 font-bold text-zinc-100 shadow-sm transition-all hover:border-zinc-300 hover:bg-zinc-300/50"
             >
               <Icon icon={faCoins} className="text-xl" />
               Ver servicios

@@ -1,7 +1,7 @@
+import Banner from "../atom/Banner";
 import Input from "../atom/Input";
 import Selector from "../atom/Selector";
 import ToggleSimple from "../atom/ToggleSimple";
-import Banner from "../atom/Banner";
 import SelectorInput from "./SelectorInput";
 import { faIdCard } from "@fortawesome/free-solid-svg-icons";
 
