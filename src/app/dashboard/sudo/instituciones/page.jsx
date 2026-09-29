@@ -1,23 +1,22 @@
 "use client";
-import HeaderDashbord from "@/components/molecules/HeaderDashbord";
+import Banner from "@/components/atom/Banner";
 import Button from "@/components/atom/Button";
+import Icon from "@/components/atom/Icon";
+import HeaderDashbord from "@/components/molecules/HeaderDashbord";
+import Search from "@/components/molecules/Serch";
+import TableInsti from "@/components/molecules/TableInsti";
+import FormInstitucion from "@/components/organism/FormInstitucion";
+import Modal from "@/components/organism/Modal";
+import { deleteSchool } from "@/services/school/deleteSchool";
+import { getCDDE } from "@/services/school/getCDDE";
+import { getSchools } from "@/services/school/getSchool";
+import { getUsers } from "@/services/user/getUsers";
 import {
   faPlus,
   faEdit,
   faTrash,
   faInfo,
 } from "@fortawesome/free-solid-svg-icons";
-import TableInsti from "@/components/molecules/TableInsti";
-import Modal from "@/components/organism/Modal";
-import Banner from "@/components/atom/Banner";
-import { deleteSchool } from "@/services/school/deleteSchool";
-import { useState, useEffect } from "react";
-import { getSchools } from "@/services/school/getSchool";
-import { getCDDE } from "@/services/school/getCDDE";
-import { getUsers } from "@/services/user/getUsers";
-import Icon from "@/components/atom/Icon";
-import FormInstitucion from "@/components/organism/FormInstitucion";
-import Search from "@/components/molecules/Serch";
 import {
   faCode,
   faInstitution,
@@ -30,6 +29,7 @@ import {
   faEllipsis,
 } from "@fortawesome/free-solid-svg-icons";
 import Link from "next/link";
+import { useState, useEffect } from "react";
 
 export default function InstitucionesPage() {
   const [isOpen, setIsOpen] = useState(false);
@@ -100,7 +100,7 @@ export default function InstitucionesPage() {
         <HeaderDashbord titelPage={"Instituciones"} />
         <div className="p-3">
           <Modal
-            title="Agregar nueva institución"
+            titel="Agregar nueva institución"
             isOpen={isOpen}
             onClose={() => setIsOpen(false)}
           >
@@ -181,7 +181,7 @@ export default function InstitucionesPage() {
                 <div>
                   <span
                     className={`inline-flex items-center max-w-40 px-2 py-0.5 rounded-full text-xs font-semibold ${institution.is_active ? "bg-green-50 text-green-700 border border-green-200 dark:bg-green-950/40 dark:text-green-300 dark:border-green-800/60" : "bg-red-50 text-red-700 border border-red-200 dark:bg-red-950/40 dark:text-red-300 dark:border-red-800/60"} `}
-                    title={
+                    titel={
                       institution.is_active
                         ? `${institution.is_active}`
                         : "Sin asignar"
@@ -198,13 +198,13 @@ export default function InstitucionesPage() {
               <td className="px-4 py-4 max-w-50">
                 <span
                   className="font-medium text-slate-800 line-clamp-2"
-                  title={institution.school_name}
+                  titel={institution.school_name}
                 >
                   {institution.school_name}
                 </span>
                 <span
                   className="inline-flex  max-w-40 px-2 py-0.5 rounded-full text-xs font-semibold bg-cyan-50 text-cyan-700 border border-cyan-200 dark:bg-cyan-950/40 dark:text-cyan-300 dark:border-cyan-800/60"
-                  title={
+                  titel={
                     schoolDirector
                       ? `${schoolDirector.user.name} ${schoolDirector.user.last_name}`
                       : "Sin asignar"
@@ -227,7 +227,7 @@ export default function InstitucionesPage() {
                       ? "text-green-500"
                       : "text-orange-500"
                   }`}
-                  title={institution.company_name}
+                  titel={institution.company_name}
                 >
                   {institution.type === "Pública" ||
                   institution.type === "Publica"
@@ -240,7 +240,7 @@ export default function InstitucionesPage() {
               <td className="px-4 py-4 max-w-55">
                 <span
                   className="font-medium text-slate-800 text-sm line-clamp-2"
-                  title={institution.address}
+                  titel={institution.address}
                 >
                   {institution.address}
                 </span>
@@ -425,7 +425,7 @@ export default function InstitucionesPage() {
       <Modal
         isOpen={isOpenEdit}
         onClose={() => setIsOpenEdit(false)}
-        title="Editar Institución"
+        titel="Editar Institución"
       >
         <FormInstitucion
           isEdit={true}

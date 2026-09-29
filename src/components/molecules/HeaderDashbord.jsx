@@ -1,5 +1,5 @@
+import Profile from "../atom/Profile";
 import Selector from "../atom/Selector";
-import Link from "next/link";
 
 /**
  * Titulos de las paginas que suporta el saludo al usuario o el titulo de la pagian.
@@ -11,74 +11,13 @@ import Link from "next/link";
  * @returns {JSX.Element}
  */
 
-export default function HeaderDashbord({ user, titelPage }) {
-  const formatLastLogin = (date) => {
-    if (!date) return "Primera conexión";
-
-    return new Intl.DateTimeFormat("es-VE", {
-      day: "2-digit",
-      month: "2-digit",
-      year: "numeric",
-      hour: "2-digit",
-      minute: "2-digit",
-      hour12: true,
-      timeZone: "America/Caracas", // Forzamos la hora de Venezuela
-    }).format(new Date(date));
-  };
-
+export default function HeaderDashbord({ user }) {
   return (
-    <section className="flex w-full flex-col md:flex-row md:justify-between">
-      <div className="w-full px-4 py-2 text-slate-500">
-        <div className="flex w-full items-center justify-between gap-2">
-          {user ? (
-            <div className="flex flex-col justify-between w-full">
-              <Link href="/dashboard/profile">
-                <div className="flex items-center gap-2">
-                  <div className="w-10 h-10 p-2 rounded-full overflow-hidden flex items-center justify-center bg-cyan-600">
-                    <span className="text-xl font-bold text-white">
-                      {user?.user.name.charAt(0)}
-                    </span>
-                  </div>
-
-                  <div>
-                    <div className="flex flex-col gap-2">
-                      <div className="flex gap-2">
-                        <h1 className="text-2xl font-bold text-slate-400 md:text-3xl dark:text-zinc-400">
-                          Hola,
-                        </h1>
-                        <span className="text-2xl font-bold text-slate-600 normal-case md:text-3xl dark:text-zinc-300">
-                          {user?.user.name}
-                        </span>
-                      </div>
-                    </div>
-
-                    <div>
-                      <p className="text-slate-500 dark:text-slate-400">
-                        Bienvenido a tu panel de control.
-                      </p>
-                    </div>
-                  </div>
-                </div>
-              </Link>
-            </div>
-          ) : (
-            <h1 className="text-2xl font-bold uppercase md:text-3xl dark:text-zinc-300">
-              {titelPage}
-            </h1>
-          )}
-        </div>
-      </div>
-
-      {user?.materias && (
-        <div className="hidden p-3 md:flex">
-          <Selector
-            id={"materias"}
-            name={"Materia"}
-            options={user.materias || []}
-            label={"Materias"}
-          />
-        </div>
-      )}
+    <section className="flex w-full flex-col md:flex-row md:justify-between md:items-center bg-white dark:bg-zinc-900 border border-slate-100 dark:border-zinc-700 p-4 rounded-xl shadow gap-1">
+      <h3 className="text-zinc-900 dark:text-zinc-200 font-extrabold uppercase text-2xl hidden md:block">
+        Nombre del colegio
+      </h3>
+      <Profile user={user?.user} />
     </section>
   );
 }

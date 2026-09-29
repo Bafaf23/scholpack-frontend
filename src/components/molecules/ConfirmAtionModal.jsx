@@ -6,7 +6,7 @@ import {
 
 export default function ConfirmActionModal({
   isOpen,
-  title,
+  titel,
   message,
   confirmLabel = "Confirmar",
   cancelLabel = "Cancelar",
@@ -29,9 +29,9 @@ export default function ConfirmActionModal({
       btn: "bg-amber-500 hover:bg-amber-600 text-white shadow-md shadow-amber-500/10",
     },
     info: {
-      bgIcon: "bg-indigo-50 dark:bg-indigo-950/30",
-      icon: "text-indigo-600 dark:text-indigo-400",
-      btn: "bg-indigo-600 hover:bg-indigo-700 text-white shadow-md shadow-indigo-600/10",
+      bgIcon: "bg-cyan-50 dark:bg-zinc-950/30",
+      icon: "text-cyan-600 dark:text-orange-400",
+      btn: "bg-cyan-500 hover:bg-cyan-700 shadow-cyan-600/10 dark:bg-orange-600 dark:hover:bg-orange-700 text-white shadow-md dark:shadow-orange-600/10",
     },
   };
 
@@ -41,12 +41,12 @@ export default function ConfirmActionModal({
     <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
       {/* Fondo oscuro traslúcido con desenfoque premium */}
       <div
-        className="absolute inset-0 bg-slate-900/40 backdrop-blur-sm animate-fade-in"
+        className="absolute inset-0 bg-zinc-900/40 backdrop-blur-sm animate-fade-in"
         onClick={onCancel}
       />
 
       {/* Contenedor de la Ventana */}
-      <div className="relative w-full max-w-md transform overflow-hidden rounded-2xl bg-white p-6 shadow-xl border border-slate-100 dark:border-slate-800 dark:bg-slate-900 transition-all animate-scale-up">
+      <div className="relative w-full max-w-lg transform overflow-hidden rounded-2xl bg-white p-6 shadow-xl border border-slate-100 dark:border-zinc-800 dark:bg-zinc-900 transition-all animate-scale-up">
         <div className="flex items-start gap-4">
           {/* Icono de Alerta */}
           <div
@@ -61,9 +61,9 @@ export default function ConfirmActionModal({
           {/* Textos */}
           <div className="space-y-1.5">
             <h3 className="text-lg font-bold text-slate-800 dark:text-slate-100">
-              {title}
+              {titel}
             </h3>
-            <p className="text-sm text-slate-500 dark:text-slate-400 leading-relaxed">
+            <p className="text-sm text-slate-500 dark:text-zinc-400 leading-relaxed">
               {message}
             </p>
           </div>
@@ -74,14 +74,14 @@ export default function ConfirmActionModal({
           <button
             type="button"
             onClick={onCancel}
-            className="rounded-xl border border-slate-200 dark:border-slate-700 px-4 py-2 text-sm font-semibold text-slate-600 dark:text-slate-300 hover:bg-slate-50 dark:hover:bg-slate-800/60 transition-colors"
+            className="rounded-xl border border-slate-200 dark:border-zinc-700 px-4 py-2 text-sm font-semibold text-slate-600 dark:text-slate-300 hover:bg-slate-50 dark:hover:bg-zinc-800/60 transition-colors cursor-pointer"
           >
             {cancelLabel}
           </button>
           <button
             type="button"
             onClick={onConfirm}
-            className={`rounded-xl px-4 py-2 text-sm font-semibold transition-colors ${styles.btn}`}
+            className={`rounded-xl px-4 py-2 text-sm font-semibold transition-colors ${styles.btn} cursor-pointer`}
           >
             {confirmLabel}
           </button>

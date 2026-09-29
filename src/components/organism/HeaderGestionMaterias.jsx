@@ -21,7 +21,7 @@ export default function HeaderGestionMaterias({ onSubjectCreated }) {
           Crear Asignatura
         </Button>
         <Modal
-          title="Crea una Asignatura"
+          titel="Crea una Asignatura"
           isOpen={isOpent}
           onClose={() => setIsOpent(false)}
         >

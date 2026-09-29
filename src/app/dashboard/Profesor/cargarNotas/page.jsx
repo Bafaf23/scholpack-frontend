@@ -6,12 +6,12 @@ import Icon from "@/components/atom/Icon";
 import Selector from "@/components/atom/Selector";
 import AccessDenied from "@/components/molecules/AccessDenied";
 import FormCargaNotas from "@/components/molecules/FromCargaNotas";
-import { createGrade } from "@/services/grades/createGrade";
 import HeaderDashbord from "@/components/molecules/HeaderDashbord";
 import Modal from "@/components/organism/Modal";
 import TablaNotas from "@/components/organism/TablaNotas";
 import { useAuth } from "@/context/AuthContext";
 import { getEvaluation } from "@/services/evaluation/getEvaluation";
+import { createGrade } from "@/services/grades/createGrade";
 import { getGradeAcrivity } from "@/services/grades/getGradeActivity";
 import { getLapses } from "@/services/lapse/getLapse";
 import { getStudentSection } from "@/services/section/getStudentSection";
@@ -255,7 +255,7 @@ export default function CargarNotas() {
               <Modal
                 isOpen={isModalOpen}
                 onClose={() => setIsModalOpen(false)}
-                title="Cargar Calificaciones"
+                titel="Cargar Calificaciones"
               >
                 <FormCargaNotas
                   listaEstudiantesSinNotas={EstudiantesDisponibles}

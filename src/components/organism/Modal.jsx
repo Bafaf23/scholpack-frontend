@@ -7,7 +7,7 @@ import { useEffect, useRef } from "react";
 export default function Modal({
   isOpen,
   onClose,
-  title,
+  titel,
   children,
   maxWidth = "max-w-lg",
 }) {
@@ -47,7 +47,7 @@ export default function Modal({
       className="fixed inset-0 z-50 flex items-center justify-center p-4 sm:p-6"
       role="dialog"
       aria-modal="true"
-      aria-labelledby="modal-title"
+      aria-labelledby="modal-titel"
     >
       {/* CAPA DE FONDO (Backdrop) - Se removieron clases de transición nativas css fijas que no se ejecutan sin estados de React */}
       <div
@@ -64,10 +64,10 @@ export default function Modal({
         {/* CABECERA (Header) */}
         <div className="flex items-center justify-between pb-4 border-b border-slate-100 dark:border-slate-800/60">
           <h3
-            id="modal-title"
+            id="modal-titel"
             className="text-xl font-black text-slate-800 dark:text-slate-100 tracking-tight capitalize"
           >
-            {title}
+            {titel}
           </h3>
           <Button
             icon={faTimes}

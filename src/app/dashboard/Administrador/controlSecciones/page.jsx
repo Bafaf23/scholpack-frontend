@@ -1,17 +1,17 @@
 "use client";
 
+import Banner from "@/components/atom/Banner";
 import Button from "@/components/atom/Button";
 import SkeletonCard from "@/components/atom/SkeletonCard";
 import CardGridSetion from "@/components/molecules/CardGridSetion";
-import Banner from "@/components/atom/Banner";
 import HeaderDashbord from "@/components/molecules/HeaderDashbord";
 import FormSection from "@/components/organism/FormSection";
 import Modal from "@/components/organism/Modal";
 import { useAuth } from "@/context/AuthContext";
 import { getSection } from "@/services/section/getSection";
-import { getStudenNotEnrollment } from "@/services/student/getStudenNotEnrollment";
 import { getStudentSection } from "@/services/section/getStudentSection";
 import { getPreinscription } from "@/services/student/getPreinscription";
+import { getStudenNotEnrollment } from "@/services/student/getStudenNotEnrollment";
 import { faInfo, faPlus } from "@fortawesome/free-solid-svg-icons";
 import { useState, useEffect, useCallback, startTransition } from "react";
 
@@ -170,7 +170,7 @@ export default function ControlSecciones() {
       </div>
 
       <Modal
-        title="Crea una nueva sección"
+        titel="Crea una nueva sección"
         isOpen={isOpen}
         onClose={() => setIsOpen(false)}
       >

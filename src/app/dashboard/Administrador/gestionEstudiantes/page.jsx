@@ -1,28 +1,28 @@
 "use client";
 
 import Loading from "@/app/loading";
+import Banner from "@/components/atom/Banner";
 import Button from "@/components/atom/Button";
 import Icon from "@/components/atom/Icon";
+import SkeletonCard from "@/components/atom/SkeletonCard";
 import AccessDenied from "@/components/molecules/AccessDenied";
+import ConfirmActionModal from "@/components/molecules/ConfirmAtionModal";
 import HeaderDashbord from "@/components/molecules/HeaderDashbord";
+import Pagination from "@/components/molecules/Pagination";
 import Search from "@/components/molecules/Serch";
 import TableInsti from "@/components/molecules/TableInsti";
 import FormInscrip from "@/components/organism/FromInscrip";
-import SkeletonCard from "@/components/atom/SkeletonCard";
 import Modal from "@/components/organism/Modal";
 import { useAuth } from "@/context/AuthContext";
+import { useDebounce } from "@/hooks/useDebounce";
 import { getStudents } from "@/services/student/getStudents";
-import Banner from "@/components/atom/Banner";
-import Pagination from "@/components/molecules/Pagination";
 import {
   faAdd,
   faBook,
   faIdCard,
   faUser,
   faClipboardList,
-  faAward,
   faInfo,
-  faFile,
   faFileCircleCheck,
 } from "@fortawesome/free-solid-svg-icons";
 import Link from "next/link";
@@ -32,14 +32,17 @@ export default function GestionEstudiantesPage() {
   const { user, loading: authLoading } = useAuth();
 
   const [isOpent, setIsOpent] = useState(false);
+  const [isOpentC, setIsOpentC] = useState(false);
   const [page, setPage] = useState(1);
   const [isOpenModal, setIsOpenModal] = useState(false);
   const [selectedStudent, setSelectedStudent] = useState(null);
   const [students, setStudents] = useState([]);
   const [pagination, setPagination] = useState(null);
   const [dataLoading, setDataLoading] = useState(true);
-  const [search, setSearch] = useState("");
+  const [search, setSearch] = useState(null);
   const [appliedFilter, setAppliedFilter] = useState("");
+
+  const debouncedSearch = useDebounce(search, 400);
 
   // Definición centralizada y memorizada para cargar estudiantes
   const fetchStudentsData = useCallback(
@@ -51,7 +54,7 @@ export default function GestionEstudiantesPage() {
     const fetchStudents = async () => {
       try {
         setDataLoading(true);
-        const res = await getStudents(page);
+        const res = await getStudents({ page, serchs: appliedFilter });
         setStudents(res?.data ?? []);
         setPagination(res?.pagination ?? null);
       } catch (error) {
@@ -64,7 +67,8 @@ export default function GestionEstudiantesPage() {
     if (user) {
       fetchStudents();
     }
-  }, [user, page]);
+  }, [user, page, appliedFilter]);
+
   // Carga inicial y por cambio de página
   useEffect(() => {
     if (user) {
@@ -89,16 +93,20 @@ export default function GestionEstudiantesPage() {
     return <AccessDenied />;
   }
 
+  const handleSearch = () => {
+    setAppliedFilter(search);
+  };
+
   return (
     <div className="animate-in fade-in zoom-in-95 duration-500 ease-out">
       {/* Header */}
-      <div className="flex flex-col sm:flex-row justify-between items-center gap-4 mb-4 p-1">
+      <div className="mb-4 flex flex-col items-center justify-between gap-4 p-1 sm:flex-row">
         <HeaderDashbord titelPage="Gestión de Estudiantes" />
       </div>
 
       {/* Modales */}
       <Modal
-        title="Crear Estudiante"
+        titel="Crear Estudiante"
         isOpen={isOpent}
         onClose={() => setIsOpent(false)}
       >
@@ -112,7 +120,7 @@ export default function GestionEstudiantesPage() {
       </Modal>
 
       <Modal
-        title="Información del Estudiante"
+        titel="Información del Estudiante"
         isOpen={isOpenModal}
         onClose={() => setIsOpenModal(false)}
       >
@@ -126,6 +134,16 @@ export default function GestionEstudiantesPage() {
         />
       </Modal>
 
+      <ConfirmActionModal
+        isOpen={isOpentC}
+        titel={"Desarrollando solucion"}
+        message={"Este reporte se encuentra en desarrollo por el momento."}
+        variant="info"
+        confirmLabel="Cerrar"
+        onConfirm={() => setIsOpentC(false)}
+        onCancel={() => setIsOpentC(false)}
+      />
+
       <div className="p-2">
         <Banner
           icon={faInfo}
@@ -136,15 +154,17 @@ export default function GestionEstudiantesPage() {
 
       {/* Filtros y Métricas Rápidas */}
       <section className="p-2">
-        <div className="p-4 flex flex-col sm:flex-row justify-between items-stretch sm:items-center gap-4 bg-white/70 dark:bg-zinc-900/60 backdrop-blur-md border border-slate-200/80 dark:border-zinc-700/50 rounded-2xl mb-4 shadow-sm">
+        <div className="mb-4 flex flex-col items-stretch justify-between gap-4 rounded-2xl border border-slate-200/80 bg-white/70 p-4 shadow-sm backdrop-blur-md sm:flex-row sm:items-center dark:border-zinc-700/50 dark:bg-zinc-900/60">
           <div className="w-full sm:max-w-md">
             <Search
-              placeholder="Cédula, Matrícula o Nombre..."
+              placeholder="Numero de matrícula"
               search={search}
+              setSearch={setSearch}
+              onSearch={handleSearch}
             />
           </div>
 
-          <div className="flex flex-col sm:flex-row gap-3 justify-end items-stretch sm:items-center w-full sm:w-auto">
+          <div className="flex w-full flex-col items-stretch justify-end gap-3 sm:w-auto sm:flex-row sm:items-center">
             {pagination && (
               <Pagination
                 pagination={pagination}
@@ -156,7 +176,7 @@ export default function GestionEstudiantesPage() {
               <Button
                 onClick={() => setIsOpent(true)}
                 icon={faAdd}
-                classNameBtn="bg-indigo-600 hover:bg-indigo-500 active:bg-indigo-700 transition-colors p-3 rounded-xl text-white font-semibold cursor-pointer flex items-center justify-center gap-2 text-sm shadow-sm shadow-indigo-500/20 w-full whitespace-nowrap"
+                classNameBtn="bg-orange-600 hover:bg-orange-500 active:bg-orange-700 transition-colors p-3 rounded-xl text-white font-semibold cursor-pointer flex items-center justify-center gap-2 text-sm shadow-sm shadow-orange-500/20 w-full whitespace-nowrap"
               >
                 Crear Estudiante
               </Button>
@@ -183,18 +203,18 @@ export default function GestionEstudiantesPage() {
             renderTableRows={(student) => (
               <tr
                 key={student.id}
-                className="transition-colors hover:bg-slate-50/50 dark:hover:bg-zinc-800/30 group border-b border-slate-100 dark:border-zinc-800"
+                className="group border-b border-slate-100 transition-colors hover:bg-slate-50/50 dark:border-zinc-800 dark:hover:bg-zinc-800/30"
               >
                 <td className="px-6 py-4">
                   <div className="flex flex-col gap-1.5">
                     <Link
                       href={`/dashboard/administrador/gestionEstudiantes/${student.id}`}
-                      className="font-bold text-cyan-700 dark:text-cyan-400 text-xs uppercase tracking-wide border border-cyan-500/20 rounded-lg px-2.5 py-1 inline-flex items-center bg-cyan-500/10 w-fit hover:bg-cyan-500/20 transition-colors"
+                      className="inline-flex w-fit items-center rounded-lg border border-cyan-500/20 bg-cyan-500/10 px-2.5 py-1 text-xs font-bold tracking-wide text-cyan-700 uppercase transition-colors hover:bg-cyan-500/20 dark:text-cyan-400"
                     >
                       {student.tuition_number}
                     </Link>
                     <span
-                      className={`text-[10px] uppercase tracking-wider font-extrabold px-2 py-0.5 rounded-full w-fit ${
+                      className={`w-fit rounded-full px-2 py-0.5 text-[10px] font-extrabold tracking-wider uppercase ${
                         student.condition === "nuevo_ingreso"
                           ? "bg-emerald-500/10 text-emerald-600"
                           : "bg-orange-500/10 text-orange-600"
@@ -206,10 +226,10 @@ export default function GestionEstudiantesPage() {
                 </td>
                 <td className="px-6 py-4">
                   <div className="flex flex-col">
-                    <span className="text-md font-bold text-slate-900 dark:text-slate-100 group-hover:text-cyan-600 dark:group-hover:text-orange-400 transition-colors">
+                    <span className="text-md font-bold text-slate-900 transition-colors group-hover:text-cyan-600 dark:text-slate-100 dark:group-hover:text-orange-400">
                       {student.user?.name} {student.user?.last_name}
                     </span>
-                    <span className="text-sm text-slate-400 mt-0.5">
+                    <span className="mt-0.5 text-sm text-slate-400">
                       {student.user?.id_card}
                     </span>
                   </div>
@@ -238,19 +258,15 @@ export default function GestionEstudiantesPage() {
                       >
                         <Button
                           icon={faClipboardList}
-                          title="Descargar Planilla de Inscripción"
+                          titel="Descargar Planilla de Inscripción"
                           classNameBtn="p-1.5 rounded-lg bg-cyan-600 text-white hover:bg-cyan-700 transition-colors"
                         />
                       </Link>
                     )}
                     <Button
                       icon={faFileCircleCheck}
-                      onClick={() =>
-                        alert(
-                          "Este reporte sigue en desarrollo, en la proxima version podras disfrutar de el",
-                        )
-                      }
-                      title="Constacia de Estudio"
+                      onClick={() => setIsOpentC(true)}
+                      titel="Constacia de Estudio"
                       classNameBtn="p-1.5 rounded-lg bg-orange-500 text-white hover:bg-orange-600 transition-colors"
                     />
                   </div>
@@ -260,14 +276,14 @@ export default function GestionEstudiantesPage() {
             renderMovilCard={(student) => (
               <div
                 key={`movil-${student.id}`}
-                className="flex flex-col gap-3 p-5 bg-white dark:bg-slate-900 rounded-2xl shadow-sm border border-slate-100 dark:border-slate-800 mb-3 border-dashed"
+                className="mb-3 flex flex-col gap-3 rounded-2xl border border-dashed border-slate-100 bg-white p-5 shadow-sm dark:border-slate-800 dark:bg-slate-900"
               >
-                <div className="flex justify-between items-start border-b border-slate-100 dark:border-slate-800 pb-2">
+                <div className="flex items-start justify-between border-b border-slate-100 pb-2 dark:border-slate-800">
                   <div>
-                    <span className="text-[10px] font-mono font-bold text-indigo-500 tracking-wider block">
+                    <span className="block font-mono text-[10px] font-bold tracking-wider text-indigo-500">
                       {student.tuition_number || "?"}
                     </span>
-                    <h3 className="text-sm font-bold text-slate-800 dark:text-slate-200 capitalize mt-0.5">
+                    <h3 className="mt-0.5 text-sm font-bold text-slate-800 capitalize dark:text-slate-200">
                       {student.user?.name} {student.user?.last_name}
                     </h3>
                   </div>
@@ -278,10 +294,10 @@ export default function GestionEstudiantesPage() {
                       target="_blank"
                     >
                       <Button
-                        title="Descargar Planilla de inscripcion"
+                        titel="Descargar Planilla de inscripcion"
                         classNameBtn="text-cyan-600 p-1.5 hover:bg-cyan-500/10 rounded-xl border border-cyan-500/10"
                       >
-                        <Icon icon={faClipboardList} className="w-3.5 h-3.5" />
+                        <Icon icon={faClipboardList} className="h-3.5 w-3.5" />
                       </Button>
                     </Link>
                   )}
@@ -299,17 +315,17 @@ export default function GestionEstudiantesPage() {
                   </p>
                 </div>
 
-                <div className="pt-1 flex justify-between items-center text-[11px]">
+                <div className="flex items-center justify-between pt-1 text-[11px]">
                   <div className="flex gap-1">
-                    <span className="px-2 py-0.5 font-bold bg-indigo-500/10 text-indigo-600 rounded-md border border-indigo-500/10">
+                    <span className="rounded-md border border-indigo-500/10 bg-indigo-500/10 px-2 py-0.5 font-bold text-indigo-600">
                       {student.enrollment?.year?.name || `Sin año`}
                     </span>
-                    <span className="px-2 py-0.5 font-bold bg-slate-500/10 text-slate-700 dark:text-slate-300 rounded-md">
+                    <span className="rounded-md bg-slate-500/10 px-2 py-0.5 font-bold text-slate-700 dark:text-slate-300">
                       Sección {student.enrollment?.section?.name || "N/A"}
                     </span>
                   </div>
                   <span
-                    className={`px-2 py-0.5 rounded-full font-bold text-[10px] ${
+                    className={`rounded-full px-2 py-0.5 text-[10px] font-bold ${
                       student.condition === "nuevo_ingreso"
                         ? "bg-emerald-500/10 text-emerald-600"
                         : "bg-orange-500/10 text-orange-600"

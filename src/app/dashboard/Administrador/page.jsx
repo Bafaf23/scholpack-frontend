@@ -1,17 +1,16 @@
 "use client";
 
 import Loading from "@/app/loading";
+import Banner from "@/components/atom/Banner";
 import Icon from "@/components/atom/Icon";
 import InfoCard from "@/components/atom/InfoCard";
 import AccessDenied from "@/components/molecules/AccessDenied";
 import HeaderDashbord from "@/components/molecules/HeaderDashbord";
 import { useAuth } from "@/context/AuthContext";
-import { getStudents } from "@/services/student/getStudents";
-import Banner from "@/components/atom/Banner";
-import { getTeachersAll } from "@/services/teachers/getTeachersAll";
-import { getSubjects } from "@/services/subject/getSujects";
 import { getSection } from "@/services/section/getSection";
-import { useEffect, useState, startTransition } from "react";
+import { getStudents } from "@/services/student/getStudents";
+import { getSubjects } from "@/services/subject/getSujects";
+import { getTeachersAll } from "@/services/teachers/getTeachersAll";
 import {
   faBook,
   faFilePen,
@@ -19,6 +18,7 @@ import {
   faUserTie,
   faCircleInfo,
 } from "@fortawesome/free-solid-svg-icons";
+import { useEffect, useState, startTransition } from "react";
 
 export default function AdminPage() {
   const { user, loading: authLoading } = useAuth();
@@ -59,7 +59,6 @@ export default function AdminPage() {
           (subject, index, self) =>
             self.findIndex((s) => s.name === subject.name) === index,
         );
-        console.log(sectionsList);
         // Actualizaciones de estado agrupadas con React 18 Transition para mantener fluida la UI
         startTransition(() => {
           setStudentCount(studentsList.length);
@@ -90,10 +89,9 @@ export default function AdminPage() {
     return <AccessDenied />;
 
   return (
-    <div className="animate-in fade-in zoom-in-95 duration-500 ease-out">
+    <>
       <HeaderDashbord user={user} />
-
-      <main className="space-y-6 p-4 max-w-7xl mx-auto">
+      <section className="space-y-6 mt-6">
         <section className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-5">
           <InfoCard
             label="Total de estudiantes"
@@ -137,7 +135,7 @@ export default function AdminPage() {
             />
           </div>
         </section>
-      </main>
-    </div>
+      </section>
+    </>
   );
 }

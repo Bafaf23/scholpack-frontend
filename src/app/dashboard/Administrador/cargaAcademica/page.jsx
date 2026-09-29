@@ -91,7 +91,7 @@ export default function CargaAcademicaPage() {
       <Modal
         isOpen={isOpen}
         onClose={() => setIsOpen(false)}
-        title="Nueva Asignación de Carga Académica"
+        titel="Nueva Asignación de Carga Académica"
       >
         <FormAcadLoand
           subjects={subjects}

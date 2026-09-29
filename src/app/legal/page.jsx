@@ -4,12 +4,11 @@ import { faInfo } from "@fortawesome/free-solid-svg-icons";
 const systemName = process.env.NEXT_PUBLIC_SISTEM || "SIGACE";
 
 export const metadata = {
-  title: `${systemName} - Términos y Condiciones`,
+  titel: `${systemName} - Términos y Condiciones`,
   description: `Términos y Condiciones de uso del sistema ${systemName}`,
 };
 
 export default function LegalPage() {
-
   return (
     <article className="m-auto max-w-3xl space-y-6 p-5 text-justify leading-relaxed">
       {/* Banner de Advertencia */}
@@ -32,7 +31,7 @@ export default function LegalPage() {
       </header>
 
       <p className="text-sm text-slate-600 dark:text-zinc-300">
-        Bienvenido a <span className="font-bold">{systemName}</span> {" "} (Sistema de
+        Bienvenido a <span className="font-bold">{systemName}</span> (Sistema de
         Control de Estudios). Al acceder, registrarse o utilizar nuestra
         plataforma web y servicios asociados, la institución educativa o usuario
         individual (&quot;Usted&quot; o &quot;la Institución&quot;) acepta

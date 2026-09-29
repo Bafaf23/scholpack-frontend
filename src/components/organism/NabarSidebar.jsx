@@ -1,9 +1,7 @@
 "use client";
 
 import Button from "../atom/Button";
-import ItemProfile from "../atom/ItemProfile";
-import SigaceLogo from "../atom/SchoPackLogo";
-import VersionTag from "../atom/VersionTag";
+import SigaceLogo from "../atom/Logo";
 import NavLink from "../molecules/NavLink";
 import { useAuth } from "@/context/AuthContext";
 import {
@@ -167,9 +165,7 @@ export default function NavbarSidebar() {
       </nav>
 
       {/* Cerrar sesion */}
-      <div className="flex items-center justify-between">
-        <ItemProfile user={user?.user} />
-      </div>
+
       <div className="mt-auto border-t border-slate-400/30 pt-4 dark:border-zinc-500">
         <Button
           icon={faSignOutAlt}

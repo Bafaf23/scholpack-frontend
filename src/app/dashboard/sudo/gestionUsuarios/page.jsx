@@ -1,11 +1,13 @@
 "use client";
+import Banner from "@/components/atom/Banner";
 import Button from "@/components/atom/Button";
 import Icon from "@/components/atom/Icon";
 import HeaderDashbord from "@/components/molecules/HeaderDashbord";
-import Banner from "@/components/atom/Banner";
+import Search from "@/components/molecules/Serch";
 import TableInsti from "@/components/molecules/TableInsti";
 import FormRegister from "@/components/organism/FormRegister";
 import Modal from "@/components/organism/Modal";
+import { useAuth } from "@/context/AuthContext";
 import { deleteUser } from "@/services/user/deleteUser";
 import { getUsers } from "@/services/user/getUsers";
 import {
@@ -21,8 +23,6 @@ import {
 } from "@fortawesome/free-solid-svg-icons";
 import { faPlus } from "@fortawesome/free-solid-svg-icons";
 import { useState, useEffect } from "react";
-import Search from "@/components/molecules/Serch";
-import { useAuth } from "@/context/AuthContext";
 
 export default function UsuariosPage() {
   const { user } = useAuth();
@@ -74,7 +74,7 @@ export default function UsuariosPage() {
           <Modal
             isOpen={isOpen}
             onClose={() => setIsOpen(false)}
-            title="Crear Usuario"
+            titel="Crear Usuario"
           >
             <FormRegister
               mode="create"
@@ -260,7 +260,7 @@ export default function UsuariosPage() {
       <Modal
         isOpen={isOpenEdit}
         onClose={() => setIsOpenEdit(false)}
-        title="Editar Usuario"
+        titel="Editar Usuario"
       >
         <FormRegister user={editingUser} mode="edit" />
       </Modal>
