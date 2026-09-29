@@ -1,5 +1,5 @@
 import Icon from "@/components/atom/Icon";
-import SchoPackLogo from "@/components/atom/SchoPackLogo";
+import SchoPackLogo from "@/components/atom/Logo";
 import {
   faLinkedin,
   faInstagram,
@@ -33,21 +33,23 @@ const DEVELOPER = {
 
 export default function Footer() {
   return (
-    <footer className="w-full bg-zinc-300 px-6 py-8">
+    <footer className="w-full bg-zinc-300 dark:bg-zinc-950 px-6 py-8">
       <div className="mx-auto flex max-w-7xl flex-col items-center justify-between gap-6 md:flex-row">
         {/* Identidad y Lema */}
-        <SchoPackLogo className="text-slate-900" />
+        <SchoPackLogo className="text-slate-900 dark:text-zinc-300" />
 
         {/* Derechos de Autor */}
-        <p className="text-center text-xs text-slate-600">
+        <p className="text-center text-xs text-slate-600 dark:text-zinc-300">
           Desarrollado por{" "}
-          <span className="font-semibold text-slate-900">{DEVELOPER.name}</span>{" "}
+          <span className="font-semibold text-slate-900 dark:text-zinc-100">
+            {DEVELOPER.name}
+          </span>{" "}
           — Todos los derechos reservados © {new Date().getFullYear()}
         </p>
 
         <Link
           href={"/legal"}
-          className="text-sm text-slate-800 hover:text-salte-600 hover:underline"
+          className="text-sm text-slate-800 dark:text-zinc-300 hover:text-salte-600 hover:underline"
           target="_black"
         >
           Terminos y condiciones
@@ -62,7 +64,7 @@ export default function Footer() {
               target="_blank"
               rel="noopener noreferrer"
               aria-label={social.name}
-              className={`flex h-10 w-10 items-center justify-center rounded-xl text-slate-600 transition-all ${social.hoverBg}`}
+              className={`flex h-10 w-10 items-center justify-center rounded-xl text-slate-600 dark:text-zinc-200 transition-all ${social.hoverBg}`}
             >
               <Icon icon={social.icon} className="text-xl" />
             </Link>

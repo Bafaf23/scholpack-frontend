@@ -1,13 +1,13 @@
 "use client";
 
 import Loading from "@/app/loading";
-import Icon from "@/components/atom/Icon";
+import Banner from "@/components/atom/Banner";
 import Button from "@/components/atom/Button";
+import Icon from "@/components/atom/Icon";
 import SkeletonCard from "@/components/atom/SkeletonCard";
 import AccessDenied from "@/components/molecules/AccessDenied";
 import HeaderDashbord from "@/components/molecules/HeaderDashbord";
 import Search from "@/components/molecules/Serch";
-import Banner from "@/components/atom/Banner";
 import TableInsti from "@/components/molecules/TableInsti";
 import FormRegister from "@/components/organism/FormRegister";
 import Modal from "@/components/organism/Modal";
@@ -97,7 +97,7 @@ export default function GestionPersonalPage() {
 
       {/* Modal de Registro */}
       <Modal
-        title="Registrar Nuevo Docente"
+        titel="Registrar Nuevo Docente"
         isOpen={isOpen}
         onClose={() => setIsOpen(false)}
       >

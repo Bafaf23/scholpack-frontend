@@ -171,7 +171,7 @@ export default function PlanEvaluativo() {
           <Modal
             isOpen={isModalOpen}
             onClose={() => setIsModalOpen(false)}
-            title="Plan Evaluativo"
+            titel="Plan Evaluativo"
             maxWidth="max-w-2xl"
           >
             <FormCargaPV
@@ -341,7 +341,7 @@ export default function PlanEvaluativo() {
                 <Button
                   classNameBtn="p-2 rounded-lg text-slate-400 hover:text-red-600 hover:bg-red-50 dark:hover:bg-red-950/30 transition-colors w-8 h-8 flex items-center justify-center"
                   icon={faTrash}
-                  title="Eliminar evaluación"
+                  titel="Eliminar evaluación"
                   onClick={() => {
                     setEvaluation(rows);
                     setIsConfirmActionModalOpen(true);
@@ -400,7 +400,7 @@ export default function PlanEvaluativo() {
           handleDeleteEvaluation();
           setEvaluation({});
         }}
-        title="Eliminar Evaluación"
+        titel="Eliminar Evaluación"
         message="¿Estás seguro de querer eliminar esta evaluación?"
         confirmLabel="Eliminar"
         cancelLabel="Cancelar"

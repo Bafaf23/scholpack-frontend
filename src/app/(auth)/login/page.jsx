@@ -2,7 +2,7 @@ import FromLogin from "@/components/organism/FromLogin";
 import { headers } from "next/headers";
 
 export const metadata = {
-  title: "Iniciar Sesión",
+  titel: "Iniciar Sesión",
   description: "Inicia sesión para acceder a la plataforma",
 };
 

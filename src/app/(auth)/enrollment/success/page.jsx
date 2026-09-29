@@ -1,8 +1,8 @@
-import Success from "@/components/organism/Success";
 import Loading from "@/app/loading";
+import Success from "@/components/organism/Success";
 
 export const metadata = {
-  title: "ScholPack - pre-inscripción exitosa",
+  titel: "ScholPack - pre-inscripción exitosa",
   description:
     "¡Felicidades! Tu pre-inscripción en ScholPack ha sido exitosa. Revisa los detalles de tu inscripción y sigue los próximos pasos para asegurar tu lugar en nuestra institución educativa.",
 };

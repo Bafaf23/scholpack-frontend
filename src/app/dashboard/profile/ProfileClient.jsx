@@ -4,6 +4,7 @@ import Loading from "@/app/loading";
 import Button from "@/components/atom/Button";
 import Icon from "@/components/atom/Icon";
 import ThemeToggle from "@/components/atom/ThemeToggle";
+import { useAuth } from "@/context/AuthContext";
 import { getInfoProfile } from "@/services/user/getInfoProfile";
 import {
   faEdit,
@@ -14,7 +15,6 @@ import {
   faShieldAlt,
 } from "@fortawesome/free-solid-svg-icons";
 import { useState, useEffect } from "react";
-import { useAuth } from "@/context/AuthContext";
 
 function displayOrUnset(value) {
   if (value == null || value === "") return "No asignado";
@@ -91,7 +91,7 @@ export default function ProfileClient() {
             <button
               type="button"
               disabled
-              title="Próximamente podrás editar tu perfil."
+              titel="Próximamente podrás editar tu perfil."
               className="inline-flex cursor-not-allowed items-center gap-1.5 rounded-xl bg-slate-50 px-3 py-1.5 text-xs font-semibold text-slate-400 dark:bg-zinc-800/50 dark:text-zinc-500"
             >
               <Icon icon={faEdit} />

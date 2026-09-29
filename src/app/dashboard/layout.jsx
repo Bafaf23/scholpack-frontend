@@ -9,7 +9,7 @@ import { Toaster } from "react-hot-toast";
 config.autoAddCss = false;
 
 export const metadata = {
-  title: {
+  titel: {
     template: "SchoPack | %s",
     default: "SchoPack",
   },
@@ -21,8 +21,8 @@ export default function DashboardLayout({ children }) {
     <AuthProvider>
       <div className="flex flex-1 gap-2 bg-zinc-100 dark:bg-zinc-950">
         <NavbarSidebar />
-        <div className="h-screen flex flex-col w-full min-w-0">
-          <main className="flex flex-col overflow-y-auto scroll-smooth h-full w-full pb-20 md:pb-0">
+        <div className="flex h-screen w-full min-w-0 flex-col">
+          <main className="flex h-full w-full flex-col overflow-y-auto scroll-smooth p-4">
             {children}
           </main>
           <NavMovil />

@@ -3,7 +3,7 @@ import { faCompass } from "@fortawesome/free-solid-svg-icons";
 import Link from "next/link";
 
 export const metadata = {
-  title: "Página no encontrada | SchoPack",
+  titel: "Página no encontrada | SchoPack",
   description: "La página que buscas no existe o fue movida",
 };
 

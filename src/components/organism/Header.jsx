@@ -1,37 +1,61 @@
 import Icon from "@/components/atom/Icon";
-import SchoPackLogo from "@/components/atom/SchoPackLogo";
-import NavLink from "@/components/molecules/NavLink";
+import SchoPackLogo from "@/components/atom/Logo";
 import {
   faHouseUser,
   faUsers,
-  faRocket,
-  faRightToBracket,
+  faStar,
 } from "@fortawesome/free-solid-svg-icons";
 import Link from "next/link";
 
+const options = [
+  {
+    label: "Inicio",
+    icon: faHouseUser,
+    href: "#hero",
+    iconClass: "text-[#1ED4ED]",
+  },
+  {
+    label: "Nosotros",
+    icon: faUsers,
+    href: "#nosotros",
+    iconClass: "text-[#1FED92]",
+  },
+  {
+    label: "Servicios",
+    icon: faStar,
+    href: "#planes",
+    iconClass: "text-[#EDAB1F]",
+  },
+];
+
 export default function Header() {
   return (
-    <header className="sticky top-0 z-50 flex w-full flex-col items-center gap-5 bg-zinc-100/80 backdrop-blur-md px-5 py-3 md:px-10 shadow">
-      <div className="absolute bottom-0 left-0 h-0.75 w-full bg-linear-to-l from-cyan-500 via-amber-500 to-orange-500" />
-      <div className="flex w-full items-center justify-between">
+    <header className="absolute top-4 left-0 translate-x-10 z-50 md:w-[45%]">
+      <div className="flex items-center justify-between gap-4 bg-white border border-slate-200 px-5 py-2.5 rounded-full dark:bg-zinc-800 dark:border-zinc-700 shadow-sm">
         {/* Logo */}
-        <SchoPackLogo className="text-slate-700" />
+        <SchoPackLogo className="text-slate-600 dark:text-zinc-100" />
 
         {/* Navegación Desktop */}
         <nav className="hidden items-center gap-6 md:flex">
-          <NavLink icon={faHouseUser} label="Inicio" href="#hero" />
-          <NavLink icon={faUsers} label="Sobre el proyecto" href="#nosotros" />
-          <NavLink icon={faRocket} label="Planes" href="#planes" />
+          {options.map((option) => (
+            <Link
+              key={option.label}
+              href={option.href}
+              className="flex items-center gap-1.5 font-semibold text-zinc-700 hover:text-zinc-950 dark:text-zinc-200 dark:hover:text-white text-sm transition-colors"
+            >
+              <Icon icon={option.icon} className={option.iconClass} />
+              <span>{option.label}</span>
+            </Link>
+          ))}
         </nav>
 
         {/* Acción Principal */}
-        <div className="flex items-center gap-3">
+        <div className="flex items-center">
           <Link
             href="/login"
-            className="group flex items-center gap-2 rounded-xl bg-cyan-600 px-5 py-2.5 font-bold text-white shadow-md shadow-cyan-500/20 transition-all hover:bg-cyan-500 active:scale-95 text-md"
+            className="bg-orange-500 rounded-full px-5 py-3 font-semibold text-white text-sm hover:bg-orange-600 active:scale-95 transition-all shadow-sm"
           >
-            <Icon icon={faRightToBracket} />
-            <span>Ir al sistema</span>
+            Entrar
           </Link>
         </div>
       </div>

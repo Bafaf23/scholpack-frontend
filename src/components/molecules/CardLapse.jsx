@@ -118,7 +118,7 @@ export default function CardLapse({
               <ConfirmAtionModal
                 isOpen={isConfirmOpen}
                 onCancel={() => setIsConfirmOpen(false)}
-                title="Abrir lapso"
+                titel="Abrir lapso"
                 message={`¿Estás seguro de querer abrir este lapso? Este proceso es irreversible y abrirá el lapso académico ${lapse.name}.`}
                 onConfirm={() => {
                   setIsConfirmOpen(false);
@@ -142,7 +142,7 @@ export default function CardLapse({
               <ConfirmAtionModal
                 isOpen={isConfirmClose}
                 onCancel={() => setIsConfirmClose(false)}
-                title="Cerrar lapso"
+                titel="Cerrar lapso"
                 message={`¿Estás seguro de querer cerrar este lapso? Este proceso es irreversible y cerrará ${lapse.name}.`}
                 onConfirm={() => {
                   setIsConfirmClose(false);

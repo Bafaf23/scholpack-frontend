@@ -3,12 +3,12 @@ import Button from "@/components/atom/Button";
 import Input from "@/components/atom/Input";
 import InputPass from "@/components/atom/InputPass";
 import Links from "@/components/atom/Links";
+import { useRemember } from "@/context/RememberContext";
 import { login } from "@/services/auth/login";
 import { faDeleteLeft, faKey } from "@fortawesome/free-solid-svg-icons";
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 import { toast } from "react-hot-toast";
-import { useRemember } from "@/context/RememberContext";
 
 export default function FromLogin({ schoolName }) {
   const { rememberUser, hasRememberedUser, forgetUser } = useRemember();
@@ -94,7 +94,7 @@ export default function FromLogin({ schoolName }) {
       <div className="md:p-10 p-5">
         <div className="mb-10">
           {hasRememberedUser ? (
-            <h1 className="mb-2 text-3xl font-extrabold uppercase text-transparent bg-clip-text bg-linear-to-r from-amber-600 via-orange-600 to-cyan-500 ">
+            <h1 className="mb-2 text-2xl uppercase font-extrabold text-transparent bg-clip-text bg-linear-to-r from-amber-600 via-orange-600 to-cyan-500 ">
               ¡{getGreeting()}!,{" "}
               <span className="capitalize text-slate-900 dark:text-zinc-100">
                 {hasRememberedUser ? rememberUser.name : ""}

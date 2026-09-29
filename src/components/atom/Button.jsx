@@ -11,7 +11,7 @@ import Icon from "./Icon";
  * @param {Function} [props.onClick] - Manejador del evento click.
  * @param {boolean} [props.disabled=false] - Estado deshabilitado del botón.
  * @param {string} [props.type="button"] - Tipo de botón (button, submit, reset).
- * @param {string} [props.title] - Tooltip o accesibilidad HTML.
+ * @param {string} [props.titel] - Tooltip o accesibilidad HTML.
  * @param {boolean} [props.isCollapsed=false] - Si es true, oculta el texto y solo muestra el icono.
  * @returns {JSX.Element}
  */
@@ -24,7 +24,7 @@ export default function Button({
   onClick,
   disabled = false,
   type = "button",
-  title,
+  titel,
   isCollapsed = false,
   ...props
 }) {
@@ -46,7 +46,7 @@ export default function Button({
       }`}
       onClick={handleClick}
       disabled={disabled}
-      title={title}
+      titel={titel}
       {...props}
     >
       {icon && <Icon icon={icon} className={classNameIcon} />}

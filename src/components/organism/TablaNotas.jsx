@@ -262,7 +262,7 @@ export default function TablaNotas({
                               ? "text-emerald-600 dark:text-emerald-400"
                               : "text-red-500 dark:text-red-400"
                           }`}
-                          title={`Nota acumulada exacta: ${definitivaStr}`}
+                          titel={`Nota acumulada exacta: ${definitivaStr}`}
                         >
                           {definitivaNum}
                         </span>

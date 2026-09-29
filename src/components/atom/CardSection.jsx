@@ -1,7 +1,5 @@
 "use client";
 
-import { useState } from "react";
-import axios from "axios";
 import Button from "../atom/Button";
 import Icon from "../atom/Icon";
 import FormAssignStudent from "../organism/FormAssignStudent";
@@ -17,6 +15,8 @@ import {
   faSubtract,
   faGraduationCap,
 } from "@fortawesome/free-solid-svg-icons";
+import axios from "axios";
+import { useState } from "react";
 import toast from "react-hot-toast";
 
 export default function CardSection({
@@ -110,7 +110,7 @@ export default function CardSection({
       <Modal
         isOpen={isOpen}
         onClose={() => setIsOpen(false)}
-        title="Inscribir Estudiante"
+        titel="Inscribir Estudiante"
       >
         <FormAssignStudent
           students={safeAvailable}
@@ -124,7 +124,7 @@ export default function CardSection({
       <Modal
         isOpen={isOpenPre}
         onClose={() => setIsOpenPre(false)}
-        title="Añadir a esta Sección (Preinscripción)"
+        titel="Añadir a esta Sección (Preinscripción)"
       >
         <FormAssignStudent
           students={safePreinscription}

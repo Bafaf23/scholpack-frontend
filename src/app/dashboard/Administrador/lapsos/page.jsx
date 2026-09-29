@@ -10,8 +10,8 @@ import FormCreateLapse from "@/components/organism/FromCreateLapse";
 import Modal from "@/components/organism/Modal";
 import { useAuth } from "@/context/AuthContext";
 import { createPeriod } from "@/services/academicPeriod/createPeriod";
-import { enrollmentState } from "@/services/academicPeriod/enrollmentState";
 import { endAcademicPeriod } from "@/services/academicPeriod/endAcademicPeriod";
+import { enrollmentState } from "@/services/academicPeriod/enrollmentState";
 import { getPeriod } from "@/services/academicPeriod/getPeriod";
 import { createLapse } from "@/services/lapse/createLapse";
 import { endLapse } from "@/services/lapse/endLapse";
@@ -23,9 +23,9 @@ import {
   faCheck,
   faBook,
 } from "@fortawesome/free-solid-svg-icons";
+import { Calendar } from "lucide-react";
 import { useState, useEffect, useCallback, startTransition } from "react";
 import toast from "react-hot-toast";
-import { Calendar } from "lucide-react";
 
 export default function LapsoPage() {
   const { user } = useAuth();
@@ -158,7 +158,7 @@ export default function LapsoPage() {
       </section>
       {/* Formulario Modal: Registro de Nuevo Lapso */}
       <Modal
-        title="Crear Nuevo Lapso / Momento"
+        titel="Crear Nuevo Lapso / Momento"
         isOpen={isModalCreateLapseOpen}
         onClose={() => setIsModalCreateLapseOpen(false)}
       >
@@ -176,7 +176,7 @@ export default function LapsoPage() {
       <ConfirmAtionModal
         isOpen={isModalCreateLapseOpenConfir}
         onCancel={() => setIsModalCreateLapseOpenConfir(false)}
-        title="Confirmar Registro de Lapso"
+        titel="Confirmar Registro de Lapso"
         message={`¿Estás seguro de querer aperturar el lapso "${formDataLapse.nameLapse}"? Este cambio habilitará la planificación docente.`}
         onConfirm={async () => {
           try {
@@ -198,7 +198,7 @@ export default function LapsoPage() {
       {/* Formulario Modal: Configuración inicial de Año Escolar */}
       <Modal
         isOpen={isModalOpen}
-        title="Iniciar un Periodo Académico"
+        titel="Iniciar un Periodo Académico"
         onClose={() => setIsModalOpen(false)}
       >
         <FormAcademicPeriod
@@ -215,7 +215,7 @@ export default function LapsoPage() {
       <ConfirmAtionModal
         isOpen={isModalConfirmPeriodOpen}
         onCancel={() => setIsModalConfirmPeriodOpen(false)}
-        title="Iniciar período institucional"
+        titel="Iniciar período institucional"
         message="¿Estás seguro de querer iniciar este año escolar? El proceso creará la matriz base de matrícula y es irreversible."
         onConfirm={async () => {
           try {
@@ -237,7 +237,7 @@ export default function LapsoPage() {
       <ConfirmAtionModal
         isOpen={isModalEndPeriodOpen}
         onCancel={() => setIsModalEndPeriodOpen(false)}
-        title="Finalizar periodo lectivo"
+        titel="Finalizar periodo lectivo"
         message="¿Estás seguro de querer clausurar este año escolar? Este proceso consolidará las actas definitivas y no se podrán alterar notas."
         onConfirm={async () => {
           try {

@@ -4,10 +4,12 @@ import Loading from "@/app/loading";
 import Button from "@/components/atom/Button";
 import Icon from "@/components/atom/Icon";
 import AcademicRecord from "@/components/organism/AcademicRecord";
+import FormInscrip from "@/components/organism/FromInscrip";
+import Modal from "@/components/organism/Modal";
+import { getPeriodStudent } from "@/services/enrollment/getPeriodStudent";
 import { getRecordStudent } from "@/services/student/getRecordStudent";
 import { getStudentByI } from "@/services/student/getStudentById";
-import Modal from "@/components/organism/Modal";
-import FormInscrip from "@/components/organism/FromInscrip";
+import { getSubjectPending } from "@/services/student/getSubjectPending";
 import {
   faArrowLeft,
   faFileClipboard,
@@ -21,13 +23,12 @@ import {
   faWeightHanging,
   faRulerVertical,
 } from "@fortawesome/free-solid-svg-icons";
-import { getPeriodStudent } from "@/services/enrollment/getPeriodStudent";
-import { getSubjectPending } from "@/services/student/getSubjectPending";
 import { useParams, useRouter } from "next/navigation";
 import { useState, useEffect } from "react";
 
 export default function StudentRecords() {
   const { id } = useParams();
+
   const router = useRouter();
 
   const [student, setStudent] = useState(null);
@@ -138,7 +139,7 @@ export default function StudentRecords() {
       <Modal
         isOpen={isOpen}
         onClose={() => setIsOpen(false)}
-        title="Editar Información del Estudiante"
+        titel="Editar Información del Estudiante"
       >
         <FormInscrip mode="edit" student={student} />
       </Modal>
@@ -175,7 +176,7 @@ export default function StudentRecords() {
               <div className="flex flex-wrap items-center gap-3 rounded-xl border border-slate-200 dark:border-zinc-700/60 bg-slate-50/80 dark:bg-zinc-800/80 px-3 py-1.5">
                 <div
                   className="flex items-center gap-1.5"
-                  title="Talla de Camisa"
+                  titel="Talla de Camisa"
                 >
                   <Icon
                     icon={faShirt}
@@ -187,7 +188,7 @@ export default function StudentRecords() {
                 </div>
                 <div
                   className="flex items-center gap-1.5"
-                  title="Talla de Pantalón"
+                  titel="Talla de Pantalón"
                 >
                   <Icon
                     icon={faTag}
@@ -199,7 +200,7 @@ export default function StudentRecords() {
                 </div>
                 <div
                   className="flex items-center gap-1.5"
-                  title="Talla de Calzado"
+                  titel="Talla de Calzado"
                 >
                   <Icon
                     icon={faShoePrints}
@@ -210,7 +211,7 @@ export default function StudentRecords() {
                   </span>
                 </div>
                 <div className="h-3 w-px bg-slate-200 dark:bg-zinc-700" />
-                <div className="flex items-center gap-1.5" title="Peso">
+                <div className="flex items-center gap-1.5" titel="Peso">
                   <Icon
                     icon={faWeightHanging}
                     className="text-xs text-cyan-500 dark:text-cyan-400"
@@ -219,7 +220,7 @@ export default function StudentRecords() {
                     {weight}
                   </span>
                 </div>
-                <div className="flex items-center gap-1.5" title="Estatura">
+                <div className="flex items-center gap-1.5" titel="Estatura">
                   <Icon
                     icon={faRulerVertical}
                     className="text-xs text-rose-500 dark:text-rose-400"
