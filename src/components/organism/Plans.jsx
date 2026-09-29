@@ -17,6 +17,10 @@ export default function Plans() {
       class: "border-cyan-500/30 shadow-xl shadow-cyan-500/10",
       servers: [
         {
+          name: "Carga de datos",
+          class: "bg-amber-500/10 text-amber-500 dark:text-amber-400",
+        },
+        {
           name: "Autenticación",
           class: "bg-cyan-500/10 text-cyan-500 dark:text-cyan-400",
         },
@@ -122,10 +126,10 @@ export default function Plans() {
     },
   ];
   return (
-    <section id="planes" className="px-6 py-16">
+    <section id="planes" className="px-6 py-16 min-h-dvh">
       {/* Encabezado */}
       <div className="mx-auto mb-12 max-w-7xl">
-        <h2 className="mb-2 text-sm font-bold tracking-widest text-orange-500 uppercase">
+        <h2 className="mb-2 text-sm font-bold tracking-widest text-amber-500 uppercase">
           Servicios y Módulos
         </h2>
         <h3 className="text-3xl font-black text-slate-800 sm:text-4xl dark:text-zinc-100">

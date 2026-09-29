@@ -17,9 +17,9 @@ export default function Logo({ className = "text-slate-500" }) {
         <h1
           className={`${className} text-3xl leading-none font-bold tracking-tight`}
         >
-          SIGA<span className={`text-cyan-600`}>CE</span>
+          SIGA<span className={`text-cyan-500`}>CE</span>
         </h1>
-        <p className="text-[10px] font-medium tracking-[0.2em] text-zinc-300 uppercase">
+        <p className="text-[10px] font-medium tracking-[0.2em] text-zinc-500 uppercase">
           Iniciando
         </p>
       </div>
