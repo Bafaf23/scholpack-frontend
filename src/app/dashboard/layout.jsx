@@ -19,12 +19,12 @@ export const metadata = {
 export default function DashboardLayout({ children }) {
   return (
     <AuthProvider>
-      <div className="flex flex-1 gap-2 bg-zinc-100 dark:bg-zinc-950">
+      <div className="flex flex-1 gap-2 dark:bg-zinc-950">
         <NavbarSidebar />
         <div className="flex h-screen w-full min-w-0 flex-col">
-          <main className="flex h-full w-full flex-col overflow-y-auto scroll-smooth p-4">
+          <div className="flex h-full w-full flex-col overflow-y-auto scroll-smooth p-4">
             {children}
-          </main>
+          </div>
           <NavMovil />
         </div>
         <Toaster

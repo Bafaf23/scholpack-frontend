@@ -11,12 +11,14 @@ import Selector from "../atom/Selector";
  * @returns {JSX.Element}
  */
 
-export default function HeaderDashbord({ user }) {
+export default function HeaderDashbord({ user, nameI = "Adminstarcion Sudo" }) {
   return (
-    <section className="flex w-full flex-col md:flex-row md:justify-between md:items-center bg-white dark:bg-zinc-900 border border-slate-100 dark:border-zinc-700 p-4 rounded-xl shadow gap-1">
-      <h3 className="text-zinc-900 dark:text-zinc-200 font-extrabold uppercase text-2xl hidden md:block">
-        Nombre del colegio
-      </h3>
+    <section className="flex w-full justify-end md:flex-row md:justify-between md:items-center bg-white dark:bg-zinc-800 border border-slate-100 dark:border-zinc-700 p-4 rounded-3xl shadow gap-1">
+      {nameI && (
+        <h3 className="text-zinc-900 dark:text-zinc-200 font-extrabold uppercase text-2xl hidden md:block">
+          {nameI}
+        </h3>
+      )}
       <Profile user={user?.user} />
     </section>
   );

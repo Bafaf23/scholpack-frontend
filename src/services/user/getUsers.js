@@ -4,10 +4,10 @@ import axios from "axios";
  * Obtiene los usuarios del sistema desde el backend
  * @returns {Promise<Array<Object>>}
  */
-export async function getUsers() {
+export async function getUsers({ page }) {
   try {
     const response = await axios.get(
-      `${process.env.NEXT_PUBLIC_API_URL}/users`,
+      `${process.env.NEXT_PUBLIC_API_URL}/users/?page=${page}`,
       {
         withCredentials: true,
         headers: {

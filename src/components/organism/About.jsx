@@ -45,9 +45,9 @@ export default function About() {
               Todo empezo como una hoja de calculo de un archivo{" "}
               <span className="font-bold">.xls</span> y ahora se transformo un
               software completo para la adminstracion de un colegio. Más que un
-              software o cualquier otra cosa es una solcion el al proceso manual
-              de llevar la administracion de un colegio. Dando soluciones como
-              el acceso a los <span className="font-bold">profesores</span> y{" "}
+              software o cualquier otra cosa es una solcion al proceso manual de
+              llevar la administracion de un colegio. Dando soluciones como el
+              acceso a los <span className="font-bold">profesores</span> y{" "}
               <span className="font-bold">estudiantes</span>, con roles acordes,
               donde prodran participar en el sistema.
             </p>

@@ -18,6 +18,7 @@ import {
   faBuilding,
   faUsers,
   faGraduationCap,
+  faStar,
 } from "@fortawesome/free-solid-svg-icons";
 import { usePathname } from "next/navigation";
 
@@ -126,6 +127,11 @@ export const menuLink = {
       label: "Instituciones",
       href: "/dashboard/sudo/instituciones",
     },
+    {
+      icon: faStar,
+      label: "Sercivicios",
+      href: "/dashboard/sudo/servicios",
+    },
   ],
 };
 
@@ -142,7 +148,7 @@ export default function NavbarSidebar() {
 
   return (
     <aside
-      className={`hidden p-3 transition-all duration-300 md:hidden md:flex-col lg:flex`}
+      className={`hidden p-3 transition-all duration-300 md:hidden md:flex-col lg:flex w-1/5`}
     >
       <div
         className={`mb-8 flex items-center border-b border-gray-200 pb-3 dark:border-zinc-500`}
