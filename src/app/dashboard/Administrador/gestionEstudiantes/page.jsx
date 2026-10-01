@@ -72,7 +72,6 @@ export default function GestionEstudiantesPage() {
   // Carga inicial y por cambio de página
   useEffect(() => {
     if (user) {
-      // eslint-disable-next-line react-hooks/set-state-in-effect
       fetchStudentsData(page);
     }
   }, [user, page, fetchStudentsData]);
