@@ -1,9 +1,5 @@
-import {
-  faChevronCircleLeft,
-  faChevronCircleRight,
-  faChevronLeft,
-} from "@fortawesome/free-solid-svg-icons";
 import Button from "../atom/Button";
+import { faChevronLeft } from "@fortawesome/free-solid-svg-icons";
 import { faChevronRight } from "@fortawesome/free-solid-svg-icons/faChevronRight";
 
 /**

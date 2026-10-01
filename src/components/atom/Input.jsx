@@ -9,8 +9,8 @@
  * @param {string} props.type - El tipo de input (ej: text, number, data, etc)
  * @param {string} props.placeholder - Texte de ayuda para el usuario (ej: user@ejemplo.com)
  * @param {string} props.name
- * @param {string} props.valeu
- * @param {string} props.onChange
+ * @param {string} props.value
+ * @param {Function} props.onChange
  * @returns {JSX.Element}
  */
 
@@ -30,7 +30,7 @@ export default function Input({
       {label && (
         <label
           htmlFor={id}
-          className="ml-1 text-sm font-semibold text-slate-600 dark:text-zinc-300"
+          className={`ml-1 text-sm font-semibold ${readOnly ? "text-zinc-500" : "text-slate-600 dark:text-zinc-300"}`}
         >
           {label}
         </label>

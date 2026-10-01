@@ -95,45 +95,32 @@ export default function InstitucionesPage() {
   const BASE_DOMAIN = process.env.NEXT_PUBLIC_BASE_DOMAIN;
 
   return (
-    <div>
-      <div className="flex flex-col md:flex-row md:justify-between md:p-3 lg:justify-between">
-        <HeaderDashbord titelPage={"Instituciones"} />
-        <div className="p-3">
-          <Modal
-            titel="Agregar nueva institución"
-            isOpen={isOpen}
-            onClose={() => setIsOpen(false)}
-          >
-            <FormInstitucion
-              cdde={cdee}
-              onSuccess={() => {
-                setIsOpen(false);
-                fechSchool();
-              }}
-            />
-          </Modal>
-        </div>
-      </div>
-
-      <div className="p-3">
-        {/*  <div className="border border-amber-200 bg-amber-50 p-4 rounded-xl flex items-center gap-2">
-          <Icon icon={faInfoCircle} className="text-amber-600 text-xl" />
-          <p className="text-sm text-amber-600 leading-relaxed">
-            Las instituciones de tipo <span className="font-bold">pública</span>{" "}
-            tienen como razón social el nombre del{" "}
-            <span className="font-bold text-amber-800">
-              Ministerio del Poder Popular para la Educación
-            </span>{" "}
-            y el RIF del mismo.
-          </p>
-        </div> */}
-        <Banner
-          icon={faInfo}
-          titel="Instituciones Públicas"
-          message="Las instituciones de tipo pública  tienen como razón social el nombre del Ministerio del Poder Popular para la Educación y el RIF del mismo."
+    <div className="space-y-5">
+      <Modal
+        titel="Agregar nueva institución"
+        isOpen={isOpen}
+        onClose={() => setIsOpen(false)}
+      >
+        <FormInstitucion
+          cdde={cdee}
+          onSuccess={() => {
+            setIsOpen(false);
+            fechSchool();
+          }}
         />
-      </div>
-      <div className="p-3 w-full flex flex-col md:flex-row items-center justify-between gap-4">
+      </Modal>
+
+      <h2 className="text-3xl dark:text-zinc-200 font-extrabold">
+        Instituciones
+      </h2>
+
+      <Banner
+        icon={faInfo}
+        titel="Instituciones Públicas"
+        message="Las instituciones de tipo pública  tienen como razón social el nombre del Ministerio del Poder Popular para la Educación y el RIF del mismo."
+      />
+
+      <div className="w-full flex flex-col md:flex-row items-center justify-between gap-4">
         <Search
           placeholder="Código SIG o nombre..."
           setSearch={setSearch}
@@ -144,7 +131,7 @@ export default function InstitucionesPage() {
         <Button
           onClick={() => setIsOpen(true)}
           icon={faPlus}
-          classNameBtn="bg-indigo-600 hover:bg-indigo-700 active:scale-95 transition-all p-3 rounded-xl text-slate-50 font-bold cursor-pointer flex items-center justify-center gap-2 w-full md:w-auto whitespace-nowrap shadow-lg shadow-indigo-500/20"
+          classNameBtn="bg-[#ED781F] hover:bg-orange-500 active:scale-95 transition-all p-3 rounded-xl text-slate-50 font-bold cursor-pointer flex items-center justify-center gap-2 w-full md:w-auto whitespace-nowrap shadow-lg shadow-[#ED781F]/20"
         >
           Crear Institución
         </Button>
@@ -171,11 +158,11 @@ export default function InstitucionesPage() {
           return (
             <tr
               key={institution.SIG}
-              className="transition-colors hover:bg-slate-50/50 group"
+              className="transition-colors hover:bg-slate-50/50 dark:hover:bg-zinc-700/40 group"
             >
               {/* SIG Y DIRECTOR */}
               <td className="px-4 py-4 whitespace-nowrap">
-                <div className="flex flex-col group-hover:text-cyan-600 transition-colors">
+                <div className="flex flex-col group-hover:text-cyan-600 transition-colors dark:text-zinc-200">
                   <span className="font-medium">{institution.SIG}</span>
                 </div>
                 <div>
@@ -197,7 +184,7 @@ export default function InstitucionesPage() {
               {/* NOMBRE DE LA INSTITUCIÓN */}
               <td className="px-4 py-4 max-w-50">
                 <span
-                  className="font-medium text-slate-800 line-clamp-2"
+                  className="font-medium text-slate-800 line-clamp-2 dark:text-zinc-200"
                   titel={institution.school_name}
                 >
                   {institution.school_name}
@@ -219,7 +206,7 @@ export default function InstitucionesPage() {
               </td>
 
               {/* RAZÓN SOCIAL */}
-              <td className="px-4 py-4 max-w-45">
+              <td className="px-4 py-4 max-w-45 dark:text-zinc-200">
                 <span
                   className={`font-medium uppercase line-clamp-1 ${
                     institution.type === "Pública" ||
@@ -239,7 +226,7 @@ export default function InstitucionesPage() {
               {/* DIRECCIÓN */}
               <td className="px-4 py-4 max-w-55">
                 <span
-                  className="font-medium text-slate-800 text-sm line-clamp-2"
+                  className="font-medium text-slate-800 text-sm line-clamp-2 dark:text-zinc-200"
                   titel={institution.address}
                 >
                   {institution.address}
@@ -249,10 +236,10 @@ export default function InstitucionesPage() {
               {/* CONTACTO */}
               <td className="px-4 py-4 max-w-45">
                 <div className="flex flex-col">
-                  <span className="font-medium text-slate-800 whitespace-nowrap">
+                  <span className="font-medium text-slate-800 whitespace-nowrap dark:text-zinc-200">
                     {institution.phone}
                   </span>
-                  <span className="font-medium text-slate-500 text-xs break-all">
+                  <span className="font-medium text-slate-500 text-xs break-all dark:text-zinc-200">
                     {institution.email}
                   </span>
                 </div>
@@ -275,13 +262,13 @@ export default function InstitucionesPage() {
               {/* RIF / DEA */}
               <td className="px-4 py-4 whitespace-nowrap">
                 <div className="flex flex-col">
-                  <span className="font-medium text-slate-800 text-sm font-mono">
+                  <span className="font-medium text-slate-800 text-sm font-mono dark:text-zinc-200">
                     {institution.type === "Pública" ||
                     institution.type === "Publica"
                       ? "G-200000090"
                       : institution.RIF}
                   </span>
-                  <span className="font-medium text-slate-500 text-xs font-mono">
+                  <span className="font-medium text-slate-500 text-xs font-mono dark:text-zinc-200">
                     {institution.DEA_CODE}
                   </span>
                 </div>
@@ -289,7 +276,7 @@ export default function InstitucionesPage() {
 
               {/* CDCEE */}
               <td className="px-4 py-4 max-w-30 whitespace-nowrap truncate">
-                <span className="font-medium text-slate-800">
+                <span className="font-medium text-slate-800 dark:text-zinc-200">
                   {institution.cdcee?.name || "N/A"}
                 </span>
               </td>
@@ -298,7 +285,7 @@ export default function InstitucionesPage() {
                 <Link
                   href={`https://${institution.subdomain}.${BASE_DOMAIN}`}
                   target="_blank"
-                  className="font-mono text-slate-800 hover:underline"
+                  className="font-mono text-slate-800 hover:underline dark:text-zinc-200"
                 >
                   {`${institution.subdomain}`}
                 </Link>
@@ -309,7 +296,7 @@ export default function InstitucionesPage() {
                 <div className="flex items-center gap-2">
                   <Button
                     icon={faEdit}
-                    classNameBtn="flex h-8 w-8 items-center justify-center rounded-lg text-slate-400 transition-all hover:bg-indigo-50 hover:text-indigo-600"
+                    classNameBtn="flex h-8 w-8 items-center justify-center rounded-lg text-slate-400 dark:text-zinc-200 transition-all hover:bg-indigo-50 hover:text-indigo-600"
                     onClick={() => {
                       setEditingInstitution(institution);
                       setIsOpenEdit(true);
@@ -317,7 +304,7 @@ export default function InstitucionesPage() {
                   />
                   <Button
                     icon={faTrash}
-                    classNameBtn="flex h-8 w-8 items-center justify-center rounded-lg text-slate-400 transition-all hover:bg-red-50 hover:text-red-600"
+                    classNameBtn="flex h-8 w-8 items-center justify-center rounded-lg text-slate-400 transition-all hover:bg-red-50 hover:text-red-600 dark:text-zinc-200"
                     onClick={() => {
                       deleteSchool(institution.SIG).then((data) => {
                         if (data?.ok) {

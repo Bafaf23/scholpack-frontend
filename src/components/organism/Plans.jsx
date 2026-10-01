@@ -17,20 +17,8 @@ export default function Plans() {
       class: "border-cyan-500/30 shadow-xl shadow-cyan-500/10",
       servers: [
         {
-          name: "Carga de datos",
-          class: "bg-amber-500/10 text-amber-500 dark:text-amber-400",
-        },
-        {
           name: "Autenticación",
           class: "bg-cyan-500/10 text-cyan-500 dark:text-cyan-400",
-        },
-        {
-          name: "Control de roles",
-          class: "bg-amber-500/10 text-amber-500 dark:text-amber-400",
-        },
-        {
-          name: "Perfil institucional",
-          class: "bg-orange-500/10 text-orange-500 dark:text-orange-400",
         },
         {
           name: "Gestión de usuarios",
@@ -39,10 +27,6 @@ export default function Plans() {
         {
           name: "Configuración del año escolar",
           class: "bg-teal-500/10 text-teal-500 dark:text-teal-400",
-        },
-        {
-          name: "Recuperación de credenciales",
-          class: "bg-indigo-500/10 text-indigo-500 dark:text-indigo-400",
         },
         {
           name: "Carga de calificaciones",
@@ -101,6 +85,10 @@ export default function Plans() {
       servers: [
         {
           name: "Inscripcion Online",
+          class: "bg-amber-500/10 text-amber-500 dark:text-amber-400",
+        },
+        {
+          name: "Carga de datos",
           class: "bg-amber-500/10 text-amber-500 dark:text-amber-400",
         },
       ],

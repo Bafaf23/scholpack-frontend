@@ -98,8 +98,8 @@ export default function TableInsti({
                   </td>
                 </tr>
               ) : (
-                data.map((institucion) => {
-                  return renderTableRows(institucion);
+                data.map((institucion, index) => {
+                  return renderTableRows(institucion, index);
                 })
               )}
             </tbody>

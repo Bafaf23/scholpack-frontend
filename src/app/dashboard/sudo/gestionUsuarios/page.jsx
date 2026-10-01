@@ -2,7 +2,7 @@
 import Banner from "@/components/atom/Banner";
 import Button from "@/components/atom/Button";
 import Icon from "@/components/atom/Icon";
-import HeaderDashbord from "@/components/molecules/HeaderDashbord";
+import Pagination from "@/components/molecules/Pagination";
 import Search from "@/components/molecules/Serch";
 import TableInsti from "@/components/molecules/TableInsti";
 import FormRegister from "@/components/organism/FormRegister";
@@ -32,19 +32,32 @@ export default function UsuariosPage() {
   const [isOpenEdit, setIsOpenEdit] = useState(false);
   const [editingUser, setEditingUser] = useState(null);
   const [users, setUsers] = useState([]);
+  const [pagination, setPagination] = useState({});
+  const [page, setPage] = useState(3);
+  const [loading, setloading] = useState(false);
 
   useEffect(() => {
-    getUsers().then((data) => {
+    getUsers({ page }).then((data) => {
       setUsers(data.data);
+      setPagination(data?.pagination);
     });
-  }, []);
+  }, [page]);
 
   const fetchUsers = () => {
-    getUsers().then((data) => {
+    setloading(true);
+    getUsers({ page }).then((data) => {
       if (data && data.data) {
-        setUsers(data.data);
+        setUsers(data?.data);
+        setPagination(data?.pagination);
       }
     });
+    setloading(false);
+  };
+
+  const handlePageChange = (newPage) => {
+    if (newPage && newPage) {
+      setPage(newPage);
+    }
   };
 
   useEffect(() => {
@@ -67,113 +80,95 @@ export default function UsuariosPage() {
   };
 
   return (
-    <div>
-      <div className="flex flex-col md:flex-row md:justify-between">
-        <HeaderDashbord titelPage={"Gestion de Usuarios"} />
-        <div className="p-3">
-          <Modal
-            isOpen={isOpen}
-            onClose={() => setIsOpen(false)}
-            titel="Crear Usuario"
-          >
-            <FormRegister
-              mode="create"
-              role={user?.user.role}
-              onSuccess={() => {
-                setIsOpen(false);
-                fetchUsers();
-              }}
-            />
-          </Modal>
-        </div>
-      </div>
-      <div className="p-3">
-        <Banner
-          icon={faInfo}
-          titel="Usuarios Nuevos"
-          message="Al crear un nuevo usuario sus credenciales de inicio de session se enviaran por correo electrónico de forma automática."
+    <div className="space-y-4">
+      <Modal
+        isOpen={isOpen}
+        onClose={() => setIsOpen(false)}
+        titel="Crear Usuario"
+      >
+        <FormRegister
+          mode="create"
+          role={user?.user.role}
+          onSuccess={() => {
+            setIsOpen(false);
+            fetchUsers();
+          }}
         />
-      </div>
-      <div className="p-3 w-full flex flex-col md:flex-row items-center justify-between gap-4">
+      </Modal>
+      <h2 className="text-3xl dark:text-zinc-200 font-extrabold">
+        Gestion de Usuarios
+      </h2>
+      <Banner
+        icon={faInfo}
+        titel="Usuarios Nuevos"
+        message="Al crear un nuevo usuario sus credenciales de inicio de session se enviaran por correo electrónico de forma automática."
+      />
+
+      <div className="w-full flex flex-col md:flex-row items-center justify-between gap-4">
         <Search
           setSearch={setSearch}
           search={search}
           onSearch={handleSearch}
           placeholder="Cedula o Nombre..."
         />
-        <Button
-          onClick={() => setIsOpen(true)}
-          icon={faPlus}
-          classNameBtn="bg-indigo-600 hover:bg-indigo-700 active:scale-95 transition-all p-3 rounded-xl text-slate-50 font-bold cursor-pointer flex items-center justify-center gap-2 w-full md:w-auto whitespace-nowrap shadow-lg shadow-indigo-500/20"
-        >
-          Crear Usuario
-        </Button>
+        <div className="flex gap-5 items-center">
+          <Pagination
+            pagination={pagination}
+            onPageChange={handlePageChange}
+            loading={loading}
+          />
+          <Button
+            onClick={() => setIsOpen(true)}
+            icon={faPlus}
+            classNameBtn="bg-[#ED781F] hover:bg-orange-500 active:scale-95 transition-all p-3 rounded-xl text-slate-50 font-bold cursor-pointer flex items-center justify-center gap-2 w-full md:w-auto whitespace-nowrap shadow-lg shadow-[#ED781F]/20"
+          >
+            Crear Usuario
+          </Button>
+        </div>
       </div>
 
       <TableInsti
         titelTable={[
-          { name: "ID/Rol", icon: faUserTag },
+          { name: "Id", icon: faUserTag },
           { name: "Cedula", icon: faIdCard },
-          { name: "Nombre", icon: faUser },
-          { name: "Contacto", icon: faPhone },
-          { name: "Institución", icon: faBuilding },
+          { name: "Nombre y Apellido", icon: faUser },
           { name: "Acciones", icon: faEllipsis },
         ]}
-        data={filteredUsers}
+        data={users}
         renderTableRows={(user) => (
           <tr
             key={user.id}
-            className="transition-colors hover:bg-slate-50/50 group"
+            className="transition-colors hover:bg-slate-50/50 dark:hover:bg-zinc-700/50 group"
           >
             <td className="px-6 py-4">
-              <div className="flex flex-col group-hover:text-cyan-600 transition-colors">
+              <div className="flex flex-col group-hover:text-cyan-500 transition-colors dark:text-zinc-300">
                 <span className="font-medium">{user.id}</span>
               </div>
             </td>
             <td className="px-6 py-4">
-              <div className="flex flex-col text-slate-700 font-medium transition-colors">
+              <div className="flex flex-col text-slate-700 dark:text-zinc-400 font-medium transition-colors">
                 <span>{user.document}</span>
               </div>
             </td>
             <td className="px-6 py-4">
               <div className="flex items-center gap-2 group-hover:text-cyan-600 transition-colors">
-                <span className="text-slate-500 ">{user.name}</span>
-                <span className="text-slate-500">{user.last_name}</span>
+                <span className="text-slate-500  dark:text-zinc-100  ">
+                  {user.name}
+                </span>
+                <span className="text-slate-500  dark:text-zinc-100 ">
+                  {user.last_name}
+                </span>
               </div>
-              <span className="text-md text-slate-400 capitalize">
+              <span className="text-md text-slate-400  dark:text-zinc-500  capitalize">
                 {user.role}
               </span>
             </td>
-            <td className="px-6 py-4">
-              <div className="flex flex-col group-hover:text-cyan-600 transition-colors">
-                <span className="text-slate-500">{user.email}</span>
-                <span className="text-slate-500">{user.phone}</span>
-              </div>
-            </td>
 
-            <td className="px-6 py-4">
-              <div className="flex flex-col group-hover:text-cyan-600 transition-colors">
-                {user.school ? (
-                  <>
-                    <span className="font-medium uppercase text-slate-700">
-                      {user.school.name}
-                    </span>
-                    <span className="text-slate-500 group-hover:text-cyan-600 transition-colors">
-                      {user.school.SIG}
-                    </span>
-                  </>
-                ) : (
-                  <span className="text-slate-500 font-medium group-hover:text-cyan-600 transition-colors">
-                    SIGACE
-                  </span>
-                )}
-              </div>
-            </td>
             <td className="px-6 py-4">
               <div className="flex gap-2 group-hover:text-cyan-600 transition-colors">
                 <Button
                   icon={faEdit}
-                  classNameBtn="p-2 text-slate-400 transition-colors hover:text-indigo-600"
+                  classNameBtn="p-2 dark:text-zinc-200 text-slate-400 transition-colors hover:text-orange-600"
                   onClick={() => {
                     setIsOpenEdit(true);
                     setEditingUser(user);
@@ -181,7 +176,7 @@ export default function UsuariosPage() {
                 />
                 <Button
                   icon={faTrash}
-                  classNameBtn="p-2 text-slate-400 transition-colors hover:text-red-600"
+                  classNameBtn="p-2 dark:text-zinc-200 text-slate-400 transition-colors hover:text-red-600"
                   onClick={() =>
                     deleteUser(user.id).then((data) => {
                       if (data.error) {

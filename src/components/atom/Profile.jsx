@@ -13,14 +13,14 @@ export default function Profile({ user }) {
         </div>
       </Link>
 
-      <div className="flex flex-col">
+      <div className="flex flex-col tracking-wide">
         <Link href="/dashboard/profile">
-          <span className="md:text-md text-xl font-medium text-zinc-900 dark:text-zinc-300">
+          <span className="md:text-md text-md font-medium text-zinc-90 tracking-tight dark:text-zinc-300">
             {fullName}
           </span>
         </Link>
 
-        <p className="text-sm text-slate-500 dark:text-zinc-400">
+        <p className="text-xs text-slate-500 dark:text-zinc-400">
           {user?.role}
         </p>
       </div>
