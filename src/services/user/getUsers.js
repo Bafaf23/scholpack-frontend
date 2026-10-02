@@ -4,7 +4,7 @@ import axios from "axios";
  * Obtiene los usuarios del sistema desde el backend
  * @returns {Promise<Array<Object>>}
  */
-export async function getUsers({ page, search }) {
+export async function getUsers({ page, search } = {}) {
   try {
     const parameters = new URLSearchParams();
     if (search) {
