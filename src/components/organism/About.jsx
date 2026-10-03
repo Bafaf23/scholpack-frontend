@@ -58,7 +58,7 @@ export default function About() {
                 tecnologías modernas
               </span>{" "}
               y las <span className="text-red-500 font-bold">ganas</span> de
-              seguir innovando todo los dás.
+              seguir innovando todo los días.
             </p>
             <p className="mb-10 text-lg text-zinc-400">
               Deja a tras el llevar a mano el proceso y da el paso al futuro.
